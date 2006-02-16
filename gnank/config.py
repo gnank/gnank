@@ -22,7 +22,7 @@ import os
 
 NOM = "Gnank"
 VERSIO = "1.0"
-LLANCAMENT = True
+LLANCAMENT = False
 REVISIO = "$Revision$".split()[1]
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
 COPYRIGHT = "Copyright © 2006  Albert Gasset Romo"
@@ -45,7 +45,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 """
 
-ICONA="gnank.svg"
+ICONA="gnank.png"
 PIXMAPS="/usr/share/pixmaps/"
 DESKTOP="gnank.desktop"
 APPLICATIONS="/usr/share/applications"
