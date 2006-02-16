@@ -1,0 +1,52 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+build:
+	dh_testdir
+	# build
+
+clean:
+	dh_testdir
+	dh_testroot
+	# clean
+	dh_clean 
+
+install:
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	dh_install gnank/gnank      usr/bin
+	dh_install gnank/*.py       usr/lib/python2.4/site-packages/gnank
+	dh_install gnank.desktop    usr/share/applications
+	dh_install gnank.png        usr/share/pixmaps
+	dh_install debian/gnank.xpm usr/share/pixmaps
+
+binary-arch: install
+
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installmenu
+#	dh_installmime
+	dh_installman
+	dh_compress
+	dh_fixperms
+	dh_python -V 2.4
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep
+.PHONY: build clean binary-indep binary-arch binary install

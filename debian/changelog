@@ -1,0 +1,26 @@
+gnank (1.0+svn37-2) unstable; urgency=low
+
+  * Added debian/gnank.xpm and updated menu entry.
+  * Cleaned debian/control and debian/rules.
+
+ -- Jorda Polo <jorda@ettin.org>  Thu, 16 Feb 2006 09:15:50 +0100
+
+gnank (1.0+svn37-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jorda Polo <jorda@ettin.org>  Wed, 15 Feb 2006 22:40:48 +0100
+
+gnank (1.0-2) unstable; urgency=low
+
+  * Added gnank manpage.
+  * Cleaned debian/rules.
+
+ -- Jorda Polo <jorda@ettin.org>  Wed, 15 Feb 2006 14:38:20 +0100
+
+gnank (1.0-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Jorda Polo <jorda@ettin.org>  Tue, 14 Feb 2006 18:18:15 +0100
+
