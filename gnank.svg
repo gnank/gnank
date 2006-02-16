@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="50mm"
+   height="50mm"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   version="1.0"
+   sodipodi:docbase="/home/albert/gnank/work/trunk"
+   sodipodi:docname="gnank.svg"
+   inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+   inkscape:export-xdpi="24.383999"
+   inkscape:export-ydpi="24.383999">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient5334">
+      <stop
+         style="stop-color:#eaeaea;stop-opacity:1;"
+         offset="0"
+         id="stop5350" />
+      <stop
+         id="stop8021"
+         offset="0.47368422"
+         style="stop-color:#dbdbdb;stop-opacity:1;" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="1"
+         id="stop8023" />
+      <stop
+         id="stop5344"
+         offset="1"
+         style="stop-color:#c0fdee;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient5326">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5328" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop5330" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2268">
+      <stop
+         style="stop-color:#4d331a;stop-opacity:1;"
+         offset="0"
+         id="stop2286" />
+      <stop
+         id="stop2288"
+         offset="0.30000001"
+         style="stop-color:#5b3b1f;stop-opacity:1;" />
+      <stop
+         style="stop-color:#4f331a;stop-opacity:1;"
+         offset="0.55789477"
+         id="stop2290" />
+      <stop
+         id="stop2292"
+         offset="0.77894735"
+         style="stop-color:#4a2f18;stop-opacity:0.94838709;" />
+      <stop
+         style="stop-color:#2c1b0e;stop-opacity:1;"
+         offset="1"
+         id="stop2294" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop2272" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2238">
+      <stop
+         style="stop-color:#d5fffd;stop-opacity:0.43870968;"
+         offset="0"
+         id="stop2240" />
+      <stop
+         id="stop2246"
+         offset="1"
+         style="stop-color:#c1fffd;stop-opacity:0.76129031;" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop2242" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2210">
+      <stop
+         id="stop2230"
+         offset="0"
+         style="stop-color:#c1fffa;stop-opacity:0.52258062;" />
+      <stop
+         style="stop-color:#bafffa;stop-opacity:0.77419353;"
+         offset="1"
+         id="stop2236" />
+      <stop
+         style="stop-color:#c1fffa;stop-opacity:0.52258062;"
+         offset="1"
+         id="stop2234" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2192">
+      <stop
+         style="stop-color:#c2fdff;stop-opacity:0.38709676;"
+         offset="0"
+         id="stop8027" />
+      <stop
+         id="stop8033"
+         offset="0.85000002"
+         style="stop-color:#89fcff;stop-opacity:0.70322579;" />
+      <stop
+         style="stop-color:#7bfbff;stop-opacity:0.83225805;"
+         offset="1"
+         id="stop8035" />
+      <stop
+         id="stop8031"
+         offset="1"
+         style="stop-color:#c2fdff;stop-opacity:0.38709676;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2182">
+      <stop
+         style="stop-color:#a5eaf4;stop-opacity:0.51612902;"
+         offset="0"
+         id="stop2184" />
+      <stop
+         style="stop-color:#ff2525;stop-opacity:0;"
+         offset="1"
+         id="stop2186" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2192"
+       id="radialGradient2435"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,-1.722389e-16,-1.005595e-15,1.022436,-5.007292e-14,-1.699223)"
+       cx="93.75"
+       cy="75.736786"
+       fx="93.75"
+       fy="75.736786"
+       r="55.714287" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2268"
+       id="linearGradient2437"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.904033,1.216077e-11,1.244719e-10,0.844159,7.519731,15.38812)"
+       x1="75.35714"
+       y1="126.62966"
+       x2="92.142855"
+       y2="126.62966" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5334"
+       id="linearGradient5400"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(189.6597,-7.298244)"
+       x1="3.7042437"
+       y1="69.129639"
+       x2="143.79578"
+       y2="69.129639" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="107.68553"
+     inkscape:cy="95.768055"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1280"
+     inkscape:window-height="932"
+     inkscape:window-x="0"
+     inkscape:window-y="33" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1542">
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         ry="3.9999993"
+         rx="4.0000024"
+         y="14.845236"
+         x="69.577934"
+         height="18.35795"
+         width="40.640263"
+         id="rect2449"
+         style="fill:#0b840c;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         style="fill:#0b840c;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1456"
+         width="40.640263"
+         height="18.35795"
+         x="70.029846"
+         y="40.74659"
+         rx="4.0000024"
+         ry="3.9999993" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         ry="3.9999993"
+         rx="4.0000024"
+         y="40.74659"
+         x="22.754227"
+         height="18.35795"
+         width="40.640263"
+         id="rect2480"
+         style="fill:#a41414;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         ry="3.9999993"
+         rx="4.0000024"
+         y="66.663002"
+         x="70.029846"
+         height="18.35795"
+         width="40.640263"
+         id="rect2498"
+         style="fill:#a41414;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         style="fill:#15229a;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2500"
+         width="40.640263"
+         height="18.35795"
+         x="117.30545"
+         y="40.74659"
+         rx="4.0000024"
+         ry="3.9999993" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         ry="3.9999993"
+         rx="4.0000024"
+         y="66.663002"
+         x="117.30545"
+         height="18.35795"
+         width="40.640263"
+         id="rect2512"
+         style="fill:#0b840c;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         style="fill:#15229a;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2514"
+         width="40.640263"
+         height="18.35795"
+         x="69.577934"
+         y="92.579407"
+         rx="4.0000024"
+         ry="3.9999993" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         style="fill:#dc19d2;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2532"
+         width="40.640263"
+         height="18.35795"
+         x="22.754227"
+         y="118.78038"
+         rx="4.0000024"
+         ry="3.9999993" />
+      <rect
+         style="fill:#d9d016;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1499"
+         width="40.640263"
+         height="18.35795"
+         x="22.754227"
+         y="92.579407"
+         rx="4.0000024"
+         ry="3.9999993"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-ydpi="42.650002" />
+      <rect
+         inkscape:export-ydpi="42.650002"
+         inkscape:export-xdpi="42.650002"
+         inkscape:export-filename="/home/albert/gnank/work/trunk/gnank.png"
+         ry="3.9999993"
+         rx="4.0000024"
+         y="92.579407"
+         x="117.30545"
+         height="18.35795"
+         width="40.640263"
+         id="rect1540"
+         style="fill:#d9d016;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.77191126;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2427"
+       transform="matrix(0.764715,-0.407066,0.418865,0.743173,16.03203,79.2592)">
+      <path
+         transform="matrix(0.679878,0,0,0.708462,19.6759,-0.241214)"
+         d="M 148.21429 75.736786 A 54.464287 55.714287 0 1 1  39.285713,75.736786 A 54.464287 55.714287 0 1 1  148.21429 75.736786 z"
+         sodipodi:ry="55.714287"
+         sodipodi:rx="54.464287"
+         sodipodi:cy="75.736786"
+         sodipodi:cx="93.75"
+         id="path1307"
+         style="opacity:1;fill:url(#radialGradient2435);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.88175154;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <rect
+         ry="4.720572"
+         rx="4.5876031"
+         y="93.491859"
+         x="75.645058"
+         height="57.583725"
+         width="15.174838"
+         id="rect2264"
+         style="opacity:1;fill:url(#linearGradient2437);fill-opacity:1;fill-rule:evenodd;stroke:#242016;stroke-width:1.68002236;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(1,2.312299e-4,2.476303e-4,1,0,0)" />
+    </g>
+  </g>
+</svg>

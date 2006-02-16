@@ -1,0 +1,81 @@
+Gnank - cercador d'horaris de la FIB
+====================================
+
+Copyright © 2006  Albert Gasset Romo <albert.gasset@gmail.com>
+Distribuït sota llicència GPL, vegeu el fitxer "GPL.txt".
+
+
+Presentació
+-----------
+
+El Gnank és un programa creat amb l'objectiu de facilitar la tria de l'horari
+als alumnes de la FIB.
+
+Característiques:
+
+ - Obtenció de les dades dels horaris del servidor de la FIB.
+
+ - Permet obrir i desar les dades dels horaris en un fitxer (per poder
+   utilitzar el programa sense connexió a Internet).
+
+ - Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+   solapaments, a partir d'uns grups seleccionats.
+
+ - Interfície que permet seleccionar els grups i visualitzar els horaris de
+   forma senzilla i ràpida.
+
+
+Requisits de programari
+-----------------------
+
+Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
+el següent programari:
+
+ - Python >= 2.4 (www.python.org)
+ - PyGTK >= 2.6 (www.pygtk.org)
+
+En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
+els noms dels paquets que s'han de tenir instal·lats són:
+
+ - python2.4
+ - python2.4-gtk2
+
+
+Utilització sense instal·lació
+------------------------------
+
+Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar
+la següent ordre des del directori arrel de la distribució:
+
+gnank/gnank
+
+
+Instal·lació
+------------
+
+El programa utilitza les eines "Python Distutils" per a instal·lar-se.
+Simplement cal executar la següent ordre des de la carpeta arrel de la
+distribució de Gnank amb privilegis de super-usuari:
+
+./setup.py install
+
+Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori
+o amb l'ordre "gnank".
+
+Si voleu més informació de com instal·lar programes amb Distutils mireu a
+http://www.python.org/doc/current/inst/.
+
+
+Desinstal·lació
+---------------
+
+Actualment "Distutils" no permet desinstal·lar programes, si voleu
+desinstal·lar el Gnank heu de fer-ho manualment. Només cal que elimineu
+els següents fitxers i directoris:
+
+/usr/bin/gnank
+/usr/lib/python2.4/site-packages/gnank/
+/usr/share/applications/gnank.desktop
+/usr/share/doc/gnank/
+/usr/share/pixmaps/gnank.svg
+

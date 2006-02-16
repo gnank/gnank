@@ -1,0 +1,12 @@
+
+Gnank 1.0 (2006-02-13)
+----------------------
+
+Característiques:
+ * Obtenció de les dades dels horaris del servidor de la FIB.
+ * Permet obrir i desar les dades dels horaris en un fitxer (per poder
+    utilitzar el programa sense connexió a Internet).
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+   solapaments, a partir d'uns grups seleccionats.
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de
+   forma senzilla i ràpida.

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Gnank
+Comment=Cercador d'horaris de la FIB
+Exec=gnank
+Categories=Application;
+Icon=gnank.svg
+Terminal=false
