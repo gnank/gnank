@@ -21,7 +21,7 @@
 
 from urllib import urlopen
 from domini import Quadri, Classe
-import re
+import re, os
 
 # Adreça per obtenir una llista de les assignatures.
 _adr_assigs = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures"
@@ -37,6 +37,9 @@ class ErrorDades(Exception):
 	"""Indica que no s'ha pogut obtenir les dades."""
 	pass
 
+class ErrorCau(Exception):
+	"""Indica que no s'han pogut llegir o desar les dades de la cau."""
+	pass
 
 def obre(nom_fitxer):
 	"""Llegeix les dades del fitxer indicat."""
@@ -97,3 +100,28 @@ def desa(nom_fitxer):
 	except IOError:
 		raise ErrorDades
 
+
+def desa_cau():
+	"""Desa les dades del quadrimestre a la cau de l'usuari."""
+
+	try:
+		directori_cau = os.path.join(os.environ['HOME'], '.gnank')
+		if not os.path.exists(directori_cau):
+			os.makedirs(directori_cau)
+		cau = os.path.join(directori_cau, 'cau')
+	except OSError:
+		raise ErrorCau
+		return
+	try: desa(cau)
+	except ErrorDades:
+		raise ErrorCau
+
+
+def obre_cau():
+	"""Llegeix les dades de la cau."""
+
+	cau = os.path.join(os.environ['HOME'], '.gnank', 'cau')
+	if os.path.exists(cau):
+		try: obre(cau)
+		except ErrorDades:
+			raise ErrorCau
