@@ -436,8 +436,7 @@ class Accions(gtk.ActionGroup):
 		d.set_copyright(config.COPYRIGHT)
 		d.set_comments(config.DESCRIPCIO)
 		d.set_license(config.INFO_LLICENCIA)
-		autors = ["%s <%s>" % (config.AUTOR, config.EMAIL_AUTOR)]
-		d.set_authors(autors)
+		d.set_authors(config.AUTORS)
 		d.run()
 		d.destroy()
 

@@ -29,6 +29,10 @@ COPYRIGHT = "Copyright © 2006  Albert Gasset Romo"
 AUTOR = "Albert Gasset Romo"
 EMAIL_AUTOR = "albert.gasset@gmail.com"
 LLICENCIA = "GPL"
+AUTORS = [
+	"Albert Gasset Romo <albert.gasset@gmail.com>",
+	"Jordà Polo <jorda@ettin.org>"
+]
 INFO_LLICENCIA = """\
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
