@@ -34,12 +34,12 @@ _adr_classes = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
 _er_classe = "^([^\s]+)\s([0-9]+)\s([0-9]+)\s([0-9]+):00\s([^\s]+)\s([^\s]+)$"
 
 class ErrorDades(Exception):
-	"""Indica que no s'ha pgut obtenir les dades."""
+	"""Indica que no s'ha pogut obtenir les dades."""
 	pass
 
 
 def obre(nom_fitxer):
-	"""Llegeix les dades del fitxxer indicat."""
+	"""Llegeix les dades del fitxer indicat."""
 
 	try:
 		fitxer = file(nom_fitxer, 'r')
@@ -66,7 +66,7 @@ def actualitza():
 
 
 def _prepara_quadri(dades):
-	"""Analitza i assigna les dades al quaddrimestre."""
+	"""Analitza i assigna les dades al quadrimestre."""
 
 	if not dades: raise ErrorDades
 	er = re.compile(_er_classe)
