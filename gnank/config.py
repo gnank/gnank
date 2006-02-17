@@ -30,7 +30,10 @@ AUTOR = "Albert Gasset Romo"
 EMAIL_AUTOR = "albert.gasset@gmail.com"
 LLICENCIA = "GPL"
 AUTORS = [
+	"Desenvolupador principal:",
 	"Albert Gasset Romo <albert.gasset@gmail.com>",
+	"",
+	"Paquet Debian i pedaços:",
 	"Jordà Polo <jorda@ettin.org>"
 ]
 INFO_LLICENCIA = """\
