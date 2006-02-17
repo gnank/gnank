@@ -114,7 +114,7 @@ class Singleton(object):
 	Les subclasses han de definir el mètode 'init' en lloc de '__init__'."""
 
 	def __new__(klass, *args, **kwds):
-		"""Crea unoa instància de la classe si encara no se n'ha creat cap."""
+		"""Crea una instància de la classe si encara no se n'ha creat cap."""
 
 		instance = klass.__dict__.get("__instance__")
 		if instance is not None: return instance
