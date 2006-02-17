@@ -427,7 +427,7 @@ class Horari(object):
 
 		'grups' és una seqüència de tuples (assignatura, grup)."""
 
-		# Sseqüència de tuples (assig, grup).
+		# Seqüència de tuples (assig, grup).
 		self._grups = [g for g in grups]
 
 		# Diccionari on s'emmagatzemen, per cada dia i hora, les assignatures
