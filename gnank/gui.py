@@ -157,6 +157,12 @@ class Finestra(gtk.Window):
 		llista.connect('horari-seleccionat', taula.actualitza)
 		llista.connect('horari-seleccionat', area_estat.horari_seleccionat)
 
+		try:
+			dades.obre_cau()
+			accions.emit('dades-actualitzades')
+		except dades.ErrorCau:
+			pass
+
 
 class Accions(gtk.ActionGroup):
 	"""Gestiona de les accions que pot fer l'usuari."""
@@ -319,6 +325,8 @@ class Accions(gtk.ActionGroup):
 			self.emit('dades-no-obtingudes')
 		else:
 			gtk.threads_enter()
+			try: dades.desa_cau()
+			except dades.ErrorCau: pass
 			self.emit('dades-actualitzades')
 		self.get_action('actualitza').set_property('sensitive', True)
 		self.get_action('obre').set_property('sensitive', True)
@@ -334,6 +342,8 @@ class Accions(gtk.ActionGroup):
 		if response == gtk.RESPONSE_OK:
 			try:
 				dades.obre(dialog.get_filename())
+				try: dades.desa_cau()
+				except dades.ErrorCau: pass
 			except dades.ErrorDades:
 				dialog.destroy()
 				self.emit('dades-no-obtingudes')
