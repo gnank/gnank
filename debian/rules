@@ -10,7 +10,7 @@
 #export DH_VERBOSE=1
 
 build:
-	dh_testdir
+	# nothing
 
 clean:
 	dh_testdir
@@ -23,12 +23,13 @@ install:
 	dh_clean -k 
 	dh_installdirs
 	dh_install gnank/gnank      usr/bin
-	dh_install gnank/*.py       usr/share/gnank
+	dh_install gnank/*.py       usr/lib/python2.4/site-packages/gnank
 	dh_install gnank.desktop    usr/share/applications
 	dh_install gnank.png        usr/share/pixmaps
 	dh_install debian/gnank.xpm usr/share/pixmaps
 
-binary-arch: install
+binary-arch: 
+	# nothing
 
 binary-indep: install
 	dh_testdir
@@ -39,8 +40,7 @@ binary-indep: install
 	dh_installman
 	dh_compress
 	dh_fixperms
-	dh_pysupport
-	dh_python
+	dh_python -V 2.4
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
