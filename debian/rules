@@ -11,12 +11,10 @@
 
 build:
 	dh_testdir
-	# build
 
 clean:
 	dh_testdir
 	dh_testroot
-	# clean
 	dh_clean 
 
 install:
@@ -25,7 +23,7 @@ install:
 	dh_clean -k 
 	dh_installdirs
 	dh_install gnank/gnank      usr/bin
-	dh_install gnank/*.py       usr/lib/python2.4/site-packages/gnank
+	dh_install gnank/*.py       usr/share/gnank
 	dh_install gnank.desktop    usr/share/applications
 	dh_install gnank.png        usr/share/pixmaps
 	dh_install debian/gnank.xpm usr/share/pixmaps
@@ -38,15 +36,16 @@ binary-indep: install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installmenu
-#	dh_installmime
 	dh_installman
 	dh_compress
 	dh_fixperms
-	dh_python -V 2.4
+	dh_pysupport
+	dh_python
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
 binary: binary-indep
-.PHONY: build clean binary-indep binary-arch binary install
+
+.PHONY: build clean install binary-arch binary-indep binary
