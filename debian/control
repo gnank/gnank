@@ -2,13 +2,13 @@ Source: gnank
 Section: x11
 Priority: optional
 Maintainer: Jorda Polo <jorda@ettin.org>
-Build-Depends: debhelper (>= 5.0.37.2), python-support (>= 0.3)
+Build-Depends: debhelper (>= 4.1.67)
+Build-Depends-Indep: python
 Standards-Version: 3.7.2
 
 Package: gnank
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.8.6)
-XB-Python-Version: ${python:Versions}
+Depends: ${python:Depends}, python2.4-gtk2
 Description: Cercador d'horaris de la FIB
  Gnank es un programa creat amb l'objectiu de facilitar la tria
  de l'horari dels alumnes de la FIB.
