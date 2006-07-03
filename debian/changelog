@@ -1,3 +1,9 @@
+gnank (1.0+svn37+11-1) unstable; urgency=low
+
+  * Package updated to conform to the new python policy.
+
+ -- Jorda Polo <jorda@ettin.org>  Mon,  3 Jul 2006 10:49:57 +0200
+
 gnank (1.0+svn37-2) unstable; urgency=low
 
   * Added debian/gnank.xpm and updated menu entry.
