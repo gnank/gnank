@@ -1,3 +1,9 @@
+gnank (1.0+svn37+11-2) unstable; urgency=low
+
+  * Package updated to conform to the new python policy.
+
+ -- Jorda Polo <jorda@ettin.org>  Wed,  5 Jul 2006 12:55:22 +0200
+
 gnank (1.0+svn37+11-1) unstable; urgency=low
 
   * Package now based on lafarga.upc.edu svn repo.

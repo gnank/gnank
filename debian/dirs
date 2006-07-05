@@ -1,4 +1,5 @@
 usr/bin
-usr/lib/python2.4/site-packages/gnank
+usr/share/python-support/gnank
+usr/share/python-support/gnank/gnank
 usr/share/applications
 usr/share/pixmaps

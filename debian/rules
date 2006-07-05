@@ -23,7 +23,7 @@ install:
 	dh_clean -k 
 	dh_installdirs
 	dh_install gnank/gnank      usr/bin
-	dh_install gnank/*.py       usr/lib/python2.4/site-packages/gnank
+	dh_install gnank/*.py       usr/share/python-support/gnank/gnank
 	dh_install gnank.desktop    usr/share/applications
 	dh_install gnank.png        usr/share/pixmaps
 	dh_install debian/gnank.xpm usr/share/pixmaps
@@ -40,7 +40,8 @@ binary-indep: install
 	dh_installman
 	dh_compress
 	dh_fixperms
-	dh_python -V 2.4
+	dh_pysupport
+	dh_python
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
