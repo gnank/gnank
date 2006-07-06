@@ -52,6 +52,10 @@ class Finestra(gtk.Window):
 						<menuitem action="cerca"/>
 						<menuitem action="atura"/>
 					</menu>
+					<menu action="menu_pestanyes">
+						<menuitem action="nova_pestanya"/>
+						<menuitem action="tanca_pestanya"/>
+					</menu>
 					<menu action="menu_ajuda">
 						<menuitem action="ajuda"/>
 						<separator/>
@@ -64,6 +68,8 @@ class Finestra(gtk.Window):
 					<separator/>
 					<toolitem action="cerca"/>
 					<toolitem action="atura"/>
+					<separator/>
+					<toolitem action="nova_pestanya"/>
 					<separator/>
 					<toolitem action="ajuda"/>
 				</toolbar>
@@ -124,6 +130,9 @@ class Finestra(gtk.Window):
 		accions.connect_object('cerca-finalitzada',
 			area_treball.set_sensitive,	True)
 
+		accions.connect('nova-pestanya', area_treball.nova_pestanya)
+		accions.connect('tanca-pestanya', area_treball.tanca_pestanya)
+
 		area_treball.connect('grups-seleccionats', accions.especifica_grups)
 		area_treball.connect('grups-seleccionats', area_estat.grups_seleccionats)
 		area_treball.connect('horari-seleccionat', area_estat.horari_seleccionat)
@@ -165,7 +174,12 @@ class Accions(gtk.ActionGroup):
 		# Indica que s'han desat les dades.
 		'dades-desades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
 		# Indica que no s'han pogut desar les dades.
-		'dades-no-desades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+		'dades-no-desades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		# Indica que s'ha de crear una nova pestanya.
+		'nova-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		# Indica que s'ha de tanca la pestanya actual.
+		'tanca-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+
 	}
 
 	_ajuda = [ ("Obtenció de les dades",
@@ -219,6 +233,11 @@ class Accions(gtk.ActionGroup):
 			('menu_cerca', None, "_Cerca", None, None, None),
 			('cerca', gtk.STOCK_FIND, None, None, None, self._cerca_horaris),
 			('atura', gtk.STOCK_STOP, None, None, None, self._atura_cerca),
+			('menu_pestanyes', None, "_Pestanyes", None, None, None),
+			('nova_pestanya', gtk.STOCK_NEW, "_Nova pestanya", None, None, \
+				self._nova_pestanya),
+			('tanca_pestanya', gtk.STOCK_CLOSE, "_Tanca la pestanya actual", \
+				None, None, self._tanca_pestanya),
 			('menu_ajuda', None, "_Ajuda", None, None, None),
 			('ajuda', gtk.STOCK_HELP, None, None, None, self._mostra_ajuda),
 			('quant_a', gtk.STOCK_ABOUT, None, None, None,
@@ -417,7 +436,14 @@ class Accions(gtk.ActionGroup):
 	def _canvi_max_solap(self, action, data=None):
 		self._max_solap = action.get_current_value()
 
-class AreaTreball(gtk.HBox):
+	def _nova_pestanya(self, action, data=None):
+		self.emit('nova-pestanya')
+
+	def _tanca_pestanya(self, action, data=None):
+		self.emit('tanca-pestanya')
+
+
+class AreaTreball(gtk.Notebook):
 
 	__gsignals__ = {
 		# Informa dels grups seleccionats.
@@ -426,15 +452,24 @@ class AreaTreball(gtk.HBox):
 	}
 
 	def __init__(self):
-		gtk.HBox.__init__(self, spacing=5)
-		self.set_border_width(5)
+		gtk.Notebook.__init__(self)
+		self.set_scrollable(True)
+		self._arbres = {}
+		self._llistes = {}
+		self._num_pestanya = 1
+		self.nova_pestanya()
+
+
+	def nova_pestanya(self, widget=None):
+		pestanya = gtk.HBox(spacing=5)
+		pestanya.set_border_width(5)
 
 		arbre = ArbreGrups()
 		area_arbre = gtk.ScrolledWindow()
 		area_arbre.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 		area_arbre.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 		area_arbre.add(arbre)
-		self.pack_start(area_arbre, expand=False)
+		pestanya.pack_start(area_arbre, expand=False)
 
 		llista = LlistaHoraris()
 		area_llista = gtk.ScrolledWindow()
@@ -451,30 +486,69 @@ class AreaTreball(gtk.HBox):
 		area_horaris = gtk.VPaned()
 		area_horaris.pack1(area_llista, resize=True)
 		area_horaris.pack2(area_taula, resize=True)
-		self.pack_start(area_horaris, expand=True)
+		pestanya.pack_start(area_horaris, expand=True)
 
 		arbre.connect('grups-seleccionats', self._grups_seleccionats)
 		arbre.connect('grups-seleccionats', llista.actualitza_grups)
 		llista.connect('horari-seleccionat', self._horari_seleccionat)
 		llista.connect('horari-seleccionat', taula.actualitza)
 
-		self._arbre = arbre
-		self._llista = llista
+		pestanya.arbre = arbre
+		pestanya.llista = llista
 
+		pestanya.show_all()
+		num = self.append_page(pestanya)
+		self.set_current_page(num)
+
+		etiq_pestanya = gtk.HBox()
+		text_pestanya = gtk.Label("Cerca %d " % self._num_pestanya)
+		self._num_pestanya += 1
+		text_pestanya.show()
+		etiq_pestanya.pack_start(text_pestanya)
+		boto_pestanya = gtk.Button()
+		boto_pestanya.set_relief(gtk.RELIEF_NONE)
+		boto_pestanya.set_focus_on_click(False)
+		imatge_boto = gtk.Image()
+		imatge_boto.set_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
+		imatge_boto.set_size_request(16,16)
+		boto_pestanya.set_size_request(20, 20)
+		boto_pestanya.add(imatge_boto)
+		boto_pestanya.show_all()
+		boto_pestanya.connect('clicked', self.tanca_pestanya, pestanya)
+		etiq_pestanya.pack_end(boto_pestanya)
+		self.set_tab_label(pestanya, etiq_pestanya)
+
+	def tanca_pestanya(self, widget=None, pestanya=None):
+		if pestanya is None:
+			num = self.get_current_page()
+			pestanya = self.get_nth_page(num)
+		else:
+			num = self.page_num(pestanya)
+		self.remove_page(num)
+		
 	def actualitza(self, widget=None):
-		self._arbre.actualitza(widget=widget)
+		for num in range(self.get_n_pages()):
+			pestanya = self.get_nth_page(num)
+			pestanya.arbre.actualitza(widget=widget)
 
 	def actualitza_horaris(self, accions):
-		self._llista.actualitza_horaris(accions)
+		num = self.get_current_page()
+		pestanya = self.get_nth_page(num)
+		pestanya.llista.actualitza_horaris(accions)
 
 	def grups(self):
-		return self._arbre.grups()
+		num = self.get_current_page()
+		pestanya = self.get_nth_page(num)
+		return pestanya.arbre.grups()
 
 	def _grups_seleccionats(self, arbre):
+		num = self.get_current_page()
+		pestanya = self.get_nth_page(num)
 		self.emit('grups-seleccionats')
 
 	def _horari_seleccionat(self, widget=None):
 		self.emit('horari-seleccionat')
+
 
 class ArbreGrups(gtk.TreeView):
 
