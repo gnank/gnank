@@ -472,16 +472,18 @@ class ArbreGrups(gtk.TreeView):
 		col = gtk.TreeViewColumn('', renderer, text=0)
 		self.append_column(col)
 
+		self._grups = set()
 		self.actualitza()
 
 	def actualitza(self, widget=None):
-		self._grups = set()
 		model = self.get_model()
 		model.clear()
 		for assig in sorted(Quadri().assignatures()):
 			it = model.append(None, [assig, 0])
 			for grup in sorted(Quadri().grups(assig)):
-				model.append(it, [str(grup), 0])
+				fill = model.append(it, [str(grup), 0])
+				if (assig, grup) in self._grups:
+					self._selecciona_grup(fill, 1) 
 		self.emit('grups-seleccionats')
 
 	def grups(self):
