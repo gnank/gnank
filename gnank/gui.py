@@ -89,33 +89,7 @@ class Finestra(gtk.Window):
 		area_finestra.pack_start(menu, False)
 		area_finestra.pack_start(barra, False)
 
-		area_treball = gtk.HBox(spacing=5)
-		area_treball.set_border_width(5)
-
-		arbre = ArbreGrups()
-		area_arbre = gtk.ScrolledWindow()
-		area_arbre.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-		area_arbre.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-		area_arbre.add(arbre)
-		area_treball.pack_start(area_arbre, expand=False)
-
-		llista = LlistaHoraris()
-		area_llista = gtk.ScrolledWindow()
-		area_llista.add(llista)
-		area_llista.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-		area_llista.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-
-		taula = TaulaHorari()
-		area_taula = gtk.ScrolledWindow()
-		area_taula.add(taula)
-		area_taula.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-		area_taula.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-
-		area_horaris = gtk.VPaned()
-		area_horaris.pack1(area_llista, resize=True)
-		area_horaris.pack2(area_taula, resize=True)
-		area_treball.pack_start(area_horaris, expand=True)
-
+		area_treball = AreaTreball()
 		area_finestra.pack_start(area_treball, expand=True, fill=True)
 
 		area_estat = AreaEstat(self)
@@ -129,7 +103,7 @@ class Finestra(gtk.Window):
 		accions.connect_object('actualitzant-dades',
 			area_treball.set_sensitive, False)
 
-		accions.connect('dades-actualitzades', arbre.actualitza)
+		accions.connect('dades-actualitzades', area_treball.actualitza)
 		accions.connect('dades-actualitzades', area_estat.dades_actualitzades)
 		accions.connect_object('dades-actualitzades',
 			area_treball.set_sensitive,	True)
@@ -145,17 +119,14 @@ class Finestra(gtk.Window):
 		accions.connect_object('cercant-horaris',
 			area_treball.set_sensitive, False)
 
-		accions.connect('cerca-finalitzada', llista.actualitza_horaris)
+		accions.connect('cerca-finalitzada', area_treball.actualitza_horaris)
 		accions.connect('cerca-finalitzada', area_estat.cerca_finalitzada)
 		accions.connect_object('cerca-finalitzada',
 			area_treball.set_sensitive,	True)
 
-		arbre.connect('grups-seleccionats', accions.especifica_grups)
-		arbre.connect('grups-seleccionats', llista.actualitza_grups)
-		arbre.connect('grups-seleccionats', area_estat.grups_seleccionats)
-
-		llista.connect('horari-seleccionat', taula.actualitza)
-		llista.connect('horari-seleccionat', area_estat.horari_seleccionat)
+		area_treball.connect('grups-seleccionats', accions.especifica_grups)
+		area_treball.connect('grups-seleccionats', area_estat.grups_seleccionats)
+		area_treball.connect('horari-seleccionat', area_estat.horari_seleccionat)
 
 		try:
 			dades.obre_cau()
@@ -446,6 +417,64 @@ class Accions(gtk.ActionGroup):
 	def _canvi_max_solap(self, action, data=None):
 		self._max_solap = action.get_current_value()
 
+class AreaTreball(gtk.HBox):
+
+	__gsignals__ = {
+		# Informa dels grups seleccionats.
+		'grups-seleccionats': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+	}
+
+	def __init__(self):
+		gtk.HBox.__init__(self, spacing=5)
+		self.set_border_width(5)
+
+		arbre = ArbreGrups()
+		area_arbre = gtk.ScrolledWindow()
+		area_arbre.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		area_arbre.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+		area_arbre.add(arbre)
+		self.pack_start(area_arbre, expand=False)
+
+		llista = LlistaHoraris()
+		area_llista = gtk.ScrolledWindow()
+		area_llista.add(llista)
+		area_llista.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		area_llista.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+		taula = TaulaHorari()
+		area_taula = gtk.ScrolledWindow()
+		area_taula.add(taula)
+		area_taula.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		area_taula.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+		area_horaris = gtk.VPaned()
+		area_horaris.pack1(area_llista, resize=True)
+		area_horaris.pack2(area_taula, resize=True)
+		self.pack_start(area_horaris, expand=True)
+
+		arbre.connect('grups-seleccionats', self._grups_seleccionats)
+		arbre.connect('grups-seleccionats', llista.actualitza_grups)
+		llista.connect('horari-seleccionat', self._horari_seleccionat)
+		llista.connect('horari-seleccionat', taula.actualitza)
+
+		self._arbre = arbre
+		self._llista = llista
+
+	def actualitza(self, widget=None):
+		self._arbre.actualitza(widget=widget)
+
+	def actualitza_horaris(self, accions):
+		self._llista.actualitza_horaris(accions)
+
+	def grups(self):
+		return self._arbre.grups()
+
+	def _grups_seleccionats(self, arbre):
+		self.emit('grups-seleccionats')
+
+	def _horari_seleccionat(self, widget=None):
+		self.emit('horari-seleccionat')
 
 class ArbreGrups(gtk.TreeView):
 
@@ -625,8 +654,8 @@ class LlistaHoraris(gtk.TreeView):
 		horaris = accions.horaris()
 		self._actualitza_model(horaris)
 
-	def actualitza_grups(self, arbre):
-		self._grups_arbre = [g for g in sorted(arbre.grups())]
+	def actualitza_grups(self, area_treball):
+		self._grups_arbre = [g for g in sorted(area_treball.grups())]
 		self._actualitza_model()
 
 	def grups_horari(self):
@@ -758,6 +787,7 @@ class AreaEstat(gtk.HBox):
 if gtk.pygtk_version < (2, 8, 0):
 	gobject.type_register(Finestra)
 	gobject.type_register(Accions)
+	gobject.type_register(AreaTreball)
 	gobject.type_register(ArbreGrups)
 	gobject.type_register(TaulaHorari)
 	gobject.type_register(LlistaHoraris)
