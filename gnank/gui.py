@@ -136,6 +136,7 @@ class Finestra(gtk.Window):
 		area_treball.connect('grups-seleccionats', accions.especifica_grups)
 		area_treball.connect('grups-seleccionats', area_estat.grups_seleccionats)
 		area_treball.connect('horari-seleccionat', area_estat.horari_seleccionat)
+		area_treball.connect('nombre-pestanyes', accions.nombre_pestanyes)
 
 		try:
 			dades.obre_cau()
@@ -248,6 +249,7 @@ class Accions(gtk.ActionGroup):
 		self.get_action('obre').set_property('short-label', "Obre")
 		self.get_action('cerca').set_property('sensitive', False)
 		self.get_action('atura').set_property('sensitive', False)
+		self.get_action('tanca_pestanya').set_property('sensitive', False)
 
 		accions_min_assig = []
 		for i in self._valors_min_assig:
@@ -442,23 +444,31 @@ class Accions(gtk.ActionGroup):
 	def _tanca_pestanya(self, action, data=None):
 		self.emit('tanca-pestanya')
 
+	def nombre_pestanyes(self, area_treball):
+		actiu = area_treball.nombre_pestanyes() > 1
+		self.get_action('tanca_pestanya').set_property('sensitive', actiu)
+
 
 class AreaTreball(gtk.Notebook):
 
 	__gsignals__ = {
 		# Informa dels grups seleccionats.
 		'grups-seleccionats': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		'nombre-pestanyes' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
 	def __init__(self):
 		gtk.Notebook.__init__(self)
 		self.set_scrollable(True)
+		self.set_show_border(False)
 		self._arbres = {}
 		self._llistes = {}
 		self._num_pestanya = 1
 		self.nova_pestanya()
 
+	def nombre_pestanyes(self):
+		return self.get_n_pages()
 
 	def nova_pestanya(self, widget=None):
 		pestanya = gtk.HBox(spacing=5)
@@ -518,6 +528,9 @@ class AreaTreball(gtk.Notebook):
 		etiq_pestanya.pack_end(boto_pestanya)
 		self.set_tab_label(pestanya, etiq_pestanya)
 
+		self.set_show_tabs(self.get_n_pages() > 1)
+		self.emit('nombre-pestanyes')
+
 	def tanca_pestanya(self, widget=None, pestanya=None):
 		if pestanya is None:
 			num = self.get_current_page()
@@ -525,7 +538,9 @@ class AreaTreball(gtk.Notebook):
 		else:
 			num = self.page_num(pestanya)
 		self.remove_page(num)
-		
+		self.set_show_tabs(self.get_n_pages() > 1)
+		self.emit('nombre-pestanyes')
+
 	def actualitza(self, widget=None):
 		for num in range(self.get_n_pages()):
 			pestanya = self.get_nth_page(num)
