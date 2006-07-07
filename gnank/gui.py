@@ -55,6 +55,7 @@ class Finestra(gtk.Window):
 					<menu action="menu_pestanyes">
 						<menuitem action="nova_pestanya"/>
 						<menuitem action="tanca_pestanya"/>
+						<separator/>
 					</menu>
 					<menu action="menu_ajuda">
 						<menuitem action="ajuda"/>
@@ -90,6 +91,9 @@ class Finestra(gtk.Window):
 		uimanager.insert_action_group(accions, 0)
 		uimanager.add_ui_from_string(self._xmlui)
 		self.add_accel_group(uimanager.get_accel_group())
+		self._uimanager = uimanager
+		self._mergeid_pestanyes = None
+
 		menu = uimanager.get_widget('/menu')
 		barra = uimanager.get_widget('/barra')
 		area_finestra.pack_start(menu, False)
@@ -132,17 +136,36 @@ class Finestra(gtk.Window):
 
 		accions.connect('nova-pestanya', area_treball.nova_pestanya)
 		accions.connect('tanca-pestanya', area_treball.tanca_pestanya)
+		accions.connect('canvia-pestanya', area_treball.canvia_pestanya)
 
 		area_treball.connect('grups-seleccionats', accions.especifica_grups)
 		area_treball.connect('grups-seleccionats', area_estat.grups_seleccionats)
 		area_treball.connect('horari-seleccionat', area_estat.horari_seleccionat)
-		area_treball.connect('nombre-pestanyes', accions.nombre_pestanyes)
+		area_treball.connect('actualitza-pestanyes', accions.actualitza_pestanyes)
+
+		area_treball.nova_pestanya()
 
 		try:
 			dades.obre_cau()
 			accions.emit('dades-actualitzades')
 		except dades.ErrorCau:
 			pass
+
+	def actualitza_menu_pestanyes(self, accions_pestanyes):
+		merge_id = self._mergeid_pestanyes
+		if merge_id is not None:
+			self._uimanager.remove_ui(merge_id)
+			grup = self._uimanager.get_action_groups()[1]
+			self._uimanager.remove_action_group(grup)
+
+		ui = """<ui><menubar name="menu"><menu action="menu_pestanyes">
+			%s</menu></menubar></ui>"""
+		noms = [accio.get_name() for accio in accions_pestanyes.list_actions()]
+		ui_accio = "<menuitem action=\"%s\"/>"
+		ui_accions = "".join([ui_accio % nom for nom in sorted(noms)])
+
+		self._uimanager.insert_action_group(accions_pestanyes, 1)
+		self._mergeid_pestanyes = self._uimanager.add_ui_from_string(ui % ui_accions)
 
 
 class Accions(gtk.ActionGroup):
@@ -179,8 +202,9 @@ class Accions(gtk.ActionGroup):
 		# Indica que s'ha de crear una nova pestanya.
 		'nova-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
 		# Indica que s'ha de tanca la pestanya actual.
-		'tanca-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-
+		'tanca-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		# India que s'ha de canviar la pestanya.
+		'canvia-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
 	_ajuda = [ ("Obtenció de les dades",
@@ -220,6 +244,7 @@ class Accions(gtk.ActionGroup):
 		self._horaris = []
 		self._min_assig = self._valors_min_assig[0]
 		self._max_solap = self._valors_max_solap[0]
+		self._nom_pestanya = ""
 
 		self.add_actions([ \
 			('menu_horaris', None, "_Horaris", None, None, None),
@@ -444,9 +469,33 @@ class Accions(gtk.ActionGroup):
 	def _tanca_pestanya(self, action, data=None):
 		self.emit('tanca-pestanya')
 
-	def nombre_pestanyes(self, area_treball):
+	def actualitza_pestanyes(self, area_treball):
 		actiu = area_treball.nombre_pestanyes() > 1
 		self.get_action('tanca_pestanya').set_property('sensitive', actiu)
+
+		self._nom_pestanya = area_treball.pestanya_seleccionada()
+		accions = []
+		seleccionada = 0
+		for nom in area_treball.noms_pestanyes():
+			num = len(accions)
+			if nom == self._nom_pestanya:
+				seleccionada = num
+			accions.append((nom, None, nom, None, None, num))
+
+		accions_pestanyes = gtk.ActionGroup("accions_pestanyes")
+		accions_pestanyes.add_radio_actions(accions, value=seleccionada,
+			on_change=self._canvi_pestanya)
+		self._finestra.actualitza_menu_pestanyes(accions_pestanyes)
+
+	def _canvi_pestanya(self, action, data=None):
+		num = action.get_current_value()
+		for accio in action.get_group():
+			if accio.get_property("value") == num:
+				self._nom_pestanya = accio.get_name()
+				self.emit('canvia-pestanya')
+
+	def nom_pestanya(self):
+		return self._nom_pestanya
 
 
 class AreaTreball(gtk.Notebook):
@@ -455,7 +504,7 @@ class AreaTreball(gtk.Notebook):
 		# Informa dels grups seleccionats.
 		'grups-seleccionats': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
 		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-		'nombre-pestanyes' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+		'actualitza-pestanyes' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
 	def __init__(self):
@@ -465,10 +514,19 @@ class AreaTreball(gtk.Notebook):
 		self._arbres = {}
 		self._llistes = {}
 		self._num_pestanya = 1
-		self.nova_pestanya()
+		self._nom_pestanya = None
+		self.connect('switch-page', self._canvi_pestanya)
 
 	def nombre_pestanyes(self):
 		return self.get_n_pages()
+
+	def noms_pestanyes(self):
+		for num in range(self.get_n_pages()):
+			pestanya = self.get_nth_page(num)
+			yield pestanya.nom
+
+	def pestanya_seleccionada(self):
+		return self._nom_pestanya
 
 	def nova_pestanya(self, widget=None):
 		pestanya = gtk.HBox(spacing=5)
@@ -505,14 +563,15 @@ class AreaTreball(gtk.Notebook):
 
 		pestanya.arbre = arbre
 		pestanya.llista = llista
+		pestanya.nom = "Cerca %d " % self._num_pestanya
+		self._num_pestanya += 1
 
 		pestanya.show_all()
 		num = self.append_page(pestanya)
 		self.set_current_page(num)
 
 		etiq_pestanya = gtk.HBox()
-		text_pestanya = gtk.Label("Cerca %d " % self._num_pestanya)
-		self._num_pestanya += 1
+		text_pestanya = gtk.Label(pestanya.nom)
 		text_pestanya.show()
 		etiq_pestanya.pack_start(text_pestanya)
 		boto_pestanya = gtk.Button()
@@ -529,7 +588,7 @@ class AreaTreball(gtk.Notebook):
 		self.set_tab_label(pestanya, etiq_pestanya)
 
 		self.set_show_tabs(self.get_n_pages() > 1)
-		self.emit('nombre-pestanyes')
+		self.emit('actualitza-pestanyes')
 
 	def tanca_pestanya(self, widget=None, pestanya=None):
 		if pestanya is None:
@@ -539,7 +598,14 @@ class AreaTreball(gtk.Notebook):
 			num = self.page_num(pestanya)
 		self.remove_page(num)
 		self.set_show_tabs(self.get_n_pages() > 1)
-		self.emit('nombre-pestanyes')
+		self.emit('actualitza-pestanyes')
+
+	def canvia_pestanya(self, accions):
+		self._nom_pestanya = accions.nom_pestanya()
+		for num in range(self.get_n_pages()):
+			pestanya = self.get_nth_page(num)
+			if pestanya.nom == self._nom_pestanya:
+				self.set_current_page(num)
 
 	def actualitza(self, widget=None):
 		for num in range(self.get_n_pages()):
@@ -563,6 +629,11 @@ class AreaTreball(gtk.Notebook):
 
 	def _horari_seleccionat(self, widget=None):
 		self.emit('horari-seleccionat')
+
+	def _canvi_pestanya(self, notebook, page, page_num):
+		pestanya = self.get_nth_page(page_num)
+		self._nom_pestanya = pestanya.nom
+		self.emit('actualitza-pestanyes')
 
 
 class ArbreGrups(gtk.TreeView):
