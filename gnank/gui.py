@@ -101,6 +101,7 @@ class Finestra(gtk.Window):
 
 		area_treball = AreaTreball()
 		area_finestra.pack_start(area_treball, expand=True, fill=True)
+		self.area_treball = area_treball
 
 		area_estat = AreaEstat(self)
 		area_finestra.pack_start(area_estat, expand=False)
@@ -143,11 +144,10 @@ class Finestra(gtk.Window):
 		area_treball.connect('horari-seleccionat', area_estat.horari_seleccionat)
 		area_treball.connect('actualitza-pestanyes', accions.actualitza_pestanyes)
 
-		area_treball.nova_pestanya()
-
 		try:
-			dades.obre_cau()
+			cerques = dades.obre_cau()
 			accions.emit('dades-actualitzades')
+			area_treball.actualitza_pestanyes(cerques)
 		except dades.ErrorCau:
 			pass
 
@@ -165,8 +165,8 @@ class Finestra(gtk.Window):
 		ui_accions = "".join([ui_accio % nom for nom in sorted(noms)])
 
 		self._uimanager.insert_action_group(accions_pestanyes, 1)
-		self._mergeid_pestanyes = self._uimanager.add_ui_from_string(ui % ui_accions)
-
+		mergeid = self._uimanager.add_ui_from_string(ui % ui_accions)
+		self._mergeid_pestanyes = mergeid
 
 class Accions(gtk.ActionGroup):
 	"""Gestiona de les accions que pot fer l'usuari."""
@@ -325,6 +325,8 @@ class Accions(gtk.ActionGroup):
 	def surt(self, widget=None):
 		"""Surt de l'aplicació."""
 		self._atura = True
+		try: dades.desa_cau(self._finestra.area_treball.cerques())
+		except dades.ErrorCau: pass
 		gtk.main_quit()	
 
 	def _actualitza_dades(self, widget=None):
@@ -342,7 +344,7 @@ class Accions(gtk.ActionGroup):
 			self.emit('dades-no-obtingudes')
 		else:
 			gtk.threads_enter()
-			try: dades.desa_cau()
+			try: dades.desa_cau(self._finestra.area_treball.cerques())
 			except dades.ErrorCau: pass
 			self.emit('dades-actualitzades')
 		self.get_action('actualitza').set_property('sensitive', True)
@@ -358,8 +360,9 @@ class Accions(gtk.ActionGroup):
 		response = dialog.run()
 		if response == gtk.RESPONSE_OK:
 			try:
-				dades.obre(dialog.get_filename())
-				try: dades.desa_cau()
+				cerques = dades.obre(dialog.get_filename())
+				self._finestra.area_treball.actualitza_pestanyes(cerques)
+				try: dades.desa_cau(cerques)
 				except dades.ErrorCau: pass
 			except dades.ErrorDades:
 				dialog.destroy()
@@ -379,7 +382,8 @@ class Accions(gtk.ActionGroup):
 		response = dialog.run()
 		if response == gtk.RESPONSE_OK:
 			try:
-				dades.desa(dialog.get_filename())
+				dades.desa(dialog.get_filename(),
+					self._finestra.area_treball.cerques())
 			except dades.ErrorDades:
 				dialog.destroy()
 				self.emit('dades-no-desades')
@@ -410,6 +414,8 @@ class Accions(gtk.ActionGroup):
 		self.get_action('obre').set_property('sensitive', True)
 		self.get_action('actualitza').set_property('sensitive', True)	
 		self.emit('cerca-finalitzada')
+		try: dades.desa_cau(self._finestra.area_treball.cerques())
+		except dades.ErrorCau: pass
 		gtk.threads_leave()
 
 	def _atura_cerca(self, widget=None):
@@ -528,18 +534,24 @@ class AreaTreball(gtk.Notebook):
 	def pestanya_seleccionada(self):
 		return self._nom_pestanya
 
-	def nova_pestanya(self, widget=None):
+	def nova_pestanya(self, widget=None, cerca=None):
 		pestanya = gtk.HBox(spacing=5)
 		pestanya.set_border_width(5)
 
-		arbre = ArbreGrups()
+		grups = []
+		horaris = []
+		if cerca:
+			grups = cerca[0]
+			horaris = [Horari(g) for g in cerca[1:]]
+
+		arbre = ArbreGrups(grups)
 		area_arbre = gtk.ScrolledWindow()
 		area_arbre.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 		area_arbre.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 		area_arbre.add(arbre)
 		pestanya.pack_start(area_arbre, expand=False)
 
-		llista = LlistaHoraris()
+		llista = LlistaHoraris(grups, horaris)
 		area_llista = gtk.ScrolledWindow()
 		area_llista.add(llista)
 		area_llista.set_shadow_type(gtk.SHADOW_ETCHED_IN)
@@ -550,6 +562,7 @@ class AreaTreball(gtk.Notebook):
 		area_taula.add(taula)
 		area_taula.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 		area_taula.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		taula.actualitza(llista)
 
 		area_horaris = gtk.VPaned()
 		area_horaris.pack1(area_llista, resize=True)
@@ -590,6 +603,18 @@ class AreaTreball(gtk.Notebook):
 		self.set_show_tabs(self.get_n_pages() > 1)
 		self.emit('actualitza-pestanyes')
 
+	def actualitza_pestanyes(self, cerques=[]):
+		while self.get_n_pages() > 0:
+			self.tanca_pestanya()
+		if cerques:
+			for cerca in cerques:
+				self.nova_pestanya(cerca=cerca)			
+		else:
+			self.nova_pestanya()
+		self.emit('actualitza-pestanyes')
+		self.emit('grups-seleccionats')
+		self.emit('horari-seleccionat')
+
 	def tanca_pestanya(self, widget=None, pestanya=None):
 		if pestanya is None:
 			num = self.get_current_page()
@@ -622,9 +647,17 @@ class AreaTreball(gtk.Notebook):
 		pestanya = self.get_nth_page(num)
 		return pestanya.arbre.grups()
 
+	def cerques(self):
+		cerques = []
+		for num in range(self.get_n_pages()):
+			pestanya = self.get_nth_page(num)
+			cerca = list()
+			cerca.append(list(pestanya.arbre.grups()))
+			cerca.extend([list(h.grups()) for h in pestanya.llista.horaris()])
+			cerques.append(cerca)
+		return cerques
+
 	def _grups_seleccionats(self, arbre):
-		num = self.get_current_page()
-		pestanya = self.get_nth_page(num)
 		self.emit('grups-seleccionats')
 
 	def _horari_seleccionat(self, widget=None):
@@ -643,7 +676,7 @@ class ArbreGrups(gtk.TreeView):
 		'grups-seleccionats': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
-	def __init__(self):
+	def __init__(self, grups=[]):
 		model = gtk.TreeStore(str, int)
 		super(ArbreGrups, self).__init__(model)
 
@@ -660,8 +693,9 @@ class ArbreGrups(gtk.TreeView):
 		renderer = gtk.CellRendererText()
 		col = gtk.TreeViewColumn('', renderer, text=0)
 		self.append_column(col)
+		
+		self._grups = set(grups)
 
-		self._grups = set()
 		self.actualitza()
 
 	def actualitza(self, widget=None):
@@ -784,9 +818,9 @@ class LlistaHoraris(gtk.TreeView):
 		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
-	def __init__(self):
+	def __init__(self, grups=[], horaris=[]):
 		super(LlistaHoraris, self).__init__()
-		self._grups_arbre = []
+		self._grups_arbre = grups
 		self._grups_horari = []
 
 		renderer = gtk.CellRendererText()
@@ -808,11 +842,10 @@ class LlistaHoraris(gtk.TreeView):
 		self.append_column(col)
 		self.connect('cursor-changed', self._horari_seleccionat)
 
-		self._actualitza_model()
+		self._actualitza_model(horaris)
 
 	def actualitza_horaris(self, accions):
-		horaris = accions.horaris()
-		self._actualitza_model(horaris)
+		self._actualitza_model(accions.horaris())
 
 	def actualitza_grups(self, area_treball):
 		self._grups_arbre = [g for g in sorted(area_treball.grups())]
@@ -822,6 +855,7 @@ class LlistaHoraris(gtk.TreeView):
 		return iter(self._grups_horari)
 
 	def _actualitza_model(self, horaris=[]):
+		self._horaris = list(horaris)
 		model = self.get_model()
 		if model is not None: model.clear()
 		model = gtk.ListStore(object, bool, int, int, int, int, int)
@@ -829,7 +863,7 @@ class LlistaHoraris(gtk.TreeView):
 		h = Horari(self._grups_arbre)
 		model.append([self._grups_arbre, True, h.hores(), h.hores_mati(),
 			h.hores_tarda(), h.solapaments(), h.fragments()])
-		for h in horaris:
+		for h in self._horaris:
 			grups = [g for g in sorted(h.grups())]
 			model.append([grups, False, h.hores(), h.hores_mati(),
 				h.hores_tarda(), h.solapaments(), h.fragments()])
@@ -853,6 +887,9 @@ class LlistaHoraris(gtk.TreeView):
 		grups1 = model.get_value(it1, 0)
 		grups2 = model.get_value(it2, 0)
 		return cmp(grups1, grups2)
+
+	def horaris(self):
+		return iter(self._horaris)
 
 
 class AreaEstat(gtk.HBox):
