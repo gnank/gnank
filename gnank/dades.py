@@ -20,7 +20,7 @@
 """Mòdul per a obtenir i desar les dades dels horaris."""
 
 from urllib import urlopen
-from domini import Quadri, Classe
+from domini import Quadri, Classe, ErrorClasse
 import re, os
 
 # Adreça per obtenir una llista de les assignatures.
@@ -33,6 +33,13 @@ _adr_classes = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
 # Expressió regular d'una classe
 _er_classe = "^([^\s]+)\s([0-9]+)\s([0-9]+)\s([0-9]+):00\s([^\s]+)\s([^\s]+)$"
 
+# Expressió regular d'una seqüència de grups
+_er_grups = "^[^\s]+\s[0-9]+(\s[^\s]+\s[0-9]+)*$"
+_er_grup = "([^\s]+)\s([0-9]+)"
+
+# Expressió regular de línia en blanc
+_er_blanc = "^\s*$"
+
 class ErrorDades(Exception):
 	"""Indica que no s'ha pogut obtenir les dades."""
 	pass
@@ -42,7 +49,9 @@ class ErrorCau(Exception):
 	pass
 
 def obre(nom_fitxer):
-	"""Llegeix les dades del fitxer indicat."""
+	"""Llegeix les dades del fitxer indicat.
+
+	Retorna una llista de cerques. Una cerca és una llista d'horaris."""
 
 	try:
 		fitxer = file(nom_fitxer, 'r')
@@ -50,7 +59,26 @@ def obre(nom_fitxer):
 		fitxer.close()
 	except IOError:
 		raise ErrorDades
-	_prepara_quadri(dades)
+	dades = dades.split(";")
+	dades_horaris, dades_cerques = dades[0], dades[1:]
+	_prepara_quadri(dades_horaris)
+	cerques = []
+	for dades_cerca in dades_cerques:
+		cerques.append(_deserialitza_cerca(dades_cerca))
+	return cerques
+
+
+def _deserialitza_cerca(dades):
+	er = re.compile(_er_grups)
+	grup = re.compile(_er_grup)
+	blanc = re.compile(_er_blanc)
+	cerca = []
+	grups = lambda l: [(m.group(1), int(m.group(2))) for m in grup.finditer(l)]
+	for linia in dades.splitlines():
+		if not blanc.match(linia):
+			m = er.match(linia)
+			cerca.append(grups(linia))
+	return cerca
 
 
 def actualitza():
@@ -73,22 +101,27 @@ def _prepara_quadri(dades):
 
 	if not dades: raise ErrorDades
 	er = re.compile(_er_classe)
+	blanc = re.compile(_er_blanc)
 	Quadri().init()
 	for linia in dades.splitlines():
-		m = er.match(linia)
-		if not m: raise ErrorDades
-		try:
-			assig, grup = m.group(1), int(m.group(2))
-			dia, hora = int(m.group(3)), int(m.group(4))
-			tipus, aula = m.group(5), m.group(6)
-			classe = Classe(assig, grup, dia, hora, tipus, aula)
-		except ErrorClasse:
-			raise ErrorDades
-		Quadri().afegeix(classe)
+		if not blanc.match(linia):
+			m = er.match(linia)
+			if not m: raise ErrorDades
+			try:
+				assig, grup = m.group(1), int(m.group(2))
+				dia, hora = int(m.group(3)), int(m.group(4))
+				tipus, aula = m.group(5), m.group(6)
+				classe = Classe(assig, grup, dia, hora, tipus, aula)
+			except ErrorClasse:
+				raise ErrorDades
+			Quadri().afegeix(classe)
 
 	
-def desa(nom_fitxer):
-	"""Desa les dades del quadrimestre al fixer especificat."""
+def desa(nom_fitxer, cerques=None):
+	"""Desa les dades i les cerques al fixer especificat.
+
+	'cerques' és una seqüència de cerques. Una cerca és una
+	seqüència d'horaris."""
 
 	try:
 		fitxer = file(nom_fitxer, "w")
@@ -96,12 +129,20 @@ def desa(nom_fitxer):
 			linia = "%s\t%d\t%d\t%02d:00\t%s\t%s\n" % (c.assig(), c.grup(),
 				c.dia(), c.hora(), c.tipus(), c.aula())
 			fitxer.write(linia)
+		if cerques is not None:
+			text_grups = lambda grups: " ".join(["%s %d" % (assig, grup)
+				for assig, grup in grups]) + "\n"
+			text_cerca = lambda cerca: ";\n" + "".join([text_grups(grups)
+				for grups in cerca])
+			text_cerques = "".join([text_cerca(cerca) for cerca in cerques])
+			fitxer.write(text_cerques)
+			fitxer.write("\n")
 		fitxer.close()
 	except IOError:
 		raise ErrorDades
 
 
-def desa_cau():
+def desa_cau(cerques=None):
 	"""Desa les dades del quadrimestre a la cau de l'usuari."""
 
 	try:
@@ -112,7 +153,7 @@ def desa_cau():
 	except OSError:
 		raise ErrorCau
 		return
-	try: desa(cau)
+	try: desa(cau, cerques)
 	except ErrorDades:
 		raise ErrorCau
 
@@ -122,6 +163,7 @@ def obre_cau():
 
 	cau = os.path.join(os.environ['HOME'], '.gnank', 'cau')
 	if os.path.exists(cau):
-		try: obre(cau)
+		try: 
+			return obre(cau)
 		except ErrorDades:
 			raise ErrorCau
