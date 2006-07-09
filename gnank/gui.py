@@ -238,7 +238,7 @@ class Accions(gtk.ActionGroup):
 	def __init__(self, finestra):
 		"""Inicialitza les accions."""
 
-		super(Accions, self).__init__("gnank")
+		gtk.ActionGroup.__init__(self, "gnank")
 
 		self._finestra = finestra
 		self._horaris = []
@@ -678,7 +678,7 @@ class ArbreGrups(gtk.TreeView):
 
 	def __init__(self, grups=[]):
 		model = gtk.TreeStore(str, int)
-		super(ArbreGrups, self).__init__(model)
+		gtk.TreeView.__init__(self, model)
 
 		self.set_headers_visible(False)
 		self.get_selection().set_mode(gtk.SELECTION_NONE)
@@ -761,7 +761,7 @@ class TaulaHorari(gtk.TreeView):
 		for h in Classe.valors_hora():
 			model.append(["%02d:00" % h, "", "", "", "", ""])
 
-		super(TaulaHorari, self).__init__(model)
+		gtk.TreeView.__init__(self, model)
 		self.get_selection().set_mode(gtk.SELECTION_NONE)
 		self.set_rules_hint(True)
 
@@ -819,7 +819,7 @@ class LlistaHoraris(gtk.TreeView):
 	}
 
 	def __init__(self, grups=[], horaris=[]):
-		super(LlistaHoraris, self).__init__()
+		gtk.TreeView.__init__(self)
 		self._grups_arbre = grups
 		self._grups_horari = []
 
