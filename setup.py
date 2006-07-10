@@ -23,11 +23,8 @@ from distutils.core import setup
 
 if __name__ == '__main__':
 
-	version = config.VERSIO
-	if not config.LLANCAMENT: version += "+svn" + config.REVISIO
-
 	setup(	name = "gnank",
-			version = version,
+			version = config.VERSIO,
 			author = config.AUTOR,
 			author_email = config.EMAIL_AUTOR,
 			license = config.LLICENCIA,
