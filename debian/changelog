@@ -1,3 +1,16 @@
+gnank (1.0+svn37+24-1) unstable; urgency=low
+
+  * Update to latest SVN trunk.
+
+ -- Jorda Polo <jorda@ettin.org>  Mon, 10 Jul 2006 19:33:26 +0200
+
+gnank (1.0+svn37+20-1) unstable; urgency=low
+
+  * Update to latest SVN trunk.
+  * Debhelper compatibility level changed from 4 to 5.
+
+ -- Jorda Polo <jorda@ettin.org>  Sun,  9 Jul 2006 18:28:02 +0200
+
 gnank (1.0+svn37+11-2) unstable; urgency=low
 
   * Package updated to conform to the new python policy.
@@ -7,6 +20,7 @@ gnank (1.0+svn37+11-2) unstable; urgency=low
 gnank (1.0+svn37+11-1) unstable; urgency=low
 
   * Package now based on lafarga.upc.edu svn repo.
+  * Update to latest SVN trunk.
 
  -- Jorda Polo <jorda@ettin.org>  Mon,  3 Jul 2006 10:49:57 +0200
 
@@ -19,7 +33,7 @@ gnank (1.0+svn37-2) unstable; urgency=low
 
 gnank (1.0+svn37-1) unstable; urgency=low
 
-  * New upstream release.
+  * Update to latest SVN trunk.
 
  -- Jorda Polo <jorda@ettin.org>  Wed, 15 Feb 2006 22:40:48 +0100
 
