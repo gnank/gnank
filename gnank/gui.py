@@ -459,9 +459,7 @@ class Accions(gtk.ActionGroup):
 	def _mostra_quant_a(self, widget=None):
 		d = gtk.AboutDialog()
 		d.set_name(config.NOM)
-		versio = config.VERSIO
-		if not config.LLANCAMENT: versio += "+svn" + config.REVISIO
-		d.set_version(versio)
+		d.set_version(config.VERSIO)
 		d.set_copyright(config.COPYRIGHT)
 		d.set_comments(config.DESCRIPCIO)
 		d.set_license(config.INFO_LLICENCIA)
