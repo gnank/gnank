@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_UPDATE_DEBIAN_CONTROL := yes
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+binary-post-install/gnank::
+	dh_install debian/gnank.xpm usr/share/pixmaps

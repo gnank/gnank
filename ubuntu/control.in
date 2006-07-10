@@ -1,0 +1,26 @@
+Source: gnank
+Section: x11
+Priority: optional
+Maintainer: Albert Gasset Romo <albert.gasset@gmail.com>
+Build-Depends: @cdbs@, python2.4
+Standards-Version: 3.6.2
+
+Package: gnank
+Architecture: any
+Depends: python2.4, python2.4-gtk2 (>= 2.6)
+Description: Cercador d'horaris de la FIB
+ Gnank es un programa creat amb l'objectiu de facilitar la tria
+ de l'horari dels alumnes de la FIB.
+ .
+ Característiques principals:
+ .
+ * Obtenció de les dades dels horaris del servidor de la FIB.
+ * Permet obrir i desar els horaris i les cerques en un fitxer (per poder
+   utilitzar el programa sense connexió a Internet i per recuperar cerques
+   realitzades anteriorment).
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+   solapaments, a partir d'uns grups seleccionats.
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de
+   forma senzilla i ràpida. També permet treballar amb diferents cerques a
+   la vegada amb l'ús de pestanyes.
+
