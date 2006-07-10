@@ -1,8 +1,10 @@
-Gnank SVN trunk
+Gnank 1.1 (????-??-??)
 ----------------------
 
- * Manté una cau del darrer horari que s'ha obert o actualitzat, i l'obre
-   automàticament en iniciar.
+ * Es pot treballar amb diverses cerques a la vegada amb l'ús de pestanyes.
+ * Les cerques realitzades es desen juntament amb els horaris en obrir/desar.
+ * Manté una cau al directori personal de l'usuairi amb els horaris i les
+   cerques realitzades, que es recuperen automàticament en iniciar l'aplicació.
 
 
 Gnank 1.0 (2006-02-13)
