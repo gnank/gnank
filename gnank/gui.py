@@ -207,11 +207,13 @@ class Accions(gtk.ActionGroup):
 		'canvia-pestanya': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
 	}
 
-	_ajuda = [ ("Obtenció de les dades",
-		"""Es poden obtenir les dades dels horaris des del servidor de la FIB,
-		amb l'acció "Actualitza"; o des d'un fitxer, amb l'acció "Obre".
-		Podeu desar les dades en un fitxer per poder-les recuperar després,
-		en cas que no tingueu accés a Internet, per exemple."""),
+	_ajuda = [ ("Obtenció dels horaris",
+		"""Podeu obtenir o actualitzar les dades dels horaris del servidor de
+		la FIB amb l'ordre 'Actialtza'. També podeu obrir i desar en un fitxer
+		les dades dels horaris i les cerques realitzades amb les ordres
+		'Obre' i 'Desa'. L'aplicació desa automàticament a la vostra carpeta
+		d'usuari els horaris i les cerques que realitzeu, que es recuperen
+		quan executeu de nou l'aplicació."""),
 		("Selecció de grups",
 		"""Seleccioneu els grups dels quals voleu veure l'horari o inclou-re en
 		la cerca. No cal que limiteu la selecció al nombre d'assignatures que
@@ -219,9 +221,9 @@ class Accions(gtk.ActionGroup):
 		subconjunts de les assignatures triades."""),
 		("Cerca d'horaris",
 		"""Al menú "Cerca" podeu triar el nombre mínim d'assignatues i el
-		nombre màxim de solapaments que volgueu que tinguin el horaris.	Si
+		nombre màxim de solapaments que volgueu que tinguin el horaris. Si
 		atureu la cerca, es mostraran els horaris trobats fins al moment.
-		Si la cerca tarda més de pocs segons, és recomenable que l'atureu
+		Si la cerca no finalitza en pocs segons, és recomenable que l'atureu
 		i seleccioneu uns paràmetres de cerca més restrictius, ja que
 		probablement sigui degut a la gran quantitat de solucions que
 		s'estan trobant."""),
@@ -231,7 +233,11 @@ class Accions(gtk.ActionGroup):
 		a la part inferior. Els solapaments són el nombre de classes que us
 		perdríeu si triéssiu l'horari. Els fragments són el nombre de blocs
 		de classes seguides, són útils per veure quin són els horaris més
-		compactats de la llista.""")
+		compactats de la llista."""),
+		("Pestanyes",
+		"""Podeu treballar amb diverses cerques a la vegada creant noves
+		pestanyes amb l'ordre 'Nova pestanya', us pot ser útil per
+		comparar i conservar horaris.""")
 	]
 		
 
