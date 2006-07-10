@@ -4,6 +4,7 @@ Gnank - cercador d'horaris de la FIB
 Copyright © 2006  Albert Gasset Romo <albert.gasset@gmail.com>
 Distribuït sota llicència GPL, vegeu el fitxer "GPL.txt".
 
+Pagina web del projecte: http://lafarga.cpl.upc.edu/projects/gnank/
 
 Presentació
 -----------
@@ -13,16 +14,18 @@ als alumnes de la FIB.
 
 Característiques:
 
- - Obtenció de les dades dels horaris del servidor de la FIB.
+ * Obtenció de les dades dels horaris del servidor de la FIB.
 
- - Permet obrir i desar les dades dels horaris en un fitxer (per poder
-   utilitzar el programa sense connexió a Internet).
+ * Permet obrir i desar els horaris i les cerques en un fitxer (per poder
+   utilitzar el programa sense connexió a Internet i per recuperar cerques
+   realitzades anteriorment).
 
- - Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
    solapaments, a partir d'uns grups seleccionats.
 
- - Interfície que permet seleccionar els grups i visualitzar els horaris de
-   forma senzilla i ràpida.
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de
+   forma senzilla i ràpida. També permet treballar amb diferents cerques a
+   la vegada amb l'ús de pestanyes.
 
 
 Requisits de programari
@@ -31,14 +34,14 @@ Requisits de programari
 Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
 el següent programari:
 
- - Python >= 2.4 (www.python.org)
- - PyGTK >= 2.6 (www.pygtk.org)
+ * Python >= 2.4 (www.python.org)
+ * PyGTK >= 2.6 (www.pygtk.org)
 
 En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
 els noms dels paquets que s'han de tenir instal·lats són:
 
- - python2.4
- - python2.4-gtk2
+ * python2.4
+ * python2.4-gtk2
 
 
 Utilització sense instal·lació
