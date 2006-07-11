@@ -2,7 +2,7 @@ Source: gnank
 Section: x11
 Priority: optional
 Maintainer: Albert Gasset Romo <albert.gasset@gmail.com>
-Build-Depends: @cdbs@, python
+Build-Depends: @cdbs@, python2.4
 Standards-Version: 3.7.2
 
 Package: gnank
