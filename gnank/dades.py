@@ -99,7 +99,6 @@ def actualitza():
 def _prepara_quadri(dades):
 	"""Analitza i assigna les dades al quadrimestre."""
 
-	if not dades: raise ErrorDades
 	er = re.compile(_er_classe)
 	blanc = re.compile(_er_blanc)
 	Quadri().init()
@@ -117,7 +116,7 @@ def _prepara_quadri(dades):
 			Quadri().afegeix(classe)
 
 	
-def desa(nom_fitxer, cerques=None):
+def desa(nom_fitxer, cerques=[]):
 	"""Desa les dades i les cerques al fixer especificat.
 
 	'cerques' és una seqüència de cerques. Una cerca és una
@@ -129,14 +128,13 @@ def desa(nom_fitxer, cerques=None):
 			linia = "%s\t%s\t%d\t%02d:00\t%s\t%s\n" % (c.assig(), c.grup(),
 				c.dia(), c.hora(), c.tipus(), c.aula())
 			fitxer.write(linia)
-		if cerques is not None:
+		if cerques:
 			text_grups = lambda grups: " ".join(["%s %s" % (assig, grup)
 				for assig, grup in grups]) + "\n"
 			text_cerca = lambda cerca: ";\n" + "".join([text_grups(grups)
 				for grups in cerca])
 			text_cerques = "".join([text_cerca(cerca) for cerca in cerques])
 			fitxer.write(text_cerques)
-			fitxer.write("\n")
 		fitxer.close()
 	except IOError:
 		raise ErrorDades
