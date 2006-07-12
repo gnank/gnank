@@ -168,9 +168,9 @@ class Quadri(Singleton):
 		classes_g = self._classes.get(assig, {})
 		grups = set(classes_g.iterkeys())
 		for g in classes_g.iterkeys():
-			if g % 10 != 0:
+			if g.isdigit() and int(g) % 10 != 0:
 				grups.remove(g)
-				grups.discard(g - g % 10)
+				grups.discard(str(int(g) - int(g) % 10))
 				yield g
 
 		for g in grups: yield g
@@ -180,10 +180,10 @@ class Quadri(Singleton):
 
 		classes_a = self._classes.get(assig, {})
 		classes_g = classes_a.get(grup, {})
-		if grup % 10 == 0:
+		if not grup.isdigit() or int(grup) % 10 == 0:
 			return classes_g.iterkeys()
 		else:
-			classes_sg = classes_a.get(grup - grup % 10, {})
+			classes_sg = classes_a.get(str(int(grup) - int(grup) % 10), {})
 			return chain(classes_sg.iterkeys(), classes_g.iterkeys())
 
 	def classes(self, assig, grup, dia_hora):
@@ -192,10 +192,10 @@ class Quadri(Singleton):
 		classes_a = self._classes.get(assig, {})
 		classes_g = classes_a.get(grup, {})
 		classes_dh_g = classes_g.get(dia_hora, [])
-		if grup % 10 == 0:
+		if not grup.isdigit() or int(grup) % 10 == 0:
 			return iter(classes_dh_g)
 		else:
-			classes_sg = classes_a.get(grup - grup % 10, {})
+			classes_sg = classes_a.get(str(int(grup) - int(grup) % 10), {})
 			classes_dh_sg = classes_sg.get(dia_hora, [])
 			return chain(iter(classes_dh_sg), iter(classes_dh_g))
 

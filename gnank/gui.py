@@ -708,7 +708,7 @@ class ArbreGrups(gtk.TreeView):
 		for assig in sorted(Quadri().assignatures()):
 			it = model.append(None, [assig, 0])
 			for grup in sorted(Quadri().grups(assig)):
-				fill = model.append(it, [str(grup), 0])
+				fill = model.append(it, [grup, 0])
 				if (assig, grup) in self._grups:
 					self._selecciona_grup(fill, 1) 
 		self.emit('grups-seleccionats')
@@ -738,7 +738,7 @@ class ArbreGrups(gtk.TreeView):
 			pare = model.iter_parent(it)
 			sel_pare = model.get_value(pare, 1)
 			assig = model.get_value(pare, 0)
-			grup = int(model.get_value(it, 0))
+			grup = model.get_value(it, 0)
 			if nou_sel == 0:
 				sel_pare -= 1
 				self._grups.remove((assig, grup))
@@ -797,7 +797,7 @@ class TaulaHorari(gtk.TreeView):
 						text += "%s" % c.assig()
 					else:
 						text += "%s %s" % (c.tipus().lower(), c.assig().lower())
-					text += " %d (%s)</span>" % (c.grup(), c.aula())
+					text += " %s (%s)</span>" % (c.grup(), c.aula())
 					text_classes.append(text)
 				fila.append("\n".join(text_classes))
 			model.append(fila)
@@ -882,7 +882,7 @@ class LlistaHoraris(gtk.TreeView):
 	def _mostra_grups(self, column, renderer, model, it):
 		grups = model.get_value(it, 0)
 		if model.get_value(it, 1) == True: text = "Grups seleccionats"
-		else: text = ",  ".join(["%s %d" % (a, g) for a, g in grups])
+		else: text = ",  ".join(["%s %s" % (a, g) for a, g in grups])
 		renderer.set_property('text', text)
 
 	def _cmp_grups(self, model, it1, it2):
