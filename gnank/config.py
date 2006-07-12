@@ -23,6 +23,7 @@ import os
 NOM = "Gnank"
 VERSIO = "1.1"
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
+URL_WEB =  "http://gnank.lafarga.cpl.upc.edu/"
 COPYRIGHT = "Copyright © 2006  Albert Gasset Romo"
 AUTOR = "Albert Gasset Romo"
 EMAIL_AUTOR = "albert.gasset@gmail.com"

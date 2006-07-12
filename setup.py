@@ -35,6 +35,6 @@ if __name__ == '__main__':
 				(config.APPLICATIONS, [config.DESKTOP]),
 				(config.DOC, ["GPL.txt", "LLEGIU-ME.txt", "NOVETATS.txt"])
 			],
-			url = "http://gnank.lafarga.cpl.upc.edu/"
+			url = config.URL_WEB
 	)
 
