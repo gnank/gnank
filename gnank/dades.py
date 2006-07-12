@@ -31,11 +31,11 @@ _adr_assigs = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures"
 _adr_classes = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
 
 # Expressió regular d'una classe
-_er_classe = "^([^\s]+)\s([0-9]+)\s([0-9]+)\s([0-9]+):00\s([^\s]+)\s([^\s]+)$"
+_er_classe = "^([^\s]+)\s([^\s]+)\s([0-9]+)\s([0-9]+):00\s([^\s]+)\s([^\s]+)$"
 
 # Expressió regular d'una seqüència de grups
-_er_grups = "^[^\s]+\s[0-9]+(\s[^\s]+\s[0-9]+)*$"
-_er_grup = "([^\s]+)\s([0-9]+)"
+_er_grups = "^[^\s]+\s[^\s]+(\s[^\s]+\s[^\s]+)*$"
+_er_grup = "([^\s]+)\s([^\s]+)"
 
 # Expressió regular de línia en blanc
 _er_blanc = "^\s*$"
@@ -73,7 +73,7 @@ def _deserialitza_cerca(dades):
 	grup = re.compile(_er_grup)
 	blanc = re.compile(_er_blanc)
 	cerca = []
-	grups = lambda l: [(m.group(1), int(m.group(2))) for m in grup.finditer(l)]
+	grups = lambda l: [(m.group(1), m.group(2)) for m in grup.finditer(l)]
 	for linia in dades.splitlines():
 		if not blanc.match(linia):
 			m = er.match(linia)
@@ -108,7 +108,7 @@ def _prepara_quadri(dades):
 			m = er.match(linia)
 			if not m: raise ErrorDades
 			try:
-				assig, grup = m.group(1), int(m.group(2))
+				assig, grup = m.group(1), m.group(2)
 				dia, hora = int(m.group(3)), int(m.group(4))
 				tipus, aula = m.group(5), m.group(6)
 				classe = Classe(assig, grup, dia, hora, tipus, aula)
@@ -126,11 +126,11 @@ def desa(nom_fitxer, cerques=None):
 	try:
 		fitxer = file(nom_fitxer, "w")
 		for c in sorted(Quadri().totes_les_classes()):
-			linia = "%s\t%d\t%d\t%02d:00\t%s\t%s\n" % (c.assig(), c.grup(),
+			linia = "%s\t%s\t%d\t%02d:00\t%s\t%s\n" % (c.assig(), c.grup(),
 				c.dia(), c.hora(), c.tipus(), c.aula())
 			fitxer.write(linia)
 		if cerques is not None:
-			text_grups = lambda grups: " ".join(["%s %d" % (assig, grup)
+			text_grups = lambda grups: " ".join(["%s %s" % (assig, grup)
 				for assig, grup in grups]) + "\n"
 			text_cerca = lambda cerca: ";\n" + "".join([text_grups(grups)
 				for grups in cerca])
