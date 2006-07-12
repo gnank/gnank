@@ -1,10 +1,11 @@
-Gnank 1.1 (????-??-??)
+Gnank 1.1 (2006-07-12)
 ----------------------
 
  * Es pot treballar amb diverses cerques a la vegada amb l'ús de pestanyes.
  * Les cerques realitzades es desen juntament amb els horaris en obrir/desar.
  * Manté una cau al directori personal de l'usuairi amb els horaris i les
    cerques realitzades, que es recuperen automàticament en iniciar l'aplicació.
+ * Suport per a grups de Màster.
 
 
 Gnank 1.0 (2006-02-13)

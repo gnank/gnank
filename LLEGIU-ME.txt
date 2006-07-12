@@ -80,5 +80,5 @@ els següents fitxers i directoris:
 /usr/lib/python2.4/site-packages/gnank/
 /usr/share/applications/gnank.desktop
 /usr/share/doc/gnank/
-/usr/share/pixmaps/gnank.svg
+/usr/share/pixmaps/gnank.png
 
