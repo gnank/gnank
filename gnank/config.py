@@ -21,7 +21,7 @@
 import os
 
 NOM = "Gnank"
-VERSIO = "1.0"
+VERSIO = "1.1"
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
 COPYRIGHT = "Copyright © 2006  Albert Gasset Romo"
 AUTOR = "Albert Gasset Romo"

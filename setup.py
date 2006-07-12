@@ -34,6 +34,7 @@ if __name__ == '__main__':
 			data_files = [ (config.PIXMAPS, [config.ICONA]),
 				(config.APPLICATIONS, [config.DESKTOP]),
 				(config.DOC, ["GPL.txt", "LLEGIU-ME.txt", "NOVETATS.txt"])
-			]
+			],
+			url = "http://gnank.lafarga.cpl.upc.edu/"
 	)
 

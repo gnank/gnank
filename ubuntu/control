@@ -2,8 +2,8 @@ Source: gnank
 Section: x11
 Priority: optional
 Maintainer: Albert Gasset Romo <albert.gasset@gmail.com>
-Build-Depends: @cdbs@, python2.4
-Standards-Version: 3.7.2
+Build-Depends: cdbs (>= 0.4.23), debhelper (>= 4.1.0), python2.4
+Standards-Version: 3.6.2
 
 Package: gnank
 Architecture: all
