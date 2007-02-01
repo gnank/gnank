@@ -1,3 +1,13 @@
+Gnank 2.0 (2007-02-??)
+----------------------
+
+ * Interfície simplificada i amb millores d'usabilitat.
+ * Horaris preferits. Es poden indicar quins horaris són preferits, per tal
+   que es mantinguin a la llista d'horaris i es desin amb les dades.
+ * Selector de tots els grups, grups de matí o grups de tarda.
+ * Impressió dels horaris preferits.
+ * Suport per a Windows.
+
 Gnank 1.1 (2006-07-12)
 ----------------------
 

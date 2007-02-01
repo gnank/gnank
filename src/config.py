@@ -1,8 +1,7 @@
-
 # -*- coding: UTF-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
-# Copyright (C) 2006  Albert Gasset Romo
+# Copyright (C) 2006, 2007  Albert Gasset Romo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +17,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import os
+import os, sys, logging
+from os.path import join
 
 NOM = "Gnank"
-VERSIO = "1.1"
+VERSIO = "2.0"
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
-URL_WEB =  "http://gnank.lafarga.cpl.upc.edu/"
-COPYRIGHT = "Copyright © 2006  Albert Gasset Romo"
+URL_WEB =  "http://gnank.lafarga.cpl.upc.edu"
+COPYRIGHT = "Copyright © 2006, 2007  Albert Gasset Romo"
 AUTOR = "Albert Gasset Romo"
 EMAIL_AUTOR = "albert.gasset@gmail.com"
 LLICENCIA = "GPL"
@@ -51,14 +51,41 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 """
 
-ICONA="gnank.png"
-PIXMAPS="/usr/share/pixmaps/"
-DESKTOP="gnank.desktop"
-APPLICATIONS="/usr/share/applications"
-DOC="/usr/share/doc/gnank/"
+if sys.platform == "win32":
+	import _winreg
+	def regval(key, subkey, name):
+		key = _winreg.OpenKey(key, subkey)
+		try:
+			ret = _winreg.QueryValueEx(key, name)
+		except WindowsError:
+			return None
+		key.Close()
+		if ret[1] == _winreg.REG_EXPAND_SZ:
+			substenv = lambda m: os.environ.get(m.group(1), m.group(0))
+			return re.compile(r'%([^|<>=^%]+)%').sub(substenv,ret[0])
+		return ret[0]
+	DIR_USUARI = join(regval(_winreg.HKEY_CURRENT_USER,
+			"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
+			"AppData"), "Gnank")
+else:
+	DIR_USUARI = join(os.environ['HOME'], ".gnank")
 
-def cami(directori, fitxer):
-	if os.access(fitxer,os. F_OK): return fitxer
-	if os.access(directori+fitxer,os. F_OK): return directori + fitxer
+
+HORARIS_USUARI = join(DIR_USUARI, "horaris")
+REGISTRE_USUARI = join(DIR_USUARI, "registre")
+
+def crea_dir_usuari():
+	try:
+		if not os.path.exists(DIR_USUARI):
+			os.makedirs(DIR_USUARI)
+	except OSError:
+		pass
+
+
+def cami(fitxer):
+	cami_fitxer = join(os.environ["GNANK_DIR"], fitxer)
+	if os.access(cami_fitxer, os.F_OK):
+		return cami_fitxer
+	logging.warning("No es pot accedir al fitxer: %s", fitxer)
 	return None
 

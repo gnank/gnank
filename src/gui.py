@@ -1,0 +1,1032 @@
+# -*- coding: UTF-8 -*-
+
+# Gnank - cercador d'horaris de la FIB
+# Copyright (C) 2006, 2007  Albert Gasset Romo
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# ERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+import sys
+import pygtk
+pygtk.require('2.0')
+import gtk, gobject, pango
+import cairo
+import domini, config
+from domini import Classe, Horari, Cerca, ErrorDades
+from string import lower
+from time import clock
+from thread import start_new_thread
+import webbrowser
+import logging
+
+gtk_versio_2_10 = gtk.check_version(2, 10, 0) is None
+
+def inicia():
+	if not gtk_versio_2_10:
+		logging.warning("La versió de GTK és inferior a la 2.10.")
+	gtk.gdk.threads_init()
+	gtk.gdk.threads_enter()
+	gtk.about_dialog_set_url_hook(obre_enllac_web)
+	f = Finestra()
+	f.show_all()
+	try:
+		gtk.main()
+	except KeyboardInterrupt:
+		pass
+	gtk.gdk.threads_leave()
+
+
+def obre_enllac_web(dialog, link):
+	try:
+		webbrowser.open(link)
+	except webbrowser.Error:
+		pass
+
+
+class Finestra(gtk.Window):
+
+	_xmlui = """<ui>
+				<toolbar name="barra">
+					<toolitem action="obre"/>
+					<toolitem action="desa"/>
+					<separator/>
+					<toolitem action="actualitza"/>
+					<separator/>
+					<toolitem action="cerca"/>
+					<toolitem action="neteja"/>
+					<separator/>
+					<toolitem action="imprimeix"/>
+					<separator/>
+					<toolitem action="ajuda"/>
+					<toolitem action="quant_a"/>
+				</toolbar>
+				</ui>"""
+
+	def __init__(self):
+		gtk.Window.__init__(self)
+
+		self.set_title("Gnank - Cercador d'horaris de la FIB")
+		self.set_default_size(800, 600)
+		icona = config.cami("gnank.png")
+		if icona:
+			gtk.window_set_default_icon_from_file(icona)
+
+		area_finestra = gtk.VBox()
+
+		accions = Accions(self)
+		uimanager = gtk.UIManager()
+		uimanager.insert_action_group(accions, 0)
+		uimanager.add_ui_from_string(self._xmlui)
+		self.add_accel_group(uimanager.get_accel_group())
+		self._uimanager = uimanager
+		self._mergeid_pestanyes = None
+
+		barra = uimanager.get_widget('/barra')
+
+		area_finestra.pack_start(barra, False)
+
+		area_treball = gtk.HBox(spacing=6)
+		area_treball.set_border_width(6)
+		area_finestra.pack_start(area_treball, expand=True, fill=True)
+
+		arbre = ArbreGrups()
+		area_treball.pack_start(arbre, expand=False)
+
+		llista = LlistaHoraris(accions)
+		area_llista = gtk.ScrolledWindow()
+		area_llista.add(llista)
+		area_llista.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		area_llista.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+		taula = TaulaHorari()
+		area_taula = gtk.ScrolledWindow()
+		area_taula.add(taula)
+		area_taula.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		area_taula.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		taula.actualitza()
+
+		area_horaris = gtk.VPaned()
+		area_horaris.pack1(area_llista, resize=True)
+		area_horaris.pack2(area_taula, resize=True)
+		area_treball.pack_start(area_horaris, expand=True)
+
+		self.add(area_finestra)
+
+		cerca = FinestraCerca(self, llista)
+
+		self.connect('destroy', accions.surt)
+		arbre.connect('grups-seleccionats',
+			llista.actualitza_grups_seleccionats)
+		llista.connect('horari-seleccionat', taula.actualitza)
+		arbre.connect('grups-seleccionats', cerca.actualitza_grups)
+		accions.connect('dades-actualitzades', arbre.actualitza)
+		accions.connect('dades-actualitzades', llista.actualitza)
+		accions.connect('cerca-horaris', cerca.mostra)
+		accions.connect("neteja", llista.actualitza)
+
+		try:
+			domini.obre(config.HORARIS_USUARI)
+			accions.emit('dades-actualitzades')
+		except ErrorDades:
+			pass
+
+
+class Accions(gtk.ActionGroup):
+	"""Gestiona de les accions que pot fer l'usuari."""
+
+	__gsignals__ = {
+		'cerca-horaris': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		'dades-actualitzades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+		'neteja': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+	}
+		
+
+	def __init__(self, finestra):
+		"""Inicialitza les accions."""
+
+		gtk.ActionGroup.__init__(self, "gnank")
+
+		self.finestra = finestra
+		impressio = Impressio(finestra)
+		ajuda = FinestraAjuda(finestra)
+		self._avisar_cau_no_funciona = True
+
+		self.add_actions([
+			('actualitza', gtk.STOCK_REFRESH, "_Actualitza", \
+				None, "Actualitza els horaris des del servidor de la FIB",
+				self._actualitza_dades),
+			('obre', gtk.STOCK_OPEN, "_Obre", None, \
+				"Obre els horaris des d'un fitxer", self._obre_dades),
+			('desa', gtk.STOCK_SAVE, "_Desa", None, \
+				"Desa els horaris en un fitxer", self._desa_dades),
+			('cerca', gtk.STOCK_FIND, "_Cerca", None,
+				"Cerca combinacions d'horaris", self._cerca_horaris),
+			('neteja', gtk.STOCK_CLEAR, "_Neteja", None,
+				"Neteja la llista d'horaris", self._neteja),
+			('imprimeix', gtk.STOCK_PRINT, "_Imprineix", None,
+				"Imprimeix els horaris preferits", impressio.imprimeix),
+			('ajuda', gtk.STOCK_HELP, "A_juda", None, None, ajuda.mostra),
+			('quant_a', gtk.STOCK_ABOUT, "_Quant a", None, None,
+				self._mostra_quant_a),
+		])
+
+		if not gtk_versio_2_10:
+			self.get_action("imprimeix").set_sensitive(False)
+
+	def desa_cau_horaris(self):
+		config.crea_dir_usuari()
+		try:
+			domini.desa(config.HORARIS_USUARI)
+		except ErrorDades:
+			if self._avisar_cau_no_funciona:
+				self._avisar_cau_no_funciona = False
+				d = gtk.MessageDialog(self.finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, "No s'ha pogut " \
+					"desar els horaris al vostre directori personal.")
+				d.format_secondary_text("Si voleu conservar els horaris, " \
+					"haureu de desar-los manulament.")
+				d.run()
+				d.destroy()
+
+	def surt(self, widget=None):
+		gtk.main_quit()
+
+	def _actualitza_dades(self, widget=None):
+		FinestraActualitza(self)
+
+	def _obre_dades(self, widget=None):
+		title = "Obre des d'un fitxer..."
+		action = gtk.FILE_CHOOSER_ACTION_OPEN
+		buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, 
+			gtk.RESPONSE_OK)
+		dialog = gtk.FileChooserDialog(title, self.finestra, action, buttons)
+		response = dialog.run()
+		if response == gtk.RESPONSE_OK:
+			try:
+				domini.obre(dialog.get_filename())
+				self.emit('dades-actualitzades')
+			except ErrorDades:
+				dialog.destroy()
+				message = "No s'han pogut obtenir les dades dels horaris!"
+				d = gtk.MessageDialog(self.finestra,  gtk.DIALOG_MODAL,
+						gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, message)
+				d.run()
+				d.destroy()
+			else:
+				dialog.destroy()
+				self.desa_cau_horaris()
+		else:
+			dialog.destroy()
+
+	def _desa_dades(self, widget=None):
+		title = "Desa en un fitxer..."
+		action = gtk.FILE_CHOOSER_ACTION_SAVE
+		buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, 
+			gtk.RESPONSE_OK)
+		dialog = gtk.FileChooserDialog(title, self.finestra, action, buttons)
+		response = dialog.run()
+		if response == gtk.RESPONSE_OK:
+			try:
+				domini.desa(dialog.get_filename())
+			except ErrorDades:
+				dialog.destroy()
+				message = "No s'han pogut desar les dades dels horaris!"
+				d = gtk.MessageDialog(self.finestra, gtk.DIALOG_MODAL,
+						gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, message)
+				d.run()
+				d.destroy()
+			else:
+				dialog.destroy()
+		else:
+			dialog.destroy()
+
+	def _cerca_horaris(self, widget=None):
+		self.emit('cerca-horaris')
+
+	def _neteja(self, widget=None):
+		self.emit("neteja")
+
+	def _mostra_quant_a(self, widget=None):
+		d = gtk.AboutDialog()
+		d.set_name(config.NOM)
+		d.set_version(config.VERSIO)
+		d.set_copyright(config.COPYRIGHT)
+		d.set_comments(config.DESCRIPCIO)
+		d.set_license(config.INFO_LLICENCIA)
+		d.set_authors(config.AUTORS)
+		d.set_website(config.URL_WEB)
+		d.run()
+		d.destroy()
+
+
+class ArbreGrups(gtk.VBox):
+
+	__gsignals__ = {
+		'grups-seleccionats': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+			[gobject.TYPE_PYOBJECT]),
+	}
+
+	OPCIO_TOTS, OPCIO_MATI, OPCIO_TARDA = range(0, 3)
+
+	def __init__(self):
+		gtk.VBox.__init__(self, spacing=6)
+		self._inicialitza_opcions()
+		self._inicialitza_treeview()
+		self._grups_seleccionats = set()
+		self.actualitza()
+
+	def _inicialitza_opcions(self):
+		self._opcions = gtk.combo_box_new_text()
+		self._opcions.append_text("Tots els grups")
+		self._opcions.append_text("Grups de matí")
+		self._opcions.append_text("Grups de tarda")
+		self._opcions.set_active(0)
+		self._opcions.connect("changed", self.actualitza)
+		self.pack_start(self._opcions, expand=False)
+
+	def _inicialitza_treeview(self):
+		model = gtk.TreeStore(str, int)
+		self._treeview = gtk.TreeView(model)
+		self._treeview.set_headers_visible(False)
+		self._treeview.get_selection().set_mode(gtk.SELECTION_NONE)
+		if gtk_versio_2_10:
+			self._treeview.set_enable_tree_lines(True)
+		self._treeview.set_enable_search(True)
+		self._treeview.connect("row-activated", self._expandeix)
+
+		renderer = gtk.CellRendererText()
+		col = gtk.TreeViewColumn('', renderer, text=0)
+		self._treeview.append_column(col)
+
+		renderer = gtk.CellRendererToggle()
+		renderer.set_property('activatable', True)
+		renderer.connect('toggled', self._commuta_grup_cb)
+		col = gtk.TreeViewColumn('', renderer)
+		col.set_cell_data_func(renderer, self._mostra_commutador_cb)
+		self._treeview.append_column(col)
+
+		sw = gtk.ScrolledWindow()
+		sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+		sw.add(self._treeview)
+		self.pack_start(sw)
+
+	def actualitza(self, widget=None, grups=None):
+		opcio = self._opcions.get_active()
+		if opcio == self.OPCIO_TOTS:
+			grups_disponibles = domini.grups_disponibles()
+		elif opcio == self.OPCIO_MATI:
+			grups_disponibles = domini.grups_disponibles_mati()
+		elif opcio == self.OPCIO_TARDA:
+			grups_disponibles = domini.grups_disponibles_tarda()
+
+		model = self._treeview.get_model()
+
+		assig_expandides = set(it[0] for it in model
+			if self._treeview.row_expanded(it.path))
+
+		if grups is None:
+			grups_a_seleccionar = self._grups_seleccionats
+		else:
+			grups_a_seleccionar = grups
+
+		self._grups_seleccionats = set()
+
+		model.clear()
+		for assig, grups_assig in grups_disponibles:
+			if len(grups_assig) > 0:
+				it = model.append(None, [assig, 0])
+			for grup in grups_assig:	
+				fill = model.append(it, [grup, 0])
+				if (assig, grup) in grups_a_seleccionar:
+					self._selecciona_grup(fill, 1) 
+					self._grups_seleccionats.add((assig, grup))
+
+		for it in model:
+			if it[0] in assig_expandides:
+				self._treeview.expand_row(it.path, False)
+
+		self.emit('grups-seleccionats', self._grups_seleccionats)
+
+	def _commuta_grup_cb(self, renderer, path):
+		model = self._treeview.get_model()
+		it = model.get_iter(path)
+		sel = 0
+		if model.get_value(it, 1) == 0:
+			sel = 1
+		n_fills = model.iter_n_children(it)
+		if n_fills == 0:
+			self._selecciona_grup(it, sel)
+		else:
+			for n in range(n_fills):
+				fill = model.iter_nth_child(it, n)
+				self._selecciona_grup(fill, sel)
+		self.emit('grups-seleccionats', self._grups_seleccionats)
+
+	def _selecciona_grup(self, it, nou_sel):
+		model = self._treeview.get_model()
+		sel = model.get_value(it, 1)
+		if nou_sel != sel:
+			model.set_value(it, 1, nou_sel)
+			pare = model.iter_parent(it)
+			sel_pare = model.get_value(pare, 1)
+			assig = model.get_value(pare, 0)
+			grup = model.get_value(it, 0)
+			if nou_sel == 0:
+				sel_pare -= 1
+				self._grups_seleccionats.discard((assig, grup))
+			else:
+				sel_pare += 1
+				self._grups_seleccionats.add((assig, grup))
+			model.set_value(pare, 1, sel_pare)
+
+	def _mostra_commutador_cb(self, column, renderer, model, it):
+		sel = model.get_value(it, 1)
+		renderer.set_active(sel > 0)
+		n_fills = model.iter_n_children(it)
+		renderer.set_property('inconsistent', sel > 0 and sel < n_fills)
+
+	def _expandeix(self, treeview, path, view_column):
+		if self._treeview.row_expanded(path):
+			self._treeview.collapse_row(path)
+		else:
+			self._treeview.expand_row(path, False)
+		
+
+def taula_horari(horari):
+	colors_disponibles = ['#822', '#282', '#228', '#882', '#288', '#828']
+	taula = [["", "<b>Dilluns</b>", "<b>Dimarts</b>", "<b>Dimecres</b>",
+		"<b>Dijous</b>", "<b>Divendres</b>"]]
+
+	colors = {}
+	for assig in horari.assignatures():
+		if not colors_disponibles:
+			break
+		colors[assig] = colors_disponibles.pop(0)
+
+	for hora in range(horari.primera_hora, horari.ultima_hora + 1):
+		fila = ["<b>%02d:00</b>" % hora]
+		for dia in Classe.valors_dia:
+			text_classes = []
+			for c in horari.classes(dia, hora):
+				color = colors.get(c.assig, "black")
+				text = '<span foreground="%s">' % color
+				if c.tipus == 'T':
+					text += "%s" % c.assig
+				else:
+					text += "%s %s" % (c.tipus.lower(), c.assig.lower())
+				text += " %s (%s)</span>" % (c.grup, c.aula)
+				text_classes.append(text)
+			fila.append("\n".join(text_classes))
+		taula.append(fila)
+
+	return taula
+
+
+class TaulaHorari(gtk.TreeView):
+
+	_nom_col = ["", "Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres"]
+	_color = ['#822', '#282', '#228', '#882', '#288', '#828']
+
+	def __init__(self):
+		model = gtk.ListStore(str, str, str, str, str, str)
+
+		gtk.TreeView.__init__(self, model)
+		self.get_selection().set_mode(gtk.SELECTION_NONE)
+		self.set_rules_hint(True)
+
+		for i in range(6):
+			render = gtk.CellRendererText()
+			render.set_property('xpad', 10)
+			render.set_property('ypad', 5)
+			col = gtk.TreeViewColumn(self._nom_col[i], render, markup=i)
+			col.set_alignment(0.5)
+			self.append_column(col)
+
+		col = gtk.TreeViewColumn("", gtk.CellRendererText())
+		self.append_column(col)
+		self.set_enable_search(False)
+
+	def actualitza(self, llista=None, horari=Horari()):
+		model = self.get_model()
+		model.clear()
+		for fila in taula_horari(horari)[1:]:
+			model.append(fila)
+		self.columns_autosize()
+
+
+class LlistaHoraris(gtk.TreeView):
+
+	_nom_col = ["Horari", "Preferit", "Hores", "Hores matí", "Hores tarda",
+		"Solapaments", "Fragments"]
+
+	__gsignals__ = {
+		'horari-seleccionat': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+			[gobject.TYPE_PYOBJECT]),
+	}
+
+	def __init__(self, accions):
+		gtk.TreeView.__init__(self)
+		self._accions = accions
+		self._mantenir_sel = False
+
+		renderer = gtk.CellRendererText()
+		renderer.set_property('xpad', 10)
+		col = gtk.TreeViewColumn(self._nom_col[0], renderer)
+		col.set_cell_data_func(renderer, self._mostra_grups_cb)
+		col.set_sort_column_id(0)
+		self.append_column(col)
+
+		renderer = gtk.CellRendererToggle()
+		renderer.set_property('xpad', 10)
+		renderer.set_property('xalign', 0.5)
+		renderer.connect("toggled", self._commuta_preferit_cb, 1)
+		col = gtk.TreeViewColumn(self._nom_col[1], renderer)
+		col.set_cell_data_func(renderer, self._mostra_preferit_cb)
+		col.set_sort_column_id(1)
+		self.append_column(col)
+
+		for i in range(2, 7):
+			renderer = gtk.CellRendererText()
+			renderer.set_property('xpad', 10)
+			renderer.set_property('xalign', 0.5)
+			col = gtk.TreeViewColumn(self._nom_col[i], renderer, text=i)
+			col.set_sort_column_id(i)
+			self.append_column(col)
+
+		col = gtk.TreeViewColumn("", gtk.CellRendererText())
+		self.append_column(col)
+		self.connect('cursor-changed', self._horari_seleccionat_cb)
+
+		model = gtk.ListStore(object, bool, int, int, int, int, int)
+		h = Horari()
+		it = model.append([h.grups(), False, h.hores, h.hores_mati, h.hores_tarda,
+			h.solapaments, h.fragments])
+		model.set_sort_func(0, self._cmp_horaris_cb)
+		self._fila_grups_sel = gtk.TreeRowReference(model, (0,))
+		self.set_model(model)
+		self.set_cursor((0,))
+		self.set_enable_search(False)
+		self.set_rules_hint(True)
+
+	def actualitza_grups_seleccionats(self, widget, grups):
+		model = self.get_model()
+
+		path_sel = self._fila_grups_sel.get_path()
+		if self._mantenir_sel:
+			model[path_sel][0] = model[path_sel][0]
+		else:
+			del model[path_sel]
+
+		path_sel = None
+		h = Horari(grups)
+		for fila in model:
+			if h.grups() == fila[0]:
+				path_sel = fila.path
+				self._mantenir_sel = True
+				break
+		else:
+			it = model.insert(0, [h.grups(), False, h.hores, h.hores_mati,
+				h.hores_tarda, h.solapaments, h.fragments])
+			path_sel = model.get_path(it)
+			self._mantenir_sel = False
+
+		self._fila_grups_sel = gtk.TreeRowReference(model, path_sel)
+		self.set_cursor(path_sel)
+		self.columns_autosize()
+
+	def actualitza(self, widget=None, horaris=[]):
+		grups_seleccionats = self.get_model()[self._fila_grups_sel.get_path()][0]
+		
+		model = gtk.ListStore(object, bool, int, int, int, int, int)
+		model.set_sort_func(0, self._cmp_horaris_cb)
+
+		path_sel = None
+
+		for h in domini.horaris_preferits():
+			it = model.append([h.grups(), True, h.hores, h.hores_mati,
+				h.hores_tarda, h.solapaments, h.fragments])
+			if not path_sel and h.grups() == grups_seleccionats:
+				path_sel = model.get_path(it)
+
+		for h in horaris:
+			if not domini.es_horari_preferit(h.grups()):
+				it = model.append([h.grups(), False, h.hores, h.hores_mati,
+					h.hores_tarda, h.solapaments, h.fragments])
+				if not path_sel and h.grups() == grups_seleccionats:
+					path_sel = model.get_path(it)
+
+		self._mantenir_sel = path_sel is not None
+
+		if not path_sel:
+			h = Horari(grups_seleccionats)
+			it = model.insert(0, [h.grups(), False, h.hores, h.hores_mati,
+				h.hores_tarda, h.solapaments, h.fragments])
+			path_sel = model.get_path(it)
+
+		self.set_model(model)
+		self._fila_grups_sel = gtk.TreeRowReference(model, path_sel)
+		self.set_cursor(path_sel)
+		self.columns_autosize()
+		
+	def _horari_seleccionat_cb(self, treeview=None):
+		(model, it) = self.get_selection().get_selected()
+		self.emit('horari-seleccionat', Horari(model.get_value(it, 0)))
+
+	def _mostra_grups_cb(self, column, renderer, model, it):
+		path = model.get_path(it)
+		horari = model.get_value(it, 0)
+		if self._fila_grups_sel and self._fila_grups_sel.get_path() == path:
+			text = "Grups seleccionats"
+		else:
+			text = ",  ".join(["%s %s" % (a, g) for a, g in horari])
+		renderer.set_property('text', text)
+
+	def _cmp_horaris_cb(self, model, it1, it2):
+		return cmp(model.get_value(it1, 0), model.get_value(it2, 0))
+
+	def _mostra_preferit_cb(self, column, renderer, model, it):
+		path = model.get_path(it)
+		horari = model.get_value(it, 0)
+		renderer.set_property('active', domini.es_horari_preferit(horari))
+		renderer.set_property('activatable', len(horari) > 0)
+		renderer.set_property('sensitive', len(horari) > 0)
+
+	def _commuta_preferit_cb(self, cell, path, col):
+		model = self.get_model()
+		horari = model[path][0]
+		model[path][col] = not model[path][col]
+		if model[path][col]:
+			domini.afegeix_horari_preferit(horari)
+		else:
+			domini.elimina_horari_preferit(horari)
+		self._accions.desa_cau_horaris()
+
+
+class FinestraCerca(gtk.Dialog):
+
+	RESPONSE_CERCA = 1
+	RESPONSE_ATURA = 2
+
+	def __init__(self, finestra, llista):
+		self._finestra = finestra
+		self._grups = ()
+		self._assigs = ()
+		self._llista = llista
+		flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
+		buttons = (gtk.STOCK_FIND, self.RESPONSE_CERCA,
+			gtk.STOCK_STOP, self.RESPONSE_ATURA,
+			gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+		gtk.Dialog.__init__(self, "Cerca", finestra, flags, buttons)
+		self.set_icon_name(gtk.STOCK_FIND)
+		self.set_response_sensitive(self.RESPONSE_ATURA, False)
+		self.connect('response', self._accio)
+		self.connect("delete_event", lambda widget, event: True)
+		self.set_has_separator(False)
+		self.set_border_width(6)
+		self.vbox.set_spacing(12)
+		self._prepara_parametres()
+		self._prepara_progres()
+		self.set_resizable(False)
+		self.vbox.show_all()
+
+	def actualitza_grups(self, widget, grups):
+		self._grups = tuple(grups)
+		self._assigs = tuple(set(assig for assig, grup in grups))
+		self._min_assig.set_range(2, len(self._assigs))
+		self._min_assig.set_value(len(self._assigs))
+
+	def mostra(self, widget=None):
+		if len(self._assigs) < 2:
+			d = gtk.MessageDialog(self._finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
+					"Heu de seleccionar grups de dues o més assignatures!")
+			d.run()
+			d.destroy()
+			return
+		self.show()
+
+	def _prepara_parametres(self):
+		l = gtk.Label(u"<big>Paràmentres de cerca</big>")
+		l.set_use_markup(True)
+		l.set_alignment(0, 0)
+		self.vbox.pack_start(l, expand=False)
+
+		table = gtk.Table(2, 2)
+		table.set_row_spacings(12)
+		table.set_col_spacings(12)
+
+		self._min_assig = gtk.SpinButton()
+		self._min_assig.set_increments(1, 1)
+		self._min_assig.set_alignment(1.0)
+		table.attach(self._min_assig, 1, 2, 0, 1, 0, 0)
+		label = gtk.Label("Mínim nombre d'_assignatures:")
+		label.set_use_underline(True)
+		label.set_alignment(0, 0.5)
+		label.set_mnemonic_widget(self._min_assig)
+		table.attach(label, 0, 1, 0, 1, gtk.FILL, 0)
+
+		#hbox = gtk.HBox()
+		#hbox.pack_start(label, expand=False)
+		#hbox.pack_start(self._min_assig, expand=False)
+		#self.vbox.pack_start(hbox)
+
+		hbox = gtk.HBox()
+		self._max_solap = gtk.SpinButton()
+		self._max_solap.set_range(0, 60)
+		self._max_solap.set_increments(1, 1)
+		self._max_solap.set_value(0)
+		self._max_solap.set_alignment(1.0)
+		table.attach(self._max_solap, 1, 2, 1, 2, 0, 0)
+		label = gtk.Label("Màxim nombre de _solapaments:")
+		label.set_use_underline(True)
+		label.set_alignment(0, 0.5)
+		label.set_mnemonic_widget(self._max_solap)
+		table.attach(label, 0, 1, 1, 2, gtk.FILL, 0)
+
+		self.vbox.pack_start(table)
+		#hbox.pack_start(label, expand=False)
+		#hbox.pack_start(self._max_solap, expand=False)
+		#self.vbox.pack_start(hbox)
+
+	def _prepara_progres(self):
+		self._progres = gtk.ProgressBar()
+		self._progres.set_text("Cap cerca realitzada")
+		self.vbox.pack_start(self._progres, expand=False)
+
+	def _accio(self, widget, response_id):
+		if response_id == self.RESPONSE_CERCA:
+			self._inicia_cerca()
+		if response_id == self.RESPONSE_ATURA:
+			self._atura = True
+		if response_id in (gtk.RESPONSE_CLOSE, gtk.RESPONSE_DELETE_EVENT):
+			self._atura = True
+			self.hide()
+
+	def _inicia_cerca(self):
+			self.set_response_sensitive(self.RESPONSE_ATURA, True)
+			self.set_response_sensitive(self.RESPONSE_CERCA, False)
+			self._min_assig.set_sensitive(False)
+			self._max_solap.set_sensitive(False)
+			self._cerca = Cerca(self._grups, self._min_assig.get_value(),
+				self._max_solap.get_value())
+			self._n_horaris = 0
+			self._combinacio = 0
+			self._n_combinacions = self._cerca.n_combinacions()
+			self._atura = False
+			gobject.timeout_add(100, self._actualitza_barra_cb)
+			self._llista.actualitza(horaris = self._cerca_horaris())
+			self.set_response_sensitive(self.RESPONSE_ATURA, False)
+			self.set_response_sensitive(self.RESPONSE_CERCA, True)
+			self._min_assig.set_sensitive(True)
+			self._max_solap.set_sensitive(True)
+
+	def _cerca_horaris(self):
+		for h, self._combinacio in self._cerca.horaris():
+			self._n_horaris += 1
+			if gtk.events_pending():
+				gtk.main_iteration(False)
+			yield h
+			if self._atura: break
+		else:
+			self._atura = True
+
+	def _actualitza_barra_cb(self):
+		self._progres.set_text(u"%d horaris trobats" % self._n_horaris)
+		if not self._atura:
+			f = float(self._combinacio) / self._n_combinacions
+			self._progres.set_fraction(f)
+			return True
+		else:
+			self._progres.set_fraction(0.0)
+			return False
+
+	def _tanca(self, widget=None):
+		pass
+
+
+class FinestraActualitza(gtk.Dialog):
+
+	def __init__(self, accions):
+		self._accions = accions
+		flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
+		gtk.Dialog.__init__(self, "Actualització", accions.finestra, flags, ())
+		self.set_icon_name(gtk.STOCK_REFRESH)
+		self.set_has_separator(False)
+		self.set_border_width(6)
+		self.vbox.set_spacing(12)
+		l = gtk.Label(u"<big>S'estan actualitzant les dades...</big>")
+		l.set_use_markup(True)
+		l.set_alignment(0, 0)
+		self.vbox.pack_start(l, expand=False)
+		self._progres = gtk.ProgressBar()
+		self.vbox.pack_start(self._progres, expand=False)
+		self.show_all()
+		self._tanca = False
+		start_new_thread(self._fil_actualitza_dades, ())
+
+	def _fil_actualitza_dades(self):
+		gtk.gdk.threads_enter()
+		gobject.timeout_add(100, self._mou_barra)
+		gtk.gdk.threads_leave()
+		try:
+			domini.actualitza()
+		except ErrorDades:
+			gtk.gdk.threads_enter()
+			self.destroy()
+			message = "No s'han pogut actiualitzar les dades dels horaris!"
+			d = gtk.MessageDialog(self._accions.finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, message)
+			d.run()
+			d.destroy()
+			gtk.gdk.threads_leave()
+		else:
+			gtk.gdk.threads_enter()
+			self._tanca = True
+			self._accions.desa_cau_horaris()
+			self._accions.emit("dades-actualitzades")
+			gtk.gdk.threads_leave()
+			
+	def _mou_barra(self):
+		if not self._tanca:
+			self._progres.pulse()
+			return True
+		else:
+			self.destroy()
+			return False
+
+
+class Bloc(object):
+
+	font = pango.FontDescription("sans 10")
+	marge = 0.01
+	gruix_linia = 0.001
+        
+	def __init__(self, context, text, w):
+		self.marge = int(round(Bloc.marge * context.get_width()))
+		self.text = text
+		self.width = int(w * context.get_width())
+		self.width_text = self.width - self.marge * 2
+		cairo_height_text = self._layout(context).get_size()[1]
+		height_text = int(round(cairo_height_text / pango.SCALE))
+		self.height = height_text + self.marge * 2 
+
+	def dibuixa(self, context, x, y, height):
+		cr = context.get_cairo_context()
+		cr.set_line_width(Bloc.gruix_linia * context.get_width())
+		cr.move_to(x + self.marge, y + self.marge)
+		cr.show_layout(self._layout(context))
+		x0, y0 = 0, 0
+		for x1, y1 in [(self.width, 0), (self.width, height), (0, height), (0, 0)]:
+			cr.move_to(x + x0, y + y0)
+			cr.line_to(x + x1, y + y1)
+			cr.stroke()
+			x0, y0 = x1, y1
+
+	def _layout(self, context):
+		layout = context.create_pango_layout()
+		layout.set_markup(self.text)
+		layout.set_width(self.width_text * pango.SCALE)
+		layout.set_font_description(self.font)
+		return layout
+
+
+class FilaBlocs(object):
+
+	def __init__(self, context, *cols):
+		self.blocs = []
+		self.height = 0
+		for text, w in cols:
+			self.afegeix(context, text, w)
+
+	def afegeix(self, context, text, w):
+		bloc = Bloc(context, text, w)
+		self.blocs.append(bloc)
+		self.height = max(self.height, bloc.height)
+
+	def dibuixa(self, context, y):
+		x = 0
+		for bloc in self.blocs:
+			bloc.dibuixa(context, x, y, self.height)
+			x += bloc.width
+
+
+class FilaEspai(object):
+
+	def __init__(self, context, w):
+		self.height = int(round(w * context.get_width()))
+
+	def dibuixa(self, context, y):
+		pass
+
+
+class Impressio(object):
+
+	def __init__(self, finestra):
+		self._finestra = finestra
+		self._settings = None
+		self._page_setup = None
+		self._horaris = []
+		self._pagines = []
+
+	def imprimeix(self, widget=None):
+		if not gtk_versio_2_10:
+			return
+
+		if len(domini.horaris_preferits()) == 0:
+			d = gtk.MessageDialog(self._finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
+					"No hi ha horaris preferits per imprimir!")
+			d.run()
+			d.destroy()
+			return
+
+		po = gtk.PrintOperation()
+
+		if self._settings != None:
+			po.set_print_settings(self._settings)
+        
+		if self._page_setup != None:
+			po.set_default_page_setup(self._page_setup)
+        
+		po.connect("begin-print", self._begin_print_cb)
+		po.connect("draw-page", self._draw_page_cb)
+       
+		res = po.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, self._finestra)
+       
+		if res == gtk.PRINT_OPERATION_RESULT_ERROR:
+			d = gtk.MessageDialog(self._finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
+					"S'ha produït un error en imprimir.")
+			d.run()
+			d.destroy()
+		elif res == gtk.PRINT_OPERATION_RESULT_APPLY:
+			self._settings = po.get_print_settings()
+			self._page_setup = po.get_default_page_setup()
+
+	def _begin_print_cb(self, operation, context):
+		height = context.get_height()		
+		self._pagines = []
+		pagina = []
+		y = 0
+		fila_espai = FilaEspai(context, 0.05)
+		for horari in sorted(domini.horaris_preferits()):
+			files_horari = self._files_blocs_horari(context, horari)
+			height_horari = sum(f.height for f in files_horari)
+			if y + height_horari <= height:
+				pagina.extend(files_horari)
+				pagina.append(fila_espai)
+				y += height_horari + fila_espai.height
+			elif height_horari <= height:
+				self._pagines.append(pagina)
+				pagina = files_horari
+				pagina.append(fila_espai)
+				y = height_horari + fila_espai.height
+			else:
+				for fila in files_horari:
+					if y + fila.height < height:
+						pagina.append(fila)
+						y += fila.height
+					elif fila.height < height:
+						self._pagines.append(pagina)
+						pagina = [fila]
+						y = fila.height
+					else:
+						if pagina:
+							self._pagines.append(pagina)
+						pagina = [fila]
+						y = fila.height
+				pagina.append(fila_espai)
+				y += fila_espai.height
+
+		self._pagines.append(pagina)
+		operation.set_n_pages(len(self._pagines))
+
+	def _draw_page_cb(self, operation, context, page_nr):
+		y = 0
+		for fila_blocs in self._pagines[page_nr]:
+			fila_blocs.dibuixa(context, y)
+			y += fila_blocs.height
+
+	def _files_blocs_horari(self, context, horari):
+		taula = taula_horari(horari)
+		files_blocs = []
+		text = "<big><b>%s</b></big>\n<span size=\"xx-small\">\n</span>" % \
+			",   ".join(["%s %s" % (a, g) for a, g in horari])
+		text += "Hores:  %d        " % horari.hores
+		text += "Hores matí:  %d        " % horari.hores_mati
+		text += "Hores tarda:  %d        " % horari.hores_tarda
+		text += "Solapaments:  %d        " % horari.solapaments
+		text += "Fragments:  %d" % horari.fragments
+		files_blocs.append(FilaBlocs(context, (text, 1)))
+		for fila in taula:
+			fila_blocs = FilaBlocs(context, (fila[0], 1./11))
+			for col in fila[1:]:
+				fila_blocs.afegeix(context, col, 2./11)
+			files_blocs.append(fila_blocs)
+		return files_blocs
+
+
+class FinestraAjuda(gtk.Dialog):
+
+	def __init__(self, finestra):
+		flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
+		buttons = (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+		gtk.Dialog.__init__(self, "Ajuda", finestra, flags, buttons)
+		self.set_default_size(600,400)
+		self.set_icon_name(gtk.STOCK_HELP)
+		self.set_has_separator(False)
+		tb = self._prepara_text_buffer()
+		t = gtk.TextView(tb)
+		t.set_editable(False)
+		t.set_cursor_visible(False)
+		t.set_wrap_mode(gtk.WRAP_WORD)
+		sw = gtk.ScrolledWindow()
+		sw.set_border_width(10)
+		sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		sw.add(t)
+		self.vbox.pack_start(sw, expand=True, fill=True)
+		self.vbox.show_all()
+
+	def _prepara_text_buffer(self):
+		cami = config.cami("ajuda.txt")
+		if not cami:
+			return
+		fitxer = file(cami, "rb")
+		tb = gtk.TextBuffer()
+		tb.create_tag("titol", weight=pango.WEIGHT_BOLD,
+			scale=pango.SCALE_LARGE)
+
+		for linia in fitxer:
+			linia = linia.strip()
+			if not linia:
+				continue
+			it = tb.get_end_iter()
+			if linia.startswith("*"):
+				text = linia[1:].lstrip() + "\n"
+				if tb.get_char_count() > 0:
+					text = "\n\n" + text
+				tb.insert_with_tags_by_name(it, text, "titol")				
+			else:
+				tb.insert(it, " ".join(linia.split()) + " ")
+
+		fitxer.close()
+		it = tb.get_end_iter()
+		tb.insert(it, "\n")
+		return tb
+
+	def mostra(self, widget=None):
+		self.run()
+		self.hide()

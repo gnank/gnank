@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
-# Copyright (C) 2006  Albert Gasset Romo
+# Copyright (C) 2006, 2007  Albert Gasset Romo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,23 +18,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from gnank import config
+import sys
+from os.path import join, dirname
+sys.path.insert(0, join(dirname(__file__), "src"))
+import config
+
 from distutils.core import setup
 
-if __name__ == '__main__':
+if sys.platform == "win32":
+	import py2exe
+	data_files = ["src/gnank.png", "src/ajuda.txt"]
+else:
+	data_files = [
+		("share/gnank", ["src/config.py", "src/gui.py", "src/domini.py",
+			"src/dades.py", "src/gnank.png", "src/ajuda.txt"]),
+		("share/pixmaps", ["src/gnank.png"]),
+		("share/applications", ["src/gnank.desktop"]),
+		("share/doc/gnank", ["LLEGIU-ME.txt", "NOVETATS.txt", "GPL.txt"]),
+	]
 
-	setup(	name = "gnank",
-			version = config.VERSIO,
-			author = config.AUTOR,
-			author_email = config.EMAIL_AUTOR,
-			license = config.LLICENCIA,
-			description = config.DESCRIPCIO,
-			packages = ['gnank'],
-			scripts = ['gnank/gnank'],
-			data_files = [ (config.PIXMAPS, [config.ICONA]),
-				(config.APPLICATIONS, [config.DESKTOP]),
-				(config.DOC, ["GPL.txt", "LLEGIU-ME.txt", "NOVETATS.txt"])
-			],
-			url = config.URL_WEB
-	)
-
+setup(
+	name = "gnank",
+	version = config.VERSIO,
+	author = config.AUTOR,
+	author_email = config.EMAIL_AUTOR,
+	license = config.LLICENCIA,
+	description = config.DESCRIPCIO,
+	url = config.URL_WEB,
+	scripts = ['src/gnank'],
+	data_files = data_files,
+	windows = [{
+		"script": "src/gnank",
+		'icon_resources': [(1, "paquets/win32/gnank.ico")],
+	}],
+	options = {"py2exe": {
+		"packages": "encodings",
+		"includes": "cairo, pango, pangocairo, atk, gobject",
+	}},
+)
