@@ -1,0 +1,27 @@
+* Onrir i desar els horaris
+Els horaris es poden obrir i desar en fitxers, però habitualment no
+necessitareu utiltizar aquestes funcionalitats ja que es desa automàticament
+una còpia dels horaris al vostre diretori personal, que es recupera en inciar
+de nou l'apalicació.
+
+* Actualització dels horaris
+En actualitzar els horaris s'accedeix a la web de la FIB per obrenir
+informació actualitzada de les classes. Els horaris preferits que tinguin
+grups que s'hagin eliminat en l'actualització es modificaran.
+
+* Consulta d'horaris
+Podeu consultar un horari específic seleccionant-ne els grups a l'arbre de
+grups situat a l'esquerra. A la part superior hi ha la llista on es mostren les
+estadístiques dels horaris i a la part inferor es mostra la taula de classes de
+l'horari seleccionat a la llista.
+
+* Cerca d'horaris
+Abans d'iniciar una cerca heu de seleccionar a l'arbre de grups els grups que
+voleu incloure a la cerca. En la finestra de cerca podeu seleccionar els
+paràmetres de cerca i iniciar i aturar la cerca en curs. Els horaris trobats
+s'afegiran a la llista d'hoaris.
+
+* Horaris preferits
+A la llista d'horaris podeu indicar quins són els vostres horaris preferits.
+Els horaris preferits es conserven en actualitzar o netejar la llista
+d'horaris i es poden desar i imprimir.
