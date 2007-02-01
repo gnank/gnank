@@ -1,9 +1,8 @@
-This package was debianized by Albert Gasset Romo <albert.gasset@gmail.com> on
-Mon, 10 Jul 2006 19:54:57 +0200.
+This package was downloaded from http://gnank.lafarga.cpl.upc.edu
 
-It was downloaded from http://gnank.lafarga.cpl.upc.edu
+Copyright:
 
-Copyright Holder:  Albert Gasset Romo <albert.gasset@gmail.com> 
+   Copyright (C) 2006, 2007  Albert Gasset Romo <albert.gasset@gmail.com> 
 
 License:
 
@@ -23,4 +22,3 @@ License:
 
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
-
