@@ -405,7 +405,7 @@ class ArbreGrups(gtk.VBox):
 		
 
 def taula_horari(horari):
-	colors_disponibles = ['#822', '#282', '#228', '#882', '#288', '#828']
+	colors_disponibles = ['#600', '#060', '#006', '#440', '#044', '#404']
 	taula = [["", "<b>Dilluns</b>", "<b>Dimarts</b>", "<b>Dimecres</b>",
 		"<b>Dijous</b>", "<b>Divendres</b>"]]
 
@@ -420,7 +420,7 @@ def taula_horari(horari):
 		for dia in Classe.valors_dia:
 			text_classes = []
 			for c in horari.classes(dia, hora):
-				color = colors.get(c.assig, "black")
+				color = colors.get(c.assig, '#022')
 				text = '<span foreground="%s">' % color
 				if c.tipus == 'T':
 					text += "%s" % c.assig
@@ -437,7 +437,6 @@ def taula_horari(horari):
 class TaulaHorari(gtk.TreeView):
 
 	_nom_col = ["", "Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres"]
-	_color = ['#822', '#282', '#228', '#882', '#288', '#828']
 
 	def __init__(self):
 		model = gtk.ListStore(str, str, str, str, str, str)
@@ -677,11 +676,6 @@ class FinestraCerca(gtk.Dialog):
 		label.set_mnemonic_widget(self._min_assig)
 		table.attach(label, 0, 1, 0, 1, gtk.FILL, 0)
 
-		#hbox = gtk.HBox()
-		#hbox.pack_start(label, expand=False)
-		#hbox.pack_start(self._min_assig, expand=False)
-		#self.vbox.pack_start(hbox)
-
 		hbox = gtk.HBox()
 		self._max_solap = gtk.SpinButton()
 		self._max_solap.set_range(0, 60)
@@ -696,9 +690,6 @@ class FinestraCerca(gtk.Dialog):
 		table.attach(label, 0, 1, 1, 2, gtk.FILL, 0)
 
 		self.vbox.pack_start(table)
-		#hbox.pack_start(label, expand=False)
-		#hbox.pack_start(self._max_solap, expand=False)
-		#self.vbox.pack_start(hbox)
 
 	def _prepara_progres(self):
 		self._progres = gtk.ProgressBar()
@@ -807,74 +798,145 @@ class FinestraActualitza(gtk.Dialog):
 			return False
 
 
-class Bloc(object):
+class ParametresImpressio(object):
 
-	mida_font = 0.02
-	marge = 0.012
-	gruix_linia = 0.0005
-        
-	def __init__(self, context, text, w):
-		self.font = pango.FontDescription("sans %d" %
-			int(round(Bloc.mida_font * context.get_width())))
-		self.marge = Bloc.marge * context.get_width()
-		self.text = text
-		self.width = w * context.get_width()
-		self.width_text = self.width - self.marge * 2
-		pango_height_text = self._layout(context).get_size()[1]
-		self.height_text = float(pango_height_text) / pango.SCALE
-		self.height = self.height_text + self.marge * 2 
+	MIDA_FONT = 1.5
+	MIDA_MARGE = 0.012
+	GRUIX_LINIA = 0.0005
 
-	def dibuixa(self, context, x, y, height):
-		cr = context.get_cairo_context()
-		cr.set_line_width(Bloc.gruix_linia * context.get_width())
-		cr.move_to(x + self.marge, y + (height - self.height_text) / 2)
-		cr.show_layout(self._layout(context))
-		x0, y0 = 0, 0
-		punts = [(self.width, 0), (self.width, height), (0, height), (0, 0)]
-		for x1, y1 in punts:
-			cr.move_to(x + x0, y + y0)
-			cr.line_to(x + x1, y + y1)
-			cr.stroke()
-			x0, y0 = x1, y1
-
-	def _layout(self, context):
-		layout = context.create_pango_layout()
-		layout.set_markup(self.text)
-		layout.set_width(int(self.width_text * pango.SCALE))
-		layout.set_font_description(self.font)
-		layout.set_alignment(pango.ALIGN_CENTER)
-		return layout
+	def __init__(self, ctx):
+		self.mida_font = self.MIDA_FONT * ctx.get_width() / ctx.get_dpi_x()
+		self.font = pango.FontDescription("sans %d" % int(self.mida_font))
+		self.mida_marge = self.MIDA_MARGE * ctx.get_width()
+		self.gruix_linia = self.GRUIX_LINIA * ctx.get_width()
+		self.amplada_horari = ctx.get_width() - self.mida_marge * 2
+		self.amplada_hores = self.amplada_horari / 11
+		self.amplada_dies = self.amplada_hores * 2
 		
 
-class FilaBlocs(object):
+class HorariImpressio(object):
 
-	def __init__(self, context, *cols):
-		self.blocs = []
-		self.height = 0
-		self.width = 0
-		for text, w in cols:
-			self.afegeix(context, text, w)
+	def __init__(self, context, taula, capcalera=None):
+		self._context = context
+		self._params = ParametresImpressio(context)
+		self._taula = taula
+		self._capcalera = capcalera
 
-	def afegeix(self, context, text, w):
-		bloc = Bloc(context, text, w)
-		self.blocs.append(bloc)
-		self.height = max(self.height, bloc.height)
-		self.width += bloc.width
+	def alcada(self):
+		return self._alcada_capcalera() + self._alcada_taula() \
+			+ self._params.mida_marge * 2
 
-	def dibuixa(self, context, y):
-		x = 0
-		for bloc in self.blocs:
-			bloc.dibuixa(context, x, y, self.height)
-			x += bloc.width
+	def _alcada_capcalera(self):
+		if not self._capcalera:
+			return 0
+		return self._alcada_text(self._capcalera, self._params.amplada_horari)
 
+	def _alcada_taula(self):
+		if not self._taula:
+			return 0
+		alcada = 0
+		for fila in self._taula:
+			alcada += self._alcada_fila(fila)
+		return alcada
 
-class FilaEspai(object):
+	def _alcada_fila(self, fila):
+		alcada = self._alcada_text(fila[0], self._params.amplada_hores)
+		for col in fila[1:]:
+			alcada = max(alcada, self._alcada_text(col,
+				self._params.amplada_dies))
+		return alcada
 
-	def __init__(self, context, w):
-		self.height = int(round(w * context.get_width()))
+	def _alcada_text(self, text, amplada):
+		amplada -= self._params.mida_marge * 2
+		layout = self._crea_pango_layout(text, amplada)
+		alcada = float(layout.get_size()[1]) / pango.SCALE
+		return alcada + self._params.mida_marge * 2
 
-	def dibuixa(self, context, y):
-		pass
+	def _crea_pango_layout(self, text, amplada):
+		layout = self._context.create_pango_layout()
+		layout.set_markup(text)
+		layout.set_width(int(amplada * pango.SCALE))
+		layout.set_font_description(self._params.font)
+		layout.set_alignment(pango.ALIGN_CENTER)
+		return layout
+
+	def divideix(self, alcada):
+		if not self._taula:
+			return None
+
+		alcada_div = self.alcada()
+		files1 = list(self._taula)
+		files2 = []
+		while alcada_div > alcada and len(files1) > 0:
+			fila = files1.pop()
+			files2.insert(0, fila)
+			alcada_div -= self._alcada_fila(fila)
+
+		if len(files1) == 0:
+			return None
+
+		if len(files2) == 0:
+			return (self, None)
+
+		return (HorariImpressio(self._context, files1, self._capcalera),
+			HorariImpressio(self._context, files2))
+
+	def dibuixa(self, despl_y):
+		x = self._params.mida_marge
+		y = despl_y + self._params.mida_marge
+		if self._capcalera is not None:
+			self._dibuixa_capcalera(x, y)
+		self._dibuixa_taula(x, y + self._alcada_capcalera())
+
+	def _dibuixa_capcalera(self, x, y):
+		self._dibuixa_linia(x, y, self._params.amplada_horari, 0)
+		self._dibuixa_text(self._capcalera, x, y, self._params.amplada_horari)
+		alcada = self._alcada_capcalera()
+		self._dibuixa_linia(x, y, 0, alcada)
+		self._dibuixa_linia(x + self._params.amplada_horari, y, 0, alcada)
+
+	def _dibuixa_taula(self, x, y):
+		self._dibuixa_linia(x, y, self._params.amplada_horari, 0)
+		z = y
+		for fila in self._taula:
+			self._dibuixa_fila(fila, x, z)
+			z += self._alcada_fila(fila)
+		self._dibuixa_linia(x, z, self._params.amplada_horari, 0)
+
+		self._dibuixa_linia(x, y, 0, z - y)		
+		x += self._params.amplada_hores
+		for i in range(0, 5):
+			self._dibuixa_linia(x, y, 0, z - y)
+			x += self._params.amplada_dies
+		self._dibuixa_linia(x, y, 0, z - y)
+
+	def _dibuixa_fila(self, fila, x, y):
+		self._dibuixa_linia(x, y, self._params.amplada_horari, 0)
+		alcada = self._alcada_fila(fila)
+		self._dibuixa_text(fila[0], x, y, self._params.amplada_hores, alcada)
+		x += self._params.amplada_hores
+		for col in fila[1:]:
+			self._dibuixa_text(col, x, y, self._params.amplada_dies, alcada)
+			x += self._params.amplada_dies
+
+	def _dibuixa_text(self, text, x, y, amplada, alcada=None):
+		amplada -= self._params.mida_marge * 2
+		layout = self._crea_pango_layout(text, amplada)
+		x += self._params.mida_marge
+		if alcada is None:
+			y += self._params.mida_marge
+		else:
+			y += (alcada - float(layout.get_size()[1]) / pango.SCALE) / 2
+		cr = self._context.get_cairo_context()
+		cr.move_to(x, y)
+		cr.show_layout(layout)
+
+	def _dibuixa_linia(self, x, y, amplada, alcada):
+		cr = self._context.get_cairo_context()
+		cr.set_line_width(self._params.gruix_linia)
+		cr.move_to(x, y)
+		cr.line_to(x + amplada, y + alcada)
+		cr.stroke()
 
 
 class Impressio(object):
@@ -922,66 +984,48 @@ class Impressio(object):
 			self._page_setup = po.get_default_page_setup()
 
 	def _begin_print_cb(self, operation, context):
-		height = context.get_height()		
+		alcada_pagina = context.get_height()
 		self._pagines = []
 		pagina = []
 		y = 0
-		fila_espai = FilaEspai(context, 0.05)
-		for horari in sorted(domini.horaris_preferits()):
-			files_horari = self._files_blocs_horari(context, horari)
-			height_horari = sum(f.height for f in files_horari)
-			if y + height_horari <= height:
-				pagina.extend(files_horari)
-				pagina.append(fila_espai)
-				y += height_horari + fila_espai.height
-			elif height_horari <= height:
-				self._pagines.append(pagina)
-				pagina = files_horari
-				pagina.append(fila_espai)
-				y = height_horari + fila_espai.height
-			else:
-				for fila in files_horari:
-					if y + fila.height < height:
-						pagina.append(fila)
-						y += fila.height
-					elif fila.height < height:
-						self._pagines.append(pagina)
-						pagina = [fila]
-						y = fila.height
-					else:
-						if pagina:
-							self._pagines.append(pagina)
-						pagina = [fila]
-						y = fila.height
-				pagina.append(fila_espai)
-				y += fila_espai.height
+		horaris = [self._horari_impressio(context, h) for h in
+			sorted(domini.horaris_preferits(), reverse=True)]
 
+		while len(horaris) > 0:
+			horari = horaris.pop()	
+			alcada_horari = horari.alcada()
+			if y + alcada_horari <= alcada_pagina:
+				pagina.append(horari)
+				y += alcada_horari
+			else:
+				horari_div = horari.divideix(alcada_pagina)
+				if horari_div is None:
+					continue
+				self._pagines.append(pagina)
+				pagina = [horari_div[0]]
+				y = horari_div[0].alcada()
+				if horari_div[1]:
+					horaris.append(horari_div[1])
+	
 		self._pagines.append(pagina)
 		operation.set_n_pages(len(self._pagines))
 
 	def _draw_page_cb(self, operation, context, page_nr):
 		y = 0
-		for fila_blocs in self._pagines[page_nr]:
-			fila_blocs.dibuixa(context, y)
-			y += fila_blocs.height
+		for horari in self._pagines[page_nr]:
+			horari.dibuixa(y)
+			y += horari.alcada()
 
-	def _files_blocs_horari(self, context, horari):
+	def _horari_impressio(self, context, horari):
 		taula = taula_horari(horari)
-		files_blocs = []
 		text = "<big><b>%s</b></big>\n<span size=\"xx-small\">\n</span>" % \
 			",   ".join(["%s %s" % (a, g) for a, g in horari])
-		text += "Hores:  %d        " % horari.hores
-		text += "Hores matí:  %d        " % horari.hores_mati
-		text += "Hores tarda:  %d        " % horari.hores_tarda
-		text += "Solapaments:  %d        " % horari.solapaments
+		text += "Hores:  %d      " % horari.hores
+		text += "Hores matí:  %d      " % horari.hores_mati
+		text += "Hores tarda:  %d      " % horari.hores_tarda
+		text += "Solapaments:  %d      " % horari.solapaments
 		text += "Fragments:  %d" % horari.fragments
-		files_blocs.append(FilaBlocs(context, (text, 1.0)))
-		for fila in taula:
-			fila_blocs = FilaBlocs(context, (fila[0], 1./11))
-			for col in fila[1:]:
-				fila_blocs.afegeix(context, col, 2./11)
-			files_blocs.append(fila_blocs)
-		return files_blocs
+		return HorariImpressio(context, taula, text)
 
 
 class FinestraAjuda(gtk.Dialog):
