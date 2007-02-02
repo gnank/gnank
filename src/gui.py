@@ -809,26 +809,29 @@ class FinestraActualitza(gtk.Dialog):
 
 class Bloc(object):
 
-	font = pango.FontDescription("sans 10")
-	marge = 0.01
-	gruix_linia = 0.001
+	mida_font = 0.02
+	marge = 0.012
+	gruix_linia = 0.0005
         
 	def __init__(self, context, text, w):
-		self.marge = int(round(Bloc.marge * context.get_width()))
+		self.font = pango.FontDescription("sans %d" %
+			int(round(Bloc.mida_font * context.get_width())))
+		self.marge = Bloc.marge * context.get_width()
 		self.text = text
-		self.width = int(w * context.get_width())
+		self.width = w * context.get_width()
 		self.width_text = self.width - self.marge * 2
-		cairo_height_text = self._layout(context).get_size()[1]
-		height_text = int(round(cairo_height_text / pango.SCALE))
-		self.height = height_text + self.marge * 2 
+		pango_height_text = self._layout(context).get_size()[1]
+		self.height_text = float(pango_height_text) / pango.SCALE
+		self.height = self.height_text + self.marge * 2 
 
 	def dibuixa(self, context, x, y, height):
 		cr = context.get_cairo_context()
 		cr.set_line_width(Bloc.gruix_linia * context.get_width())
-		cr.move_to(x + self.marge, y + self.marge)
+		cr.move_to(x + self.marge, y + (height - self.height_text) / 2)
 		cr.show_layout(self._layout(context))
 		x0, y0 = 0, 0
-		for x1, y1 in [(self.width, 0), (self.width, height), (0, height), (0, 0)]:
+		punts = [(self.width, 0), (self.width, height), (0, height), (0, 0)]
+		for x1, y1 in punts:
 			cr.move_to(x + x0, y + y0)
 			cr.line_to(x + x1, y + y1)
 			cr.stroke()
@@ -837,16 +840,18 @@ class Bloc(object):
 	def _layout(self, context):
 		layout = context.create_pango_layout()
 		layout.set_markup(self.text)
-		layout.set_width(self.width_text * pango.SCALE)
+		layout.set_width(int(self.width_text * pango.SCALE))
 		layout.set_font_description(self.font)
+		layout.set_alignment(pango.ALIGN_CENTER)
 		return layout
-
+		
 
 class FilaBlocs(object):
 
 	def __init__(self, context, *cols):
 		self.blocs = []
 		self.height = 0
+		self.width = 0
 		for text, w in cols:
 			self.afegeix(context, text, w)
 
@@ -854,6 +859,7 @@ class FilaBlocs(object):
 		bloc = Bloc(context, text, w)
 		self.blocs.append(bloc)
 		self.height = max(self.height, bloc.height)
+		self.width += bloc.width
 
 	def dibuixa(self, context, y):
 		x = 0
@@ -969,7 +975,7 @@ class Impressio(object):
 		text += "Hores tarda:  %d        " % horari.hores_tarda
 		text += "Solapaments:  %d        " % horari.solapaments
 		text += "Fragments:  %d" % horari.fragments
-		files_blocs.append(FilaBlocs(context, (text, 1)))
+		files_blocs.append(FilaBlocs(context, (text, 1.0)))
 		for fila in taula:
 			fila_blocs = FilaBlocs(context, (fila[0], 1./11))
 			for col in fila[1:]:
