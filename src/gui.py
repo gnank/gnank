@@ -605,11 +605,12 @@ class LlistaHoraris(gtk.TreeView):
 	def _commuta_preferit_cb(self, cell, path, col):
 		model = self.get_model()
 		horari = model[path][0]
-		if model[path][col]:
+		preferit = not model[path][col]
+		model[path][col] = preferit
+		if preferit:
 			domini.afegeix_horari_preferit(horari)
 		else:
 			domini.elimina_horari_preferit(horari)
-		model[path][col] = not model[path][col]
 		self._accions.desa_cau_horaris()
 
 
