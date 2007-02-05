@@ -9,7 +9,7 @@ img {
 	border: 0;
 }
 
-p {
+p, li {
 	line-height: 1.5;
 }
 
