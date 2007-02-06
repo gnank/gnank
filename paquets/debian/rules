@@ -15,11 +15,6 @@ install:
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	dh_install gnank/gnank      usr/bin
-	dh_install gnank/*.py       usr/share/python-support/gnank/gnank
-	dh_install gnank.desktop    usr/share/applications
-	dh_install gnank.png        usr/share/pixmaps
-	dh_install debian/gnank.xpm usr/share/pixmaps
 
 binary-arch: 
 
@@ -28,12 +23,13 @@ binary-indep: install
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
+	dh_install
 	dh_installmenu
 	dh_installman
+	dh_link usr/share/pixmaps/gnank.png usr/share/gnank/gnank.png
 	dh_compress
 	dh_fixperms
 	dh_pysupport
-	dh_python
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
