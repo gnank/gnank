@@ -1,3 +1,11 @@
+gnank (2.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * Update package to newer python-support.
+  * debian/rules cleanup.
+
+ -- Jordà Polo <jorda@ettin.org>  Tue,  6 Feb 2007 20:59:13 +0100
+
 gnank (1.1-1) unstable; urgency=low
 
   * New upstream release.
