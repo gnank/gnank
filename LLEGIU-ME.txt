@@ -2,9 +2,9 @@ Gnank - cercador d'horaris de la FIB
 ====================================
 
 Copyright © 2006,2007  Albert Gasset Romo <albert.gasset@gmail.com>
-Distribuït sota llicència GPL, vegeu el fitxer "GPL.txt".
+Distribuït sota la llicència General Public License, vegeu el fitxer "GPL.txt".
 
-Pagina web del projecte: http://lafarga.cpl.upc.edu/projects/gnank
+Pagina web del projecte: http://gnank.lafarga.cpl.upc.edu
 
 Presentació
 -----------
@@ -25,7 +25,7 @@ Característiques:
  * Possibilitat d'indicar horaris preferits que es volen recordar, i opció
    per a imprimir-los.
 
- * Desa i obre els horaris automàticament al directori personal de l'usuari,
+ * Obre i desa els horaris automàticament al directori personal de l'usuari,
    però també és possible obrir i desar els horaris en un fitxer específic.
 
 
@@ -36,8 +36,7 @@ Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
 el següent programari:
 
  * Python >= 2.4 (www.python.org)
- * PyGTK >= 2.8 (www.pygtk.org)
-         >= 2.10 per a poder imprimir.
+ * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
 
 En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
 els noms dels paquets que s'han de tenir instal·lats són:

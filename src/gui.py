@@ -3,19 +3,18 @@
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# ERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 import pygtk
@@ -174,7 +173,7 @@ class Accions(gtk.ActionGroup):
 				"Cerca combinacions d'horaris", self._cerca_horaris),
 			('neteja', gtk.STOCK_CLEAR, "_Neteja", None,
 				"Neteja la llista d'horaris", self._neteja),
-			('imprimeix', gtk.STOCK_PRINT, "_Imprineix", None,
+			('imprimeix', gtk.STOCK_PRINT, "_Imprimeix", None,
 				"Imprimeix els horaris preferits", impressio.imprimeix),
 			('ajuda', gtk.STOCK_HELP, "A_juda", None, None, ajuda.mostra),
 			('quant_a', gtk.STOCK_ABOUT, "_Quant a", None, None,
@@ -192,10 +191,10 @@ class Accions(gtk.ActionGroup):
 			if self._avisar_cau_no_funciona:
 				self._avisar_cau_no_funciona = False
 				d = gtk.MessageDialog(self.finestra, gtk.DIALOG_MODAL,
-					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, "No s'ha pogut " \
+					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, "No s'han pogut " \
 					"desar els horaris al vostre directori personal.")
 				d.format_secondary_text("Si voleu conservar els horaris, " \
-					"haureu de desar-los manulament.")
+					"haureu de desar-los manualment.")
 				d.run()
 				d.destroy()
 
@@ -658,7 +657,7 @@ class FinestraCerca(gtk.Dialog):
 		self.show()
 
 	def _prepara_parametres(self):
-		l = gtk.Label(u"<big>Paràmentres de cerca</big>")
+		l = gtk.Label(u"<big>Paràmetres de cerca</big>")
 		l.set_use_markup(True)
 		l.set_alignment(0, 0)
 		self.vbox.pack_start(l, expand=False)
@@ -1081,3 +1080,4 @@ class FinestraAjuda(gtk.Dialog):
 	def mostra(self, widget=None):
 		self.run()
 		self.hide()
+

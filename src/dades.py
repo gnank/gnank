@@ -3,19 +3,18 @@
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# ERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
 from urllib import urlopen
@@ -23,8 +22,8 @@ from urllib import urlopen
 URL_ASSIGS = "http://www.fib.upc.edu/FIB/plsql/PUB_HORARIS.assignatures"
 URL_CLASSES = "http://www.fib.upc.edu/FIB/plsql/PUB_HORARIS.horari_text"
 
-_ER_CLASSE = re.compile("[^\s]+\s[^\s]+\s[0-9]+\s[0-9]+(:00)?\s[^\s]+\s[^\s]+")
-_ER_HORARI = re.compile("[^\s]+\s[^\s]+(\s[^\s]+\s[^\s]+)*")
+_ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
+_ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
 
 
 class ErrorDades(Exception):

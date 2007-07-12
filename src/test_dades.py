@@ -4,19 +4,18 @@
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# ERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
 import dades
@@ -179,12 +178,18 @@ class TestObreHttp(unittest.TestCase):
 			self.httpd = BaseHTTPServer.HTTPServer(("", 10080), self.RequestHandler)
 			self.httpd.classes = classes
 			self.httpd.assigs = set([c[0] for c in classes])
+			self.lock_aturada = thread.allocate_lock()
+			self.lock_aturada.acquire()
 			thread.start_new_thread(self.serveix, (n_req,))
 
 		def serveix(self, n_req):
 			while n_req > 0:
 				self.httpd.handle_request()
 				n_req -= 1
+			self.lock_aturada.release()
+
+		def espera_aturada(self):
+			self.lock_aturada.acquire()
 
 		class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			def do_GET(self):
@@ -222,20 +227,23 @@ class TestObreHttp(unittest.TestCase):
 		dades.URL_CLASSES = self.Servidor.URL_CLASSES
 
 	def test_obre_cap_classe(self):
-		self.Servidor((), 1)
+		servidor = self.Servidor((), 1)
 		self._comprova_classes(dades.obre_http(), ())
+		servidor.espera_aturada()
 
 	def test_obre_una_classe(self):
 		classes = (("A", "10", "1", "8", "T", "A5001"),)
-		self.Servidor(classes, 2)
+		servidor = self.Servidor(classes, 2)
 		self._comprova_classes(dades.obre_http(), classes)
+		servidor.espera_aturada()
 
 	def test_obre_diverses_classes(self):
 		classes = (("A", "10", "1", "8", "T", "A5001"),
 			("A", "11", "3", "12", "P", "A6002"),
 			("B", "M", "3", "12", "P", "A6002"))
-		self.Servidor(classes, 2)
+		servidor = self.Servidor(classes, 2)
 		self._comprova_classes(dades.obre_http(), classes)
+		servidor.espera_aturada()
 
 	def test_servidor_no_disponible(self):
 		self.assertRaises(dades.ErrorDades, dades.obre_http)
@@ -243,4 +251,4 @@ class TestObreHttp(unittest.TestCase):
 
 if __name__ == '__main__':
 	unittest.main()
-2
+
