@@ -1,0 +1,11 @@
+gnank (2.0.1-ubuntu1) feisty; urgency=low
+
+  * New upstream release.
+
+ -- Albert Gasset <albert.gasset@gmail.com>  Thu, 12 Jul 2007 21:02:54 +0200
+
+gnank (2.0-edgy1) edgy; urgency=low
+
+  * Initial release.
+
+ -- Albert Gasset <albert.gasset@gmail.com>  Thu,  1 Feb 2007 16:45:57 +0100

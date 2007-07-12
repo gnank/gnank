@@ -1,3 +1,11 @@
+Gnank 2.0.1 (2007-07-12)
+------------------------
+
+ * Corregit error d'actualització d'horaris.
+ * Corregits errors ortogràfics de la interfície gràfica.
+ * Corregit error en les proves d'actualització d'horaris.
+ * Distribuït sota la llicència GPL versió 3.
+
 Gnank 2.0 (2007-02-05)
 ----------------------
 
@@ -29,3 +37,4 @@ Característiques:
    solapaments, a partir d'uns grups seleccionats.
  * Interfície que permet seleccionar els grups i visualitzar els horaris de
    forma senzilla i ràpida.
+
