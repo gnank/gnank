@@ -38,7 +38,7 @@ def inicia():
 	gtk.gdk.threads_enter()
 	gtk.about_dialog_set_url_hook(obre_enllac_web)
 	f = Finestra()
-	f.show_all()
+	f.show()
 	try:
 		gtk.main()
 	except KeyboardInterrupt:
@@ -57,14 +57,14 @@ class Finestra(gtk.Window):
 
 	_xmlui = """<ui>
 				<toolbar name="barra">
+					<toolitem action="actualitza"/>
 					<toolitem action="obre"/>
 					<toolitem action="desa"/>
-					<separator/>
-					<toolitem action="actualitza"/>
 					<separator/>
 					<toolitem action="cerca"/>
 					<toolitem action="neteja"/>
 					<separator/>
+					<toolitem action="mostra-web"/>
 					<toolitem action="imprimeix"/>
 					<separator/>
 					<toolitem action="ajuda"/>
@@ -76,10 +76,18 @@ class Finestra(gtk.Window):
 		gtk.Window.__init__(self)
 
 		self.set_title("Gnank - Cercador d'horaris de la FIB")
-		self.set_default_size(800, 600)
+		self.set_default_size(900, 600)
 		icona = config.cami("gnank.png")
 		if icona:
 			gtk.window_set_default_icon_from_file(icona)
+
+		icona = config.cami('web.png')
+		if icona:
+			pixbuf = gtk.gdk.pixbuf_new_from_file(icona)
+			icon_set = gtk.IconSet(pixbuf)
+			icon_factory = gtk.IconFactory()
+			icon_factory.add('gnank-web', icon_set)
+			icon_factory.add_default()
 
 		area_finestra = gtk.VBox()
 
@@ -89,7 +97,6 @@ class Finestra(gtk.Window):
 		uimanager.add_ui_from_string(self._xmlui)
 		self.add_accel_group(uimanager.get_accel_group())
 		self._uimanager = uimanager
-		self._mergeid_pestanyes = None
 
 		barra = uimanager.get_widget('/barra')
 
@@ -121,6 +128,7 @@ class Finestra(gtk.Window):
 		area_treball.pack_start(area_horaris, expand=True)
 
 		self.add(area_finestra)
+		area_finestra.show_all()
 
 		cerca = FinestraCerca(self, llista)
 
@@ -144,6 +152,9 @@ class Finestra(gtk.Window):
 class Accions(gtk.ActionGroup):
 	"""Gestiona de les accions que pot fer l'usuari."""
 
+	BASE_URL = "http://www.fib.upc.edu/fib/infoAca/horaris/assignatura.html" \
+		+ "?accio=graella&"
+	
 	__gsignals__ = {
 		'cerca-horaris': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
 		'dades-actualitzades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
@@ -175,6 +186,9 @@ class Accions(gtk.ActionGroup):
 				"Neteja la llista d'horaris", self._neteja),
 			('imprimeix', gtk.STOCK_PRINT, "_Imprimeix", None,
 				"Imprimeix els horaris preferits", impressio.imprimeix),
+			('mostra-web', 'gnank-web', "_Mostra al web", None,
+				"Mostra els horaris preferits al web de la FIB",
+				self._mostra_web),
 			('ajuda', gtk.STOCK_HELP, "A_juda", None, None, ajuda.mostra),
 			('quant_a', gtk.STOCK_ABOUT, "_Quant a", None, None,
 				self._mostra_quant_a),
@@ -267,6 +281,11 @@ class Accions(gtk.ActionGroup):
 		d.set_website(config.URL_WEB)
 		d.run()
 		d.destroy()
+
+	def _mostra_web(self, widget=None):
+		for horari in domini.horaris_preferits():
+			params = "&".join("a=%s%%23%s" % (a, g) for a, g in horari)
+			obre_enllac_web(None, self.BASE_URL + params)
 
 
 class ArbreGrups(gtk.VBox):
