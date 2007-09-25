@@ -283,7 +283,15 @@ class Accions(gtk.ActionGroup):
 		d.destroy()
 
 	def _mostra_web(self, widget=None):
-		for horari in domini.horaris_preferits():
+		horaris = domini.horaris_preferits()
+		if len(horaris) == 0:
+			d = gtk.MessageDialog(self.finestra, gtk.DIALOG_MODAL,
+					gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
+					"No hi ha horaris preferits per mostrar!")
+			d.run()
+			d.destroy()
+			return
+		for horari in horaris:
 			params = "&".join("a=%s%%23%s" % (a, g) for a, g in horari)
 			obre_enllac_web(None, self.BASE_URL + params)
 
@@ -592,6 +600,7 @@ class LlistaHoraris(gtk.TreeView):
 				h.hores_tarda, h.solapaments, h.fragments])
 			path_sel = model.get_path(it)
 
+		self.get_model().clear()
 		self.set_model(model)
 		self._fila_grups_sel = gtk.TreeRowReference(model, path_sel)
 		self.set_cursor(path_sel)
@@ -761,9 +770,6 @@ class FinestraCerca(gtk.Dialog):
 		else:
 			self._progres.set_fraction(0.0)
 			return False
-
-	def _tanca(self, widget=None):
-		pass
 
 
 class FinestraActualitza(gtk.Dialog):
