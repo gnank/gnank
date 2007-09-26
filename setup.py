@@ -26,11 +26,11 @@ from distutils.core import setup
 
 if sys.platform == "win32":
 	import py2exe
-	data_files = ["src/gnank.png", "src/ajuda.txt"]
+	data_files = ["src/gnank.png", "src/web.png", "src/ajuda.txt"]
 else:
 	data_files = [
 		("share/gnank", ["src/config.py", "src/gui.py", "src/domini.py",
-			"src/dades.py", "src/gnank.png", "src/ajuda.txt"]),
+			"src/dades.py", "src/gnank.png", "src/web.png", "src/ajuda.txt"]),
 		("share/pixmaps", ["src/gnank.png"]),
 		("share/applications", ["src/gnank.desktop"]),
 		("share/doc/gnank", ["LLEGIU-ME.txt", "NOVETATS.txt", "GPL.txt"]),
