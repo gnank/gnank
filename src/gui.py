@@ -169,7 +169,7 @@ class Accions(gtk.ActionGroup):
 
 		self.finestra = finestra
 		impressio = Impressio(finestra)
-		ajuda = FinestraAjuda(finestra)
+		self.ajuda = FinestraAjuda(finestra)
 		self._avisar_cau_no_funciona = True
 
 		self.add_actions([
@@ -189,14 +189,30 @@ class Accions(gtk.ActionGroup):
 			('mostra-web', 'gnank-web', "_Mostra al web", None,
 				"Mostra els horaris preferits al web de la FIB",
 				self._mostra_web),
-			('ajuda', gtk.STOCK_HELP, "A_juda", None, None, ajuda.mostra),
+		])
+
+		self.add_toggle_actions([
+			('ajuda', gtk.STOCK_HELP, "A_juda", None, None, self._activa_ajuda),
 			('quant_a', gtk.STOCK_ABOUT, "_Quant a", None, None,
-				self._mostra_quant_a),
+				self._activa_quant_a),
 		])
 
 		if not gtk_versio_2_10:
 			self.get_action("imprimeix").set_sensitive(False)
 
+		self.about = gtk.AboutDialog()
+		self.about.set_name(config.NOM)
+		self.about.set_version(config.VERSIO)
+		self.about.set_copyright(config.COPYRIGHT)
+		self.about.set_comments(config.DESCRIPCIO)
+		self.about.set_license(config.INFO_LLICENCIA)
+		self.about.set_authors(config.AUTORS)
+		self.about.set_website(config.URL_WEB)
+ 		self.about.connect('response', self._tanca_quant_a)
+		self.about.connect('delete-event', self._tanca_quant_a)
+ 		self.ajuda.connect('response', self._tanca_ajuda)
+		self.ajuda.connect('delete-event', self._tanca_ajuda)
+		
 	def desa_cau_horaris(self):
 		config.crea_dir_usuari()
 		try:
@@ -270,17 +286,25 @@ class Accions(gtk.ActionGroup):
 	def _neteja(self, widget=None):
 		self.emit("neteja")
 
-	def _mostra_quant_a(self, widget=None):
-		d = gtk.AboutDialog()
-		d.set_name(config.NOM)
-		d.set_version(config.VERSIO)
-		d.set_copyright(config.COPYRIGHT)
-		d.set_comments(config.DESCRIPCIO)
-		d.set_license(config.INFO_LLICENCIA)
-		d.set_authors(config.AUTORS)
-		d.set_website(config.URL_WEB)
-		d.run()
-		d.destroy()
+	def _activa_quant_a(self, widget=None):
+		if self.get_action("quant_a").get_active():
+ 			self.about.show_all()
+		else:
+			self.about.hide()
+
+	def _tanca_quant_a(self, widget=None, response=None):
+		self.get_action('quant_a').set_active(False)
+		return True
+
+	def _activa_ajuda(self, widget=None):
+		if self.get_action("ajuda").get_active():
+ 			self.ajuda.show_all()
+		else:
+			self.ajuda.hide()
+
+	def _tanca_ajuda(self, widget=None, response=None):
+		self.get_action('ajuda').set_active(False)
+		return True
 
 	def _mostra_web(self, widget=None):
 		horaris = domini.horaris_preferits()
@@ -1056,9 +1080,8 @@ class Impressio(object):
 class FinestraAjuda(gtk.Dialog):
 
 	def __init__(self, finestra):
-		flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
 		buttons = (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-		gtk.Dialog.__init__(self, "Ajuda", finestra, flags, buttons)
+		gtk.Dialog.__init__(self, "Ajuda del Gnank", buttons=buttons)
 		self.set_default_size(600,400)
 		self.set_icon_name(gtk.STOCK_HELP)
 		self.set_has_separator(False)
@@ -1101,8 +1124,4 @@ class FinestraAjuda(gtk.Dialog):
 		it = tb.get_end_iter()
 		tb.insert(it, "\n")
 		return tb
-
-	def mostra(self, widget=None):
-		self.run()
-		self.hide()
 
