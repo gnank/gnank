@@ -2,15 +2,16 @@ Gnank - cercador d'horaris de la FIB
 ====================================
 
 Copyright © 2006,2007  Albert Gasset Romo <albert.gasset@gmail.com>
-Distribuït sota la llicència General Public License, vegeu el fitxer "GPL.txt".
+Distribuït sota la llicència General Public License, vegeu el fitxer
+"GPL.txt".
 
 Pagina web del projecte: http://gnank.lafarga.cpl.upc.edu
 
 Presentació
 -----------
 
-El Gnank és un programa creat amb l'objectiu de facilitar la tria de l'horari
-als alumnes de la FIB.
+El Gnank és un programa creat amb l'objectiu de facilitar la tria de
+l'horari als alumnes de la FIB.
 
 Característiques:
 
@@ -52,16 +53,16 @@ Utilització sense instal·lació
 ------------------------------
 
 Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar
-el fitxer "gnank.sh", que es troba al directori arrel de la distribució:
+el fitxer "gnank", que es troba al directori "src" de la distribució:
 
-./gnank.sh
+src/gnank
 
 
 Instal·lació
 ------------
 
 El programa utilitza les eines "Python Distutils" per a instal·lar-se.
-Simplement cal executar la següent ordre des de la carpeta arrel de la
+Simplement cal executar la següent ordre des del directori arrel de la
 distribució de Gnank amb privilegis de super-usuari:
 
 ./setup.py install
