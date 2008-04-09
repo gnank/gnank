@@ -81,11 +81,9 @@ def crea_dir_usuari():
 
 
 def cami(fitxer):
-	cami_fitxer = join(os.environ["GNANK_DIR"], fitxer)
+	cami_fitxer = join(gnank_dir, fitxer)
 	if os.access(cami_fitxer, os.F_OK):
 		return cami_fitxer
-	if os.access(fitxer, os.F_OK):
-		return fitxer
 	logging.warning("No es pot accedir al fitxer: %s", fitxer)
 	return None
 

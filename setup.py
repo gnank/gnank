@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-from os.path import join, dirname
-sys.path.insert(0, join(dirname(__file__), "src"))
+from os.path import join
+sys.path[0] = join(sys.path[0], "src")
 import config
 
 from distutils.core import setup
@@ -29,7 +29,7 @@ if sys.platform == "win32":
 	data_files = ["src/gnank.png", "src/web.png", "src/ajuda.txt"]
 else:
 	data_files = [
-		("share/gnank", ["src/config.py", "src/gui.py", "src/domini.py",
+		("share/gnank", ["src/config.py", "src/gnank.py", "src/gui.py", "src/domini.py",
 			"src/dades.py", "src/gnank.png", "src/web.png", "src/ajuda.txt"]),
 		("share/pixmaps", ["src/gnank.png"]),
 		("share/applications", ["src/gnank.desktop"]),
