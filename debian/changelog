@@ -1,3 +1,10 @@
+gnank (2.1~svn64-1) unstable; urgency=low
+
+  * New development release.
+  * Changes from Ubuntu package.
+
+ -- Albert Gasset Romo <albert.gasset@gmail.com>  Fri, 17 Oct 2008 17:15:30 +0200
+
 gnank (2.0-1) unstable; urgency=low
 
   * New upstream release.

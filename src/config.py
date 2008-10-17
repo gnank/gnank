@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
@@ -20,7 +20,7 @@ import os, sys, logging
 from os.path import join
 
 NOM = "Gnank"
-VERSIO = "2.0.1"
+VERSIO = "2.1~svn64"
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
 URL_WEB =  "http://gnank.lafarga.cpl.upc.edu"
 COPYRIGHT = "Copyright © 2006, 2007  Albert Gasset Romo"
