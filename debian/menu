@@ -1,0 +1,3 @@
+?package(gnank):needs="X11" section="Applications/Education" \
+  title="Gnank" longtitle="Cercador d'horaris de la FIB" \
+  command="/usr/bin/gnank" icon="/usr/share/pixmaps/gnank.xpm"
