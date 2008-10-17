@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
@@ -74,8 +74,12 @@ def elimina_horari_preferit(horari):
 
 def _afegeix_classes(classes):
 	for assig, grup, dia, hora, tipus, aula in classes:
-		classe = Classe(assig, grup, dia, hora, tipus, aula)
-		_assigs.setdefault(assig, Assig(assig)).afegeix_classe(classe)
+		try:
+			classe = Classe(assig, grup, dia, hora, tipus, aula)
+		except ValueError:
+			pass
+		else:
+			_assigs.setdefault(assig, Assig(assig)).afegeix_classe(classe)
 
 def _hores_classes(assig, grup):
 	return  _assigs[assig].grup(grup).hores_classes()
