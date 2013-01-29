@@ -1,3 +1,8 @@
+Gnank 3.2.2 (2012-09-01)
+------------------------
+
+ * Incorporat el Màster en Enginyeria Informàtica (MEI)
+
 Gnank 3.2.1 (2012-07-10)
 ------------------------
 
