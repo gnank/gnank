@@ -19,8 +19,9 @@
 import re
 from urllib import urlopen
 
-URL_ASSIGS = "http://www.fib.upc.edu/FIB/plsql/PUB_HORARIS.assignatures"
-URL_CLASSES = "http://www.fib.upc.edu/FIB/plsql/PUB_HORARIS.horari_text"
+URL_ASSIGS = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures"
+URL_ASSIGS_GRAU = "http://www.fib.upc.edu/fib/estudiar-enginyeria-informatica/assignatures.html"
+URL_CLASSES = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
 
 _ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
 _ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
@@ -78,6 +79,12 @@ def obre_http():
 	classes = []
 	try:
 		assigs = [a.strip() for a in urlopen(URL_ASSIGS)]
+
+		# afegim assignatures de grau
+		url = urlopen(URL_ASSIGS_GRAU)
+		assigs_grau = re.findall("<tr>\s*<th>\s*(\w+)\s*</th>\s*<td>", url.read())
+		for a in assigs_grau: assigs += ['GRAU-'+a]
+
 		if assigs:
 			params = "?assignatures=" + "&assignatures=".join(assigs)
 			for linia in urlopen(URL_CLASSES + params):
