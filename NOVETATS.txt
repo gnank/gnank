@@ -1,3 +1,8 @@
+Gnank 3.2.1 (2012-07-10)
+------------------------
+
+ * Solucionat error en la tria de grups de tarda.
+
 Gnank 3.2 (2012-02-22)
 ------------------------
 

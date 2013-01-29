@@ -105,7 +105,7 @@ class Classe(object):
     valors_dia = range(1, 6)
     valors_hora = range(8, 21)
     valors_tipus = ['T', 'P', 'L']
-    hora_inici_tarda = 15
+    hora_inici_tarda = 14
 
     def __init__(self, assig, grup, dia, hora, tipus, aula):
         if int(dia) not in self.valors_dia: raise ValueError
