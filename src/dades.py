@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-from urllib import urlopen
+from urllib.request import urlopen
 
 URL_ASSIGS = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures"
 URL_ASSIGS_CODI = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures_titulacio?codi="
@@ -47,7 +47,7 @@ def obre(fitxer):
 				if not _ER_HORARI.match(linia):
 					raise ErrorDades
 				linia = linia.split()
-				horaris.append(zip(linia[::2],linia[1::2]))
+				horaris.append(list(zip(linia[::2],linia[1::2])))
 			else:
 				if not _ER_CLASSE.match(linia):
 					raise ErrorDades

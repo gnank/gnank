@@ -53,19 +53,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 if sys.platform == "win32":
-	import _winreg
+	import winreg
 	def regval(key, subkey, name):
-		key = _winreg.OpenKey(key, subkey)
+		key = winreg.OpenKey(key, subkey)
 		try:
-			ret = _winreg.QueryValueEx(key, name)
+			ret = winreg.QueryValueEx(key, name)
 		except WindowsError:
 			return None
 		key.Close()
-		if ret[1] == _winreg.REG_EXPAND_SZ:
+		if ret[1] == winreg.REG_EXPAND_SZ:
 			substenv = lambda m: os.environ.get(m.group(1), m.group(0))
 			return re.compile(r'%([^|<>=^%]+)%').sub(substenv,ret[0])
 		return ret[0]
-	DIR_USUARI = join(regval(_winreg.HKEY_CURRENT_USER,
+	DIR_USUARI = join(regval(winreg.HKEY_CURRENT_USER,
 			"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
 			"AppData"), "Gnank")
 else:

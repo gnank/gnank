@@ -33,7 +33,7 @@ def obre(fitxer):
 		afegeix_horari_preferit(horari)
 
 def desa(fitxer):
-	iters = [assig.tuples_classes() for assig in _assigs.itervalues()]
+	iters = [assig.tuples_classes() for assig in _assigs.values()]
 	tuples = chain(*iters)
 	dades.desa(fitxer, sorted(tuples), sorted(_horaris))
 
@@ -50,15 +50,15 @@ def actualitza(codiAssigs):
 
 def grups_disponibles():
 	grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles())]
-	return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
+	return [(a.nom, grups_a(a)) for a in sorted(_assigs.values())]
 
 def grups_disponibles_mati():
 	grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles_mati())]
-	return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
+	return [(a.nom, grups_a(a)) for a in sorted(_assigs.values())]
 
 def grups_disponibles_tarda():
 	grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles_tarda())]
-	return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
+	return [(a.nom, grups_a(a)) for a in sorted(_assigs.values())]
 
 def horaris_preferits():
 	return [Horari(g) for g in _horaris]
@@ -94,8 +94,8 @@ def _horari_valid(horari):
 
 class Classe(object):
 
-	valors_dia = range(1, 6)
-	valors_hora = range(8, 21)
+	valors_dia = list(range(1, 6))
+	valors_hora = list(range(8, 21))
 	valors_tipus = ['T', 'P', 'L']
 	hora_inici_tarda = 15
 
@@ -165,11 +165,11 @@ class Grup(object):
 		return hash(self.nom)
 
 	def tuples_classes(self):
-		for classe in chain(*self._classes.itervalues()):
+		for classe in chain(*iter(self._classes.values())):
 			yield classe.tupla()
 
 	def hores_classes(self):
-		hores = set(self._classes.iterkeys())
+		hores = set(self._classes.keys())
 		if self._supergrup:
 			hores.update(self._supergrup.hores_classes())
 		return hores
@@ -217,16 +217,16 @@ class Assig(object):
 		return grup
 
 	def grups_disponibles(self):
-		return self._grups.itervalues()
+		return iter(self._grups.values())
 
 	def grups_disponibles_mati(self):
-		return [g for g in self._grups.itervalues() if g.nomes_mati()]
+		return [g for g in self._grups.values() if g.nomes_mati()]
 
 	def grups_disponibles_tarda(self):
-		return [g for g in self._grups.itervalues() if g.nomes_tarda()]
+		return [g for g in self._grups.values() if g.nomes_tarda()]
 
 	def tuples_classes(self):
-		grups = chain(self._grups.itervalues(), self._supergrups.itervalues())
+		grups = chain(iter(self._grups.values()), iter(self._supergrups.values()))
 		iters_classes = [grup.tuples_classes() for grup in grups]
 		return chain(*iters_classes)
 
@@ -254,14 +254,14 @@ class Horari(object):
 
 	def classes(self, dia, hora):
 		classes = set()
-		for assig, grups_assig in self._grups.iteritems():
+		for assig, grups_assig in self._grups.items():
 			for grup in grups_assig:
 				for c in _classes_dia_hora(assig, grup, dia, hora):
 					classes.add(c)
 		return sorted(classes)
 
 	def assignatures(self):
-		return sorted(self._grups.iterkeys())
+		return sorted(self._grups.keys())
 
 	def __cmp__(self, other):
 		for (assig1, grup1), (assig2, grup2) in zip(self._tupla, other._tupla):
@@ -291,7 +291,7 @@ class Horari(object):
 		self.fragments = 0
 		self.primera_hora = Classe.valors_hora[-1]
 		self.ultima_hora = Classe.valors_hora[0]
-		for (dia, hora), assigs in assigs_dh.iteritems():
+		for (dia, hora), assigs in assigs_dh.items():
 			if hora < Classe.hora_inici_tarda:
 				self.hores_mati += 1
 			else:
@@ -330,7 +330,7 @@ class Cerca(object):
 			grups_assig = grups_per_assig.setdefault(assig, [])
 			grups_assig.append(grup)
 
-		for assig, grups in grups_per_assig.iteritems():
+		for assig, grups in grups_per_assig.items():
 			self._assigs.append(assig)
 			self._grups.append(grups)
 

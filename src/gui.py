@@ -25,7 +25,7 @@ import domini, config
 from domini import Classe, Horari, Cerca, ErrorDades
 from string import lower
 from time import clock
-from thread import start_new_thread
+from _thread import start_new_thread
 import webbrowser
 import logging
 
@@ -277,7 +277,7 @@ class ArbreGrups(gtk.VBox):
 			[gobject.TYPE_PYOBJECT]),
 	}
 
-	OPCIO_TOTS, OPCIO_MATI, OPCIO_TARDA = range(0, 3)
+	OPCIO_TOTS, OPCIO_MATI, OPCIO_TARDA = list(range(0, 3))
 
 	def __init__(self):
 		gtk.VBox.__init__(self, spacing=6)
@@ -658,7 +658,7 @@ class FinestraCerca(gtk.Dialog):
 		self.show()
 
 	def _prepara_parametres(self):
-		l = gtk.Label(u"<big>Paràmetres de cerca</big>")
+		l = gtk.Label("<big>Paràmetres de cerca</big>")
 		l.set_use_markup(True)
 		l.set_alignment(0, 0)
 		self.vbox.pack_start(l, expand=False)
@@ -735,7 +735,7 @@ class FinestraCerca(gtk.Dialog):
 			self._atura = True
 
 	def _actualitza_barra_cb(self):
-		self._progres.set_text(u"%d horaris trobats" % self._n_horaris)
+		self._progres.set_text("%d horaris trobats" % self._n_horaris)
 		if not self._atura:
 			f = float(self._combinacio) / self._n_combinacions
 			self._progres.set_fraction(f)
@@ -759,7 +759,7 @@ class FinestraActualitza(gtk.Dialog):
 		self.set_has_separator(False)
 		self.set_border_width(6)
 		self.vbox.set_spacing(12)
-		l = gtk.Label(u"<big>S'estan actualitzant les dades...</big>")
+		l = gtk.Label("<big>S'estan actualitzant les dades...</big>")
 		l.set_use_markup(True)
 		l.set_alignment(0, 0)
 		self.vbox.pack_start(l, expand=False)

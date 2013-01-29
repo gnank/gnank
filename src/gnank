@@ -28,69 +28,69 @@ FORMAT_REGISTRE = '%(asctime)s %(levelname)-8s %(message)s'
 
 
 def configura_registre():
-	logger = logging.getLogger("")
-	logger.setLevel(logging.DEBUG)
-	handler = logging.StreamHandler()
-	handler.setLevel(logging.WARNING)
-	handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
-	logger.addHandler(handler)
+    logger = logging.getLogger("")
+    logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.WARNING)
+    handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
+    logger.addHandler(handler)
 
 
 def configura_registre_fitxer(fitxer):
-	try:
-		handler = logging.FileHandler(fitxer)
-	except IOError as e:
-		logging.warning("Error en obrir el registre: %s", e)
-	else:
-		handler.setLevel(logging.DEBUG)
-		handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
-		logging.getLogger("").addHandler(handler)
+    try:
+        handler = logging.FileHandler(fitxer)
+    except IOError as e:
+        logging.warning("Error en obrir el registre: %s", e)
+    else:
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
+        logging.getLogger("").addHandler(handler)
 
 
 def registra_excepcio(type, value, tb):
-	text = "".join(format_exception(type, value, tb))
-	logging.error("S'ha produït una excepció.\n%s", text)
+    text = "".join(format_exception(type, value, tb))
+    logging.error("S'ha produït una excepció.\n%s", text)
 
 
 def configura_directori():
-	gnank_dir = os.environ.get("GNANK_DIR")
-	if gnank_dir is None:
-		if sys.platform == "win32":
-			gnank_dir = dirname(sys.argv[0])
-		else:
-			prefix = dirname(dirname(__file__))
-			gnank_dir = join(prefix, "share", "gnank")
-		os.environ["GNANK_DIR"] = gnank_dir
-	sys.path.insert(0, gnank_dir)
+    gnank_dir = os.environ.get("GNANK_DIR")
+    if gnank_dir is None:
+        if sys.platform == "win32":
+            gnank_dir = dirname(sys.argv[0])
+        else:
+            prefix = dirname(dirname(__file__))
+            gnank_dir = join(prefix, "share", "gnank")
+        os.environ["GNANK_DIR"] = gnank_dir
+    sys.path.insert(0, gnank_dir)
 
 
 def main(codiAssigs):
-	configura_registre()
-	sys.excepthook = registra_excepcio
+    configura_registre()
+    sys.excepthook = registra_excepcio
 
-	configura_directori()
-	import config
-	config.crea_dir_usuari()
-	configura_registre_fitxer(config.REGISTRE_USUARI)
+    configura_directori()
+    import config
+    config.crea_dir_usuari()
+    configura_registre_fitxer(config.REGISTRE_USUARI)
 
-	try:
-		import psyco
-		psyco.full()
-		logging.info("S'ha activat el mòdul Psyco.")
-	except ImportError:
-		logging.warning("No s'ha trobat el mòdul Psyco.")
+    try:
+        import psyco
+        psyco.full()
+        logging.info("S'ha activat el mòdul Psyco.")
+    except ImportError:
+        logging.warning("No s'ha trobat el mòdul Psyco.")
 
-	logging.info("S'iniciarà l'aplicació.")
-	import gui
-	gui.inicia("GRAU")
-	logging.info("Es tancarà l'aplicació.")
-	
-	logging.shutdown()
+    logging.info("S'iniciarà l'aplicació.")
+    import gui
+    gui.inicia("GRAU")
+    logging.info("Es tancarà l'aplicació.")
+
+    logging.shutdown()
 
 
 if __name__ == "__main__":
-	if len(sys.argv) == 2:
-		main(sys.argv[1])
-	else:
-		main("")
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    else:
+        main("")
 
