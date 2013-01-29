@@ -17,82 +17,92 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-from urllib.request import urlopen
+from urllib import urlopen
 
-URL_ASSIGS = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures"
-URL_ASSIGS_CODI = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures_titulacio?codi="
+URL_ASSIGS = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures_titulacio?codi="
 URL_CLASSES = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
 
 _ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
 _ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
 
+class ErrorOpcions(Exception):
+	pass
 
 class ErrorDades(Exception):
-	pass
+    pass
 
 
 def obre(fitxer):
-	classes = []
-	horaris = []
-	separador_trobat = False
+    carrera = ""
+    classes = []
+    horaris = []
+    separador_trobat = False
+    plaestudis_trobat = False
 
-	try:
-		for linia in file(fitxer, "rb"):
-			linia = linia.strip()
-			if linia == "":
-				continue
-			elif linia == ";":
-				separador_trobat = True
-			elif separador_trobat:
-				if not _ER_HORARI.match(linia):
-					raise ErrorDades
-				linia = linia.split()
-				horaris.append(list(zip(linia[::2],linia[1::2])))
-			else:
-				if not _ER_CLASSE.match(linia):
-					raise ErrorDades
-				linia = linia.split()
-				linia[3] = linia[3].split(":")[0]
-				classes.append(linia)
-	except IOError:
-		raise ErrorDades
+    try:
+        for linia in file(fitxer, "rb"):
+            linia = linia.strip()
+            if linia == "":
+                continue
+            elif not plaestudis_trobat:
+                carrera = linia
+                plaestudis_trobat = True
+            elif linia == ";":
+                separador_trobat = True
+            elif separador_trobat:
+                if not _ER_HORARI.match(linia):
+                    raise ErrorDades
+                linia = linia.split()
+                horaris.append(zip(linia[::2],linia[1::2]))
+            else:
+                if not _ER_CLASSE.match(linia):
+                    raise ErrorDades
+                linia = linia.split()
+                linia[3] = linia[3].split(":")[0]
+                classes.append(linia)
+    except IOError:
+        raise ErrorDades
 
-	return classes, horaris
-
-
-def desa(fitxer, classes, horaris = None):
-	try:
-		f = file(fitxer, "wb")
-		for classe in classes:
-			f.write(" ".join(classe))
-			f.write("\n")
-		if horaris is not None:
-			f.write(";\n")
-			for horari in horaris:
-				f.write(" ".join([a+" "+g for a,g in horari]))
-				f.write("\n")
-	except IOError:
-		raise ErrorDades
+    return carrera, classes, horaris
 
 
-def obre_http(codiAssigs):
-	classes = []
-	try:
-		# assignatures
-		if codiAssigs == '':
-			assigs = [a.strip() for a in urlopen(URL_ASSIGS)]
-		else:
-			assigs = [a.strip() for a in urlopen(URL_ASSIGS_CODI + codiAssigs)]
+def desa(fitxer, carrera, classes, horaris = None):
+    try:
+        f = file(fitxer, "wb")
+        f.write(carrera)
+        f.write("\n")
+        for classe in classes:
+            f.write(" ".join(classe))
+            f.write("\n")
+        if horaris is not None:
+            f.write(";\n")
+            for horari in horaris:
+                f.write(" ".join([a+" "+g for a,g in horari]))
+                f.write("\n")
+    except IOError:
+        raise ErrorDades
 
-		if assigs:
-			params = "?assignatures=" + "&assignatures=".join(assigs)
-			for linia in urlopen(URL_CLASSES + params):
-				if not _ER_CLASSE.match(linia):
-					raise ErrorDades
-				linia = linia.split()
-				linia[3] = linia[3].split(":")[0]
-				classes.append(linia)
-	except IOError:
-		raise ErrorDades
-	return classes
+
+def obre_http(carrera):
+    classes = []
+    try:
+        if carrera == "": raise ErrorOpcions
+
+        # obtenim les assignatures
+        assigs = [a.strip() for a in urlopen(URL_ASSIGS + carrera)]
+
+        # borrem l'assignatura GRAU-EXAMENS en cas que hi sigui
+        assigs = filter (lambda a: a != "GRAU-EXAMENS", assigs)
+
+        if assigs:
+            params = "?assignatures=" + "&assignatures=".join(assigs)
+            for linia in urlopen(URL_CLASSES + params):
+                if not _ER_CLASSE.match(linia):
+                    raise ErrorDades
+                linia = linia.split()
+                linia[3] = linia[3].split(":")[0]
+                classes.append(linia)
+    except IOError:
+        raise ErrorDades
+    return classes
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
@@ -64,7 +64,7 @@ def configura_directori():
     sys.path.insert(0, gnank_dir)
 
 
-def main(codiAssigs):
+def main():
     configura_registre()
     sys.excepthook = registra_excepcio
 
@@ -78,19 +78,18 @@ def main(codiAssigs):
         psyco.full()
         logging.info("S'ha activat el mòdul Psyco.")
     except ImportError:
-        logging.warning("No s'ha trobat el mòdul Psyco.")
+        # hack per evitar el missatge d'error en tancar gnank a Windows
+        if sys.platform != "win32":
+            logging.warning("No s'ha trobat el mòdul Psyco.")
 
     logging.info("S'iniciarà l'aplicació.")
     import gui
-    gui.inicia("GRAU")
+    gui.inicia()
     logging.info("Es tancarà l'aplicació.")
 
     logging.shutdown()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        main(sys.argv[1])
-    else:
-        main("")
-
+    if len(sys.argv) == 1:
+        main()
