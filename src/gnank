@@ -47,8 +47,8 @@ def configura_registre_fitxer(fitxer):
         logging.getLogger("").addHandler(handler)
 
 
-def registra_excepcio(type, value, tb):
-    text = "".join(format_exception(type, value, tb))
+def registra_excepcio(tipus, value, tb):
+    text = "".join(format_exception(tipus, value, tb))
     logging.error("S'ha produït una excepció.\n%s", text)
 
 

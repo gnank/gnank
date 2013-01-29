@@ -289,11 +289,12 @@ class TriaCarrera(gtk.HBox):
         (u"Eng. Inf. Superior","EI03"), \
         (u"Eng. Tèc. Sistemes","ETS03"), \
         (u"Eng. Tèc. Gestió","ETG03"), \
+        (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes","CANS"), \
+        (u"M. d'Inteligència Artificial","MIA"), \
         (u"M. de Computació","MC"), \
         (u"M. de Tecnologies de la Informació","MTI"), \
-        (u"M. d'Inteligència Artificial","MIA"), \
-        (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes","CANS"), \
-        (u"M. Erasmus de Computació Distribuïda","EMDC"), \
+        (u"M. en Enginyeria Informàtica","MEI"), \
+        (u"M. Erasmus de Computació Distribuïda","EMDC")
         ]
 
     def __init__(self):
@@ -538,6 +539,7 @@ class LlistaHoraris(gtk.TreeView):
         self._accions = accions
         self._mantenir_sel = False
 
+        # Afegeix la columna 0 ('Horari')
         renderer = gtk.CellRendererText()
         renderer.set_property('xpad', 10)
         col = gtk.TreeViewColumn(self._nom_col[0], renderer)
@@ -545,6 +547,7 @@ class LlistaHoraris(gtk.TreeView):
         col.set_sort_column_id(0)
         self.append_column(col)
 
+        # Afegeix la columna 1 ('Preferit')
         renderer = gtk.CellRendererToggle()
         renderer.set_property('xpad', 10)
         renderer.set_property('xalign', 0.5)
@@ -554,6 +557,7 @@ class LlistaHoraris(gtk.TreeView):
         col.set_sort_column_id(1)
         self.append_column(col)
 
+        # Afegeix la resta de columnes
         for i in range(2, 7):
             renderer = gtk.CellRendererText()
             renderer.set_property('xpad', 10)
@@ -562,18 +566,24 @@ class LlistaHoraris(gtk.TreeView):
             col.set_sort_column_id(i)
             self.append_column(col)
 
+        # Afegeix una columna buida al final
         col = gtk.TreeViewColumn("", gtk.CellRendererText())
         self.append_column(col)
+        
         self.connect('cursor-changed', self._horari_seleccionat_cb)
 
+        # Afegir fila 'grups seleccionats'
         model = gtk.ListStore(object, bool, int, int, int, int, int)
         h = Horari()
         it = model.append([h.grups(), False, h.hores, h.hores_mati, h.hores_tarda,
             h.solapaments, h.fragments])
+        
         model.set_sort_func(0, self._cmp_horaris_cb)
-        self._fila_grups_sel = gtk.TreeRowReference(model, (0,))
         self.set_model(model)
+        self._fila_grups_sel = gtk.TreeRowReference(model, (0,))
         self.set_cursor((0,))
+
+        # Opcions TreeView
         self.set_enable_search(False)
         self.set_rules_hint(True)
 
