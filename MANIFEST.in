@@ -1,0 +1,2 @@
+include MANIFEST.in GPL.txt LLEGIU-ME.txt NOVETATS.txt setup.py gnank.sh
+recursive-include src gnank *.py gnank.svg gnank.png gnank.desktop ajuda.txt

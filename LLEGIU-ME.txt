@@ -1,0 +1,88 @@
+Gnank - cercador d'horaris de la FIB
+====================================
+
+Copyright © 2006,2007  Albert Gasset Romo <albert.gasset@gmail.com>
+Distribuït sota la llicència General Public License, vegeu el fitxer "GPL.txt".
+
+Pagina web del projecte: http://gnank.lafarga.cpl.upc.edu
+
+Presentació
+-----------
+
+El Gnank és un programa creat amb l'objectiu de facilitar la tria de l'horari
+als alumnes de la FIB.
+
+Característiques:
+
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de
+   forma senzilla i ràpida.
+
+ * Actualització de les dades dels horaris del servidor de la FIB.
+
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+   solapaments, a partir d'uns grups seleccionats.
+
+ * Possibilitat d'indicar horaris preferits que es volen recordar, i opció
+   per a imprimir-los.
+
+ * Obre i desa els horaris automàticament al directori personal de l'usuari,
+   però també és possible obrir i desar els horaris en un fitxer específic.
+
+
+Requisits de programari
+-----------------------
+
+Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
+el següent programari:
+
+ * Python >= 2.4 (www.python.org)
+ * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
+
+En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
+els noms dels paquets que s'han de tenir instal·lats són:
+
+ * python
+ * python-gtk2
+
+Opcionalment, si està instal·lat el Psyco, una extenió que millorar el
+rendiment d'execució de codi Python, el Gnank l'utilitzarà.
+
+
+Utilització sense instal·lació
+------------------------------
+
+Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar
+el fitxer "gnank.sh", que es troba al directori arrel de la distribució:
+
+./gnank.sh
+
+
+Instal·lació
+------------
+
+El programa utilitza les eines "Python Distutils" per a instal·lar-se.
+Simplement cal executar la següent ordre des de la carpeta arrel de la
+distribució de Gnank amb privilegis de super-usuari:
+
+./setup.py install
+
+Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori
+o amb l'ordre "gnank".
+
+Si voleu més informació de com instal·lar programes amb Distutils mireu a
+http://www.python.org/doc/current/inst/.
+
+
+Desinstal·lació
+---------------
+
+Actualment "Distutils" no permet desinstal·lar programes, si voleu
+desinstal·lar el Gnank heu de fer-ho manualment. Només cal que elimineu
+els següents fitxers i directoris:
+
+/usr/bin/gnank
+/usr/share/applications/gnank.desktop
+/usr/share/doc/gnank/
+/usr/share/gnank/
+/usr/share/pixmaps/gnank.png
+
