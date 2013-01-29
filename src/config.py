@@ -20,14 +20,17 @@ import os, sys, logging
 from os.path import join
 
 NOM = "Gnank"
-VERSIO = "2.0.1"
+VERSIO = "3.0.1"
 DESCRIPCIO =  "Cercador d'horaris de la FIB"
-URL_WEB =  "http://gnank.lafarga.cpl.upc.edu"
+URL_WEB =  "http://lafarga.cpl.upc.edu/projectes/gnank-reloaded"
 COPYRIGHT = "Copyright © 2006, 2007  Albert Gasset Romo"
 AUTOR = "Albert Gasset Romo"
 EMAIL_AUTOR = "albert.gasset@gmail.com"
 LLICENCIA = "GPL"
 AUTORS = [
+	"Desenvolupador actual:",
+	"Marc Cornellà <marc.cornella@est.fib.upc.edu>",
+	"",
 	"Desenvolupador principal:",
 	"Albert Gasset Romo <albert.gasset@gmail.com>",
 	"",

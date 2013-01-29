@@ -36,6 +36,6 @@ nosetests.xml
 .pydevproject
 
 # Gnank tars
-downloads
+download
 *.zip
 *.tar.gz
