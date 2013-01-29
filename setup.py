@@ -48,10 +48,11 @@ setup(
 	data_files = data_files,
 	windows = [{
 		"script": "src/gnank",
-		'icon_resources': [(1, "src/gnank.png")],
+		'icon_resources': [(1, "paquets/win32/gnank.ico")],
 	}],
 	options = {"py2exe": {
 		"packages": "encodings",
-		"includes": "cairo, pango, pangocairo, atk, gobject",
+		"includes": "cairo, pango, pangocairo, atk, gobject, gio",
+		"excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
 	}},
 )

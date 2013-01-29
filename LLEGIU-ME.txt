@@ -4,7 +4,7 @@ Gnank - cercador d'horaris de la FIB
 Copyright © 2006,2007  Albert Gasset Romo <albert.gasset@gmail.com>
 
 Adaptació al Grau en Enginyeria Informàtica amb l'autorització del creador:
-Marc Cornellà <marc.cornella@est.fib.upc.edu> (2011)
+2011,2012  Marc Cornellà <marc.cornella@est.fib.upc.edu>
 
 Distribuït sota la llicència General Public License, vegeu el fitxer "GPL.txt".
 
@@ -39,7 +39,7 @@ Requisits de programari
 Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
 el següent programari:
 
- * Python >= 2.4 (www.python.org)
+ * Python2 >= 2.4 (www.python.org)
  * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
 
 En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
@@ -51,14 +51,31 @@ els noms dels paquets que s'han de tenir instal·lats són:
 Opcionalment, si està instal·lat el Psyco, una extenió que millorar el
 rendiment d'execució de codi Python, el Gnank l'utilitzarà.
 
+ * python-psyco
+
 
 Utilització sense instal·lació
 ------------------------------
 
+Linux:
+
 Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar
 el fitxer "gnank.sh", que es troba al directori arrel de la distribució:
 
-./gnank.sh
+./gnank.sh (o des de nautilus o qualsevol altre explorador: doble clic > executar)
+
+
+Windows:
+
+Es pot executar mitjançant l'executable inclòs al zip, "gnank.exe". 
+Es tracta d'un autoextraïble generat amb WinRAR.
+
+
+Mac OS X:
+
+No s'ha pogut provar per falta de maquinari compatible. S'agrairà qualsevol feedback
+al respecte a l'email especificat més amunt, però en principi s'hauria de poder
+executar seguint les instruccions per Linux (amb els requisits de Python instal·lats).
 
 
 Instal·lació
@@ -75,7 +92,6 @@ o amb l'ordre "gnank".
 
 Si voleu més informació de com instal·lar programes amb Distutils mireu a
 http://www.python.org/doc/current/inst/.
-
 
 Desinstal·lació
 ---------------

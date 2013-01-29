@@ -1,10 +1,19 @@
+Gnank 3.2 (2012-02-22)
+------------------------
+
+ * Inclosa la opció per seleccionar la Carrera.
+ * La carrera seleccionada també es guarda a la configuració del Gnank.
+ * Testejada la compatibilitat amb configuracions de versions anteriors.
+ * El tamany de la barra lateral de les assignatures es pot canviar.
+ * Fitxer de relació Pla d'estudis - Codi canviat a codis.txt.
+
 Gnank 3.1 (2011-07-08)
 ------------------------
 
  * Adaptació al nou sistema de consulta amb codis per Carrera 
-   (veure CodiAssigs.txt)
- * En properes versions s'inclourà la opció a la GUI
- * Corregit error en obrir el fitxer de log
+   (veure CodiAssigs.txt).
+ * En properes versions s'inclourà la opció a la GUI.
+ * Corregit error en obrir el fitxer de log.
 
 Gnank 3.0.1 (2011-02-02)
 ------------------------
@@ -14,8 +23,8 @@ Gnank 3.0.1 (2011-02-02)
 Gnank 2.0.1 (2007-07-12)
 ------------------------
 
- * Corregit error d'actualització d'horaris.
  * Corregits errors ortogràfics de la interfície gràfica.
+ * Corregit error d'actualització d'horaris.
  * Corregit error en les proves d'actualització d'horaris.
  * Distribuït sota la llicència GPL versió 3.
 
