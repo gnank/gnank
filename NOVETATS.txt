@@ -1,3 +1,11 @@
+Gnank 3.1 (2011-07-08)
+------------------------
+
+ * Adaptació al nou sistema de consulta amb codis per Carrera 
+   (veure CodiAssigs.txt)
+ * En properes versions s'inclourà la opció a la GUI
+ * Corregit error en obrir el fitxer de log
+
 Gnank 3.0.1 (2011-02-02)
 ------------------------
 

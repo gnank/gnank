@@ -37,9 +37,9 @@ def desa(fitxer):
 	tuples = chain(*iters)
 	dades.desa(fitxer, sorted(tuples), sorted(_horaris))
 
-def actualitza():
+def actualitza(codiAssigs):
 	global _horaris
-	classes = dades.obre_http()
+	classes = dades.obre_http(codiAssigs)
 	_assigs.clear()
 	_afegeix_classes(classes)
 	horaris_valids = set()

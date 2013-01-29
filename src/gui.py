@@ -31,13 +31,13 @@ import logging
 
 gtk_versio_2_10 = gtk.check_version(2, 10, 0) is None
 
-def inicia():
+def inicia(codi):
 	if not gtk_versio_2_10:
 		logging.warning("La versió de GTK és inferior a la 2.10.")
 	gtk.gdk.threads_init()
 	gtk.gdk.threads_enter()
 	gtk.about_dialog_set_url_hook(obre_enllac_web)
-	f = Finestra()
+	f = Finestra(codi)
 	f.show_all()
 	try:
 		gtk.main()
@@ -72,7 +72,7 @@ class Finestra(gtk.Window):
 				</toolbar>
 				</ui>"""
 
-	def __init__(self):
+	def __init__(self, codiAssigs):
 		gtk.Window.__init__(self)
 
 		self.set_title("Gnank - Cercador d'horaris de la FIB")
@@ -83,7 +83,7 @@ class Finestra(gtk.Window):
 
 		area_finestra = gtk.VBox()
 
-		accions = Accions(self)
+		accions = Accions(self, codiAssigs)
 		uimanager = gtk.UIManager()
 		uimanager.insert_action_group(accions, 0)
 		uimanager.add_ui_from_string(self._xmlui)
@@ -151,12 +151,13 @@ class Accions(gtk.ActionGroup):
 	}
 		
 
-	def __init__(self, finestra):
+	def __init__(self, finestra, codiAssigs):
 		"""Inicialitza les accions."""
 
 		gtk.ActionGroup.__init__(self, "gnank")
 
 		self.finestra = finestra
+		self.codiAssigs = codiAssigs
 		impressio = Impressio(finestra)
 		ajuda = FinestraAjuda(finestra)
 		self._avisar_cau_no_funciona = True
@@ -202,7 +203,7 @@ class Accions(gtk.ActionGroup):
 		gtk.main_quit()
 
 	def _actualitza_dades(self, widget=None):
-		FinestraActualitza(self)
+		FinestraActualitza(self, self.codiAssigs)
 
 	def _obre_dades(self, widget=None):
 		title = "Obre des d'un fitxer..."
@@ -749,8 +750,9 @@ class FinestraCerca(gtk.Dialog):
 
 class FinestraActualitza(gtk.Dialog):
 
-	def __init__(self, accions):
+	def __init__(self, accions, codiAssigs):
 		self._accions = accions
+		self._codiAssigs = codiAssigs
 		flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
 		gtk.Dialog.__init__(self, "Actualització", accions.finestra, flags, ())
 		self.set_icon_name(gtk.STOCK_REFRESH)
@@ -772,7 +774,7 @@ class FinestraActualitza(gtk.Dialog):
 		gobject.timeout_add(100, self._mou_barra)
 		gtk.gdk.threads_leave()
 		try:
-			domini.actualitza()
+			domini.actualitza(self._codiAssigs)
 		except ErrorDades:
 			gtk.gdk.threads_enter()
 			self.destroy()
