@@ -7,7 +7,7 @@ Copyright © 2006, 2007
 Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:  
 Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
 
-Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](GPL.txt)
+Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](blob/master/GPL.txt)
 
 Pàgina web del projecte: http://lafarga.cpl.upc.edu/projectes/gnank-reloaded
 
@@ -62,7 +62,7 @@ Utilització sense instal·lació
 ### Linux:
 
 Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar el
-fitxer [gnank.sh](gnank.sh), que es troba al directori arrel de la distribució:
+fitxer [gnank.sh](blob/master/gnank.sh), que es troba al directori arrel de la distribució:
 
 `./gnank.sh` (o des de nautilus o qualsevol altre explorador: doble clic > executar)
 
@@ -125,23 +125,35 @@ De la documentació de la API del Racó:
 
 Aquests són els codis que utilitza el Gnank, i per tant els plans d'estudis suportats:
 
-- GRAU  Grau en Enginyeria Informàtica
+- **_GRAU_**  
+  Grau en Enginyeria Informàtica
 
 **Pla 2003**
-- EI03   _Eng. Informàtica Superior_
-- ETS03  _Eng. Tècnica de Sistemes_
-- ETG03  _Eng. Tècnica de Gestió_
+
+- **_EI03_**  
+  Eng. Informàtica Superior
+- **_ETS03_**  
+  Eng. Tècnica de Sistemes
+- **_ETG03_**  
+  Eng. Tècnica de Gestió
 
 ### Màsters
 
-- MEI    _Màster en Enginyeria Informàtica_
-- EMDC   _Erasmus Mundus in Distributed Computing_
+- **_MEI_**    
+  Màster en Enginyeria Informàtica
+- **_EMDC_**  
+  Erasmus Mundus in Distributed Computing
 
 **Pla 2006**
-- MTI    _Màster en Tecnologies de la Informació_
-- CANS   _Computer Architecture, Networks and Systems_
-- MC     _Màster en Computació_
-- MIA    _Màster en Intel·ligència Artifical_
+
+- **_MTI_**    
+  Màster en Tecnologies de la Informació
+- **_CANS_**  
+  Computer Architecture, Networks and Systems
+- **_MC_**  
+  Màster en Computació
+- **_MIA_**  
+  Màster en Intel·ligència Artifical
 
 Suposadament hi ha més codis disponibles, com ara _MEI_ que correspon al **Màster
 en Enginyeria Informàtica**. Si es dóna el cas i no està incorporat al Gnank, 
