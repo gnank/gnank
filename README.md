@@ -1,14 +1,16 @@
 Gnank - cercador d'horaris de la FIB
 ====================================
 
-Copyright © 2006,2007  Albert Gasset Romo <albert.gasset@gmail.com>
+Creador: Albert Gasset Romo (albert.gasset@gmail.com) 
+Copyright © 2006, 2007
 
-Adaptació al Grau en Enginyeria Informàtica amb l'autorització del creador:
-2011,2012  Marc Cornellà <marc.cornella@est.fib.upc.edu>
+Adaptació al Grau i plans d'estudis recents amb l'autorització del creador: 
+Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
 
-Distribuït sota la llicència General Public License, vegeu el fitxer "GPL.txt".
+Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](GPL.txt)
 
-Pagina web del projecte: http://lafarga.cpl.upc.edu/projectes/gnank-reloaded
+Pàgina web del projecte: http://lafarga.cpl.upc.edu/projectes/gnank-reloaded
+
 
 Presentació
 -----------
@@ -36,20 +38,20 @@ Característiques:
 Requisits de programari
 -----------------------
 
-Per a poder instal·lar i executar el programa necessiteu tenir instal·lat
-el següent programari:
+Per a poder instal·lar i executar el programa necessiteu tenir instal·lat el 
+següent programari:
 
  * Python2 >= 2.4 (www.python.org)
  * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
 
-En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
+En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.), 
 els noms dels paquets que s'han de tenir instal·lats són:
 
  * python
  * python-gtk2
 
-Opcionalment, si està instal·lat el Psyco, una extenió que millorar el
-rendiment d'execució de codi Python, el Gnank l'utilitzarà.
+Opcionalment, si està instal·lat el Psyco, una extensió que millorar el rendiment
+d'execució de codi Python, el Gnank l'utilitzarà.
 
  * python-psyco
 
@@ -57,87 +59,93 @@ rendiment d'execució de codi Python, el Gnank l'utilitzarà.
 Utilització sense instal·lació
 ------------------------------
 
-Linux:
+### Linux:
 
-Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar
-el fitxer "gnank.sh", que es troba al directori arrel de la distribució:
+Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar el
+fitxer [gnank.sh](gnank.sh), que es troba al directori arrel de la distribució:
 
-./gnank.sh (o des de nautilus o qualsevol altre explorador: doble clic > executar)
-
-
-Windows:
-
-Es pot executar mitjançant l'executable inclòs al zip, "gnank.exe". 
-Es tracta d'un autoextraïble generat amb WinRAR.
+`./gnank.sh` (o des de nautilus o qualsevol altre explorador: doble clic > executar)
 
 
-Mac OS X:
+### Windows:
 
-No s'ha pogut provar per falta de maquinari compatible. S'agrairà qualsevol feedback
-al respecte a l'email especificat més amunt, però en principi s'hauria de poder
-executar seguint les instruccions per Linux (amb els requisits de Python instal·lats).
+Es pot executar mitjançant l'executable inclòs al zip, "gnank.exe". Es tracta
+d'un auto-extraïble generat amb WinRAR (no en sé més :P)
+
+
+### Mac OS X:
+
+No s'ha pogut provar per falta de maquinari compatible. S'agrairà qualsevol 
+feedback, però en principi hauria de funcionar correctament seguint les 
+instruccions per Linux (amb els requisits de Python instal·lats).
 
 
 Instal·lació
 ------------
 
-El programa utilitza les eines "Python Distutils" per a instal·lar-se.
-Simplement cal executar la següent ordre des de la carpeta arrel de la
-distribució de Gnank amb privilegis de super-usuari:
+El programa utilitza les eines _Python Distutils_ per a instal·lar-se. Simplement
+cal executar la següent ordre des de la carpeta arrel de la distribució de Gnank
+amb privilegis d'administrador:
 
-./setup.py install
+`./setup.py install`
 
-Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori
-o amb l'ordre "gnank".
+Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori o amb 
+l'ordre `gnank`.
 
 Si voleu més informació de com instal·lar programes amb Distutils mireu a
 http://www.python.org/doc/current/inst/.
 
+
 Desinstal·lació
 ---------------
 
-Actualment "Distutils" no permet desinstal·lar programes, si voleu
-desinstal·lar el Gnank heu de fer-ho manualment. Només cal que elimineu
-els següents fitxers i directoris:
+Actualment "Distutils" no permet desinstal·lar programes, si voleu desinstal·lar 
+el Gnank heu de fer-ho manualment. Només cal que elimineu els següents fitxers 
+i directoris:
 
+```
 /usr/bin/gnank
 /usr/share/applications/gnank.desktop
 /usr/share/doc/gnank/
 /usr/share/gnank/
 /usr/share/pixmaps/gnank.png
+```
 
 
 Referència de codis de pla d'estudis
 ------------------------------------
 
-Aquests codis s'utilitzen per consultar a la API del Racó les assignatures
-d'un pla d'estudis. Exemple: https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi=GRAU
+Aquests codis s'utilitzen per consultar a la API del Racó les assignatures d'un 
+pla d'estudis. Exemple: https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi=GRAU
 
 De la documentació de la API del Racó:
 
-    Retorna les sigles de les assignatures d'una titulació que tenen
-    horari. Els possibles codis son: MTI GRAU EI03 ETG03 ETS03 
-    MC MIA CANS EMDC
+    Retorna les sigles de les assignatures d'una titulació que tenen horari. Els 
+    possibles codis son: MTI GRAU EI03 ETG03 ETS03 MC MIA CANS EMDC
 
 Aquests són els codis que utilitza el Gnank, i per tant els plans d'estudis suportats:
 
 - GRAU  Grau en Enginyeria Informàtica
 
-### Pla 2003
-- EI03  Eng. Informàtica Superior
-- ETS03 Eng. Tècnica de SistemeS
-- ETG03 Eng. Tècnica de Gestió
+**Pla 2003**
+- EI03   _Eng. Informàtica Superior_
+- ETS03  _Eng. Tècnica de Sistemes_
+- ETG03  _Eng. Tècnica de Gestió_
 
 ### Màsters
-- MEI   Màster en Enginyeria Informàtica
-- EMDC  Erasmus Mundus in Distributed Computing
 
-### Màsters pla 2006
-- MTI   Màster en Tecnologies de la Informació
-- CANS  Computer Architecture, Networks and Systems
-- MC    Màster en Computació
-- MIA   Màster en Intel·ligència Artifical
+- MEI    _Màster en Enginyeria Informàtica_
+- EMDC   _Erasmus Mundus in Distributed Computing_
 
-Suposadament hi ha més codis disponibles, com ara **MEI** que correspon al _Màster en Enginyeria Informàtica_. Si es dóna el cas i no està incorporat al Gnank, feu-m'ho saber afegint un ticket (apart Issues), o també podeu fer el canvi vosaltres mateixos i fer un _pull request_.
+**Pla 2006**
+- MTI    _Màster en Tecnologies de la Informació_
+- CANS   _Computer Architecture, Networks and Systems_
+- MC     _Màster en Computació_
+- MIA    _Màster en Intel·ligència Artifical_
+
+Suposadament hi ha més codis disponibles, com ara **MEI** que correspon al _Màster
+en Enginyeria Informàtica_. Si es dóna el cas i no està incorporat al Gnank, 
+feu-m'ho saber afegint un ticket (apart Issues); també podeu fer el canvi vosaltres
+mateixos i fer un _pull request_.
 
 Més endavant editaré una guia per a contribuir al projecte.
