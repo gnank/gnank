@@ -1,10 +1,10 @@
 Gnank - cercador d'horaris de la FIB
 ====================================
 
-Creador: Albert Gasset Romo (albert.gasset@gmail.com) 
+Creador: Albert Gasset Romo (albert.gasset@gmail.com)  
 Copyright © 2006, 2007
 
-Adaptació al Grau i plans d'estudis recents amb l'autorització del creador: 
+Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:  
 Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
 
 Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](GPL.txt)
@@ -20,18 +20,18 @@ als alumnes de la FIB.
 
 Característiques:
 
- * Interfície que permet seleccionar els grups i visualitzar els horaris de
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de  
    forma senzilla i ràpida.
 
  * Actualització de les dades dels horaris del servidor de la FIB.
 
- * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de  
    solapaments, a partir d'uns grups seleccionats.
 
- * Possibilitat d'indicar horaris preferits que es volen recordar, i opció
+ * Possibilitat d'indicar horaris preferits que es volen recordar, i opció  
    per a imprimir-los.
 
- * Obre i desa els horaris automàticament al directori personal de l'usuari,
+ * Obre i desa els horaris automàticament al directori personal de l'usuari,  
    però també és possible obrir i desar els horaris en un fitxer específic.
 
 
@@ -143,8 +143,8 @@ Aquests són els codis que utilitza el Gnank, i per tant els plans d'estudis sup
 - MC     _Màster en Computació_
 - MIA    _Màster en Intel·ligència Artifical_
 
-Suposadament hi ha més codis disponibles, com ara **MEI** que correspon al _Màster
-en Enginyeria Informàtica_. Si es dóna el cas i no està incorporat al Gnank, 
+Suposadament hi ha més codis disponibles, com ara _MEI_ que correspon al **Màster
+en Enginyeria Informàtica**. Si es dóna el cas i no està incorporat al Gnank, 
 feu-m'ho saber afegint un ticket (apart Issues); també podeu fer el canvi vosaltres
 mateixos i fer un _pull request_.
 
