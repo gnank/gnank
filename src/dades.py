@@ -19,8 +19,8 @@
 import re
 from urllib import urlopen
 
-URL_ASSIGS = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.assignatures_titulacio?codi="
-URL_CLASSES = "http://www.fib.upc.es/FIB/plsql/PUB_HORARIS.horari_text"
+URL_ASSIGS = "https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi="
+URL_CLASSES = "https://raco.fib.upc.edu/api/horaris/horari-assignatures.txt"
 
 _ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
 _ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
