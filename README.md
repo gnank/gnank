@@ -106,3 +106,38 @@ els següents fitxers i directoris:
 /usr/share/gnank/
 /usr/share/pixmaps/gnank.png
 
+
+Referència de codis de pla d'estudis
+------------------------------------
+
+Aquests codis s'utilitzen per consultar a la API del Racó les assignatures
+d'un pla d'estudis. Exemple: https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi=GRAU
+
+De la documentació de la API del Racó:
+
+    Retorna les sigles de les assignatures d'una titulació que tenen
+    horari. Els possibles codis son: MTI GRAU EI03 ETG03 ETS03 
+    MC MIA CANS EMDC
+
+Aquests són els codis que utilitza el Gnank, i per tant els plans d'estudis suportats:
+
+- GRAU  Grau en Enginyeria Informàtica
+
+### Pla 2003
+- EI03  Eng. Informàtica Superior
+- ETS03 Eng. Tècnica de SistemeS
+- ETG03 Eng. Tècnica de Gestió
+
+### Màsters
+- MEI   Màster en Enginyeria Informàtica
+- EMDC  Erasmus Mundus in Distributed Computing
+
+### Màsters pla 2006
+- MTI   Màster en Tecnologies de la Informació
+- CANS  Computer Architecture, Networks and Systems
+- MC    Màster en Computació
+- MIA   Màster en Intel·ligència Artifical
+
+Suposadament hi ha més codis disponibles, com ara **MEI** que correspon al _Màster en Enginyeria Informàtica_. Si es dóna el cas i no està incorporat al Gnank, feu-m'ho saber afegint un ticket (apart Issues), o també podeu fer el canvi vosaltres mateixos i fer un _pull request_.
+
+Més endavant editaré una guia per a contribuir al projecte.
