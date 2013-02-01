@@ -33,7 +33,7 @@ else:
 			"src/dades.py", "src/gnank.png", "src/ajuda.txt"]),
 		("share/pixmaps", ["src/gnank.png"]),
 		("share/applications", ["src/gnank.desktop"]),
-		("share/doc/gnank", ["LLEGIU-ME.txt", "NOVETATS.txt", "GPL.txt"]),
+		("share/doc/gnank", ["README.md", "CHANGELOG.md", "GPL.txt"]),
 	]
 
 setup(
@@ -44,11 +44,11 @@ setup(
 	license = config.LLICENCIA,
 	description = config.DESCRIPCIO,
 	url = config.URL_WEB,
-	scripts = ['src/gnank'],
+	scripts = ['src/gnank.py'],
 	data_files = data_files,
 	windows = [{
-		"script": "src/gnank",
-		'icon_resources': [(1, "paquets/win32/gnank.ico")],
+		"script": "src/gnank.py",
+		'icon_resources': [(1, "src/gnank.ico")],
 	}],
 	options = {"py2exe": {
 		"packages": "encodings",
