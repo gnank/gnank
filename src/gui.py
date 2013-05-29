@@ -16,20 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import pygtk
 pygtk.require('2.0')
-import gtk, gobject, pango
-import cairo
-import domini, config
-from domini import Classe, Horari, Cerca, ErrorDades, ErrorOpcions
-from string import lower
-from time import clock
-from thread import start_new_thread
+import gtk
+import gobject
+import pango
 import webbrowser
 import logging
+import config
+import domini
+from domini import Classe, Horari, Cerca, ErrorDades, ErrorOpcions
+from thread import start_new_thread
 
 gtk_versio_2_10 = gtk.check_version(2, 10, 0) is None
+
 
 def inicia():
     if not gtk_versio_2_10:
@@ -106,7 +106,7 @@ class Finestra(gtk.Window):
         area_finestra.pack_start(area_treball, expand=True, fill=True)
 
         arbre = ArbreGrups()
-        area_treball.pack1(arbre, resize=False, shrink=False )
+        area_treball.pack1(arbre, resize=False, shrink=False)
 
         llista = LlistaHoraris(accions)
         area_llista = gtk.ScrolledWindow()
@@ -156,7 +156,6 @@ class Accions(gtk.ActionGroup):
         'dades-actualitzades': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         'neteja': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
-
 
     def __init__(self, finestra):
         """Inicialitza les accions."""
@@ -285,16 +284,16 @@ class TriaCarrera(gtk.HBox):
     DESC, CODI = range(0, 2)
 
     _codiscarrera = [ \
-        (u"Grau","GRAU"), \
-        (u"Eng. Inf. Superior","EI03"), \
-        (u"Eng. Tèc. Sistemes","ETS03"), \
-        (u"Eng. Tèc. Gestió","ETG03"), \
-        (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes","CANS"), \
-        (u"M. d'Inteligència Artificial","MIA"), \
-        (u"M. de Computació","MC"), \
-        (u"M. de Tecnologies de la Informació","MTI"), \
-        (u"M. en Enginyeria Informàtica","MEI"), \
-        (u"M. Erasmus de Computació Distribuïda","EMDC")
+        (u"Grau", "GRAU"), \
+        (u"Eng. Inf. Superior", "EI03"), \
+        (u"Eng. Tèc. Sistemes", "ETS03"), \
+        (u"Eng. Tèc. Gestió", "ETG03"), \
+        (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes", "CANS"), \
+        (u"M. d'Inteligència Artificial", "MIA"), \
+        (u"M. de Computació", "MC"), \
+        (u"M. de Tecnologies de la Informació", "MTI"), \
+        (u"M. en Enginyeria Informàtica", "MEI"), \
+        (u"M. Erasmus de Computació Distribuïda", "EMDC")
         ]
 
     def __init__(self):
@@ -311,7 +310,7 @@ class TriaCarrera(gtk.HBox):
         self.pack_start(self._select, expand=False)
 
     def _actualitza_carrera(self, widget=None):
-        index = self._select.get_active()-1
+        index = self._select.get_active() - 1
         if index in range(0, len(self._codiscarrera)):
             carrera = self._codiscarrera[index][1]
         else:
@@ -322,7 +321,7 @@ class TriaCarrera(gtk.HBox):
         carrera = domini.obte_carrera()
         index = [i for i, v in enumerate(self._codiscarrera) if v[1] == carrera]
         if len(index) > 0:
-            self._select.set_active(index[0]+1)
+            self._select.set_active(index[0] + 1)
         else:
             self._select.set_active(0)
 
@@ -569,15 +568,15 @@ class LlistaHoraris(gtk.TreeView):
         # Afegeix una columna buida al final
         col = gtk.TreeViewColumn("", gtk.CellRendererText())
         self.append_column(col)
-        
+
         self.connect('cursor-changed', self._horari_seleccionat_cb)
 
         # Afegir fila 'grups seleccionats'
         model = gtk.ListStore(object, bool, int, int, int, int, int)
         h = Horari()
-        it = model.append([h.grups(), False, h.hores, h.hores_mati, h.hores_tarda,
+        model.append([h.grups(), False, h.hores, h.hores_mati, h.hores_tarda,
             h.solapaments, h.fragments])
-        
+
         model.set_sort_func(0, self._cmp_horaris_cb)
         self.set_model(model)
         self._fila_grups_sel = gtk.TreeRowReference(model, (0,))
@@ -745,7 +744,6 @@ class FinestraCerca(gtk.Dialog):
         label.set_mnemonic_widget(self._min_assig)
         table.attach(label, 0, 1, 0, 1, gtk.FILL, 0)
 
-        hbox = gtk.HBox()
         self._max_solap = gtk.SpinButton()
         self._max_solap.set_range(0, 60)
         self._max_solap.set_increments(1, 1)
@@ -786,7 +784,7 @@ class FinestraCerca(gtk.Dialog):
             self._n_combinacions = self._cerca.n_combinacions()
             self._atura = False
             gobject.timeout_add(100, self._actualitza_barra_cb)
-            self._llista.actualitza(horaris = self._cerca_horaris())
+            self._llista.actualitza(horaris=self._cerca_horaris())
             self.set_response_sensitive(self.RESPONSE_ATURA, False)
             self.set_response_sensitive(self.RESPONSE_CERCA, True)
             self._min_assig.set_sensitive(True)
@@ -798,7 +796,8 @@ class FinestraCerca(gtk.Dialog):
             if gtk.events_pending():
                 gtk.main_iteration(False)
             yield h
-            if self._atura: break
+            if self._atura:
+                break
         else:
             self._atura = True
 
@@ -1112,7 +1111,7 @@ class FinestraAjuda(gtk.Dialog):
         flags = gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT
         buttons = (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         gtk.Dialog.__init__(self, "Ajuda", finestra, flags, buttons)
-        self.set_default_size(600,400)
+        self.set_default_size(600, 400)
         self.set_icon_name(gtk.STOCK_HELP)
         self.set_has_separator(False)
         tb = self._prepara_text_buffer()
@@ -1158,4 +1157,3 @@ class FinestraAjuda(gtk.Dialog):
     def mostra(self, widget=None):
         self.run()
         self.hide()
-

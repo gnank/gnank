@@ -18,12 +18,12 @@
 
 
 import dades
-from dades import ErrorDades, ErrorOpcions
 from itertools import chain
 
 _carrera = ""
 _assigs = {}
 _horaris = set()
+
 
 def obre(fitxer):
     global _carrera
@@ -34,10 +34,12 @@ def obre(fitxer):
     for horari in horaris:
         afegeix_horari_preferit(horari)
 
+
 def desa(fitxer):
     iters = [assig.tuples_classes() for assig in _assigs.itervalues()]
     tuples = chain(*iters)
     dades.desa(fitxer, _carrera, sorted(tuples), sorted(_horaris))
+
 
 def actualitza():
     global _horaris, _carrera
@@ -50,40 +52,51 @@ def actualitza():
     horaris_valids.discard(tuple())
     _horaris = horaris_valids
 
+
 def grups_disponibles():
     grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles())]
     return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
+
 
 def grups_disponibles_mati():
     grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles_mati())]
     return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
 
+
 def grups_disponibles_tarda():
     grups_a = lambda a: [(g.nom) for g in sorted(a.grups_disponibles_tarda())]
     return [(a.nom, grups_a(a)) for a in sorted(_assigs.itervalues())]
 
+
 def horaris_preferits():
     return [Horari(g) for g in _horaris]
+
 
 def es_horari_preferit(horari):
     return tuple(sorted(horari)) in _horaris
 
+
 def afegeix_horari_preferit(horari):
     _horaris.add(tuple(sorted(horari)))
 
+
 def elimina_horari_preferit(horari):
     _horaris.discard(tuple(sorted(horari)))
+
 
 def _afegeix_classes(classes):
     for assig, grup, dia, hora, tipus, aula in classes:
         classe = Classe(assig, grup, dia, hora, tipus, aula)
         _assigs.setdefault(assig, Assig(assig)).afegeix_classe(classe)
 
+
 def _hores_classes(assig, grup):
-    return  _assigs[assig].grup(grup).hores_classes()
+    return _assigs[assig].grup(grup).hores_classes()
+
 
 def _classes_dia_hora(assig, grup, dia, hora):
     return _assigs[assig].grup(grup).classes(dia, hora)
+
 
 def _horari_valid(horari):
     horari_valid = []
@@ -93,12 +106,15 @@ def _horari_valid(horari):
             horari_valid.append((nom_assig, grup))
     return tuple(horari_valid)
 
+
 def actualitza_carrera(carrera):
     global _carrera
     _carrera = carrera
 
+
 def obte_carrera():
     return _carrera
+
 
 class Classe(object):
 
@@ -149,7 +165,7 @@ class Grup(object):
     def __init__(self, nom, supergrup=None):
         self.nom = nom
         self._supergrup = supergrup
-        self._classes = {} # { (dia, hora): classes }
+        self._classes = {}  # { (dia, hora): classes }
         self._mati = True
         self._tarda = True
 
@@ -252,7 +268,7 @@ class Horari(object):
 
     def __init__(self, grups=[]):
         self._tupla = tuple(sorted(grups))
-        self._grups = {} # { assig: grups }
+        self._grups = {}  # { assig: grups }
         for assig, grup in grups:
             self._grups.setdefault(assig, set()).add(grup)
         self._calcula_estadistiques()
@@ -286,7 +302,7 @@ class Horari(object):
         return iter(self._tupla)
 
     def _calcula_estadistiques(self):
-        assigs_dh = {} # { (dia, hora) : assig }
+        assigs_dh = {}  # { (dia, hora) : assig }
 
         for assig, grup in self._tupla:
             for dh in _hores_classes(assig, grup):
@@ -431,7 +447,6 @@ class Cerca(object):
         return solucio
 
     def _combinacio(self):
-        grup = self._grup
         c = 0
         n = 1
         for i in range(len(self._grup) - 1, -1, -1):
@@ -452,7 +467,6 @@ class Cerca(object):
 
         nivell = self._nivell
         return self._grup[nivell] <= len(self._grups[nivell])
-
 
     def _no_solucionable(self):
         """Indica si és impossible trobar noves solucions des del node."""
@@ -522,4 +536,3 @@ class Cerca(object):
                 n_solap -= 1
             classes[c] = s
         self._n_solap = n_solap
-
