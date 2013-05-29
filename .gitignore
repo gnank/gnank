@@ -37,7 +37,6 @@ nosetests.xml
 
 # Gnank
 downloads
-paquets
 web
 *.zip
 *.tar.gz
