@@ -524,6 +524,7 @@ class TaulaHorari(gtk.TreeView):
 
 
 class LlistaHoraris(gtk.TreeView):
+    ''' TODO refactoritzar interaccions amb el model (gtk.ListStore) '''
 
     _nom_col = ["Horari", "Preferit", "Hores", "Hores matí", "Hores tarda",
         "Solapaments", "Fragments"]
@@ -572,10 +573,11 @@ class LlistaHoraris(gtk.TreeView):
         self.connect('cursor-changed', self._horari_seleccionat_cb)
 
         # Afegir fila 'grups seleccionats'
-        model = gtk.ListStore(object, bool, int, int, int, int, int)
+        # L'última columna del model indica si és la fila 'grups seleccionats'
+        model = gtk.ListStore(object, bool, int, int, int, int, int, bool)
         h = Horari()
         model.append([h.grups(), False, h.hores, h.hores_mati, h.hores_tarda,
-            h.solapaments, h.fragments])
+            h.solapaments, h.fragments, True])
 
         model.set_sort_func(0, self._cmp_horaris_cb)
         self.set_model(model)
@@ -604,7 +606,7 @@ class LlistaHoraris(gtk.TreeView):
                 break
         else:
             it = model.insert(0, [h.grups(), False, h.hores, h.hores_mati,
-                h.hores_tarda, h.solapaments, h.fragments])
+                h.hores_tarda, h.solapaments, h.fragments, True])
             path_sel = model.get_path(it)
             self._mantenir_sel = False
 
@@ -615,36 +617,44 @@ class LlistaHoraris(gtk.TreeView):
     def actualitza(self, widget=None, horaris=[]):
         grups_seleccionats = self.get_model()[self._fila_grups_sel.get_path()][0]
 
-        model = gtk.ListStore(object, bool, int, int, int, int, int)
-        model.set_sort_func(0, self._cmp_horaris_cb)
+        # ¿¿ redefineix model en comptes d'obtenir-lo amb self.get_model() ??
+        model = gtk.ListStore(object, bool, int, int, int, int, int, bool)
+        # utilitzem una funcio de comparació per a ordenar cada columna
+        for i in range(0, 7):
+            model.set_sort_func(i, self._cmp_horaris_cb, i)
 
         path_sel = None
 
         for h in domini.horaris_preferits():
             it = model.append([h.grups(), True, h.hores, h.hores_mati,
-                h.hores_tarda, h.solapaments, h.fragments])
+                h.hores_tarda, h.solapaments, h.fragments, False])
             if not path_sel and h.grups() == grups_seleccionats:
                 path_sel = model.get_path(it)
 
         for h in horaris:
             if not domini.es_horari_preferit(h.grups()):
                 it = model.append([h.grups(), False, h.hores, h.hores_mati,
-                    h.hores_tarda, h.solapaments, h.fragments])
+                    h.hores_tarda, h.solapaments, h.fragments, False])
                 if not path_sel and h.grups() == grups_seleccionats:
                     path_sel = model.get_path(it)
+                    model.set_value(it, 7, True)
 
         self._mantenir_sel = path_sel is not None
 
         if not path_sel:
             h = Horari(grups_seleccionats)
             it = model.insert(0, [h.grups(), False, h.hores, h.hores_mati,
-                h.hores_tarda, h.solapaments, h.fragments])
+                h.hores_tarda, h.solapaments, h.fragments, True])
             path_sel = model.get_path(it)
 
         self.set_model(model)
         self._fila_grups_sel = gtk.TreeRowReference(model, path_sel)
         self.set_cursor(path_sel)
         self.columns_autosize()
+
+    def es_fila_grups_seleccionats(self, it):
+        model = self.get_model()
+        return model.get_value(it, 7)
 
     def _horari_seleccionat_cb(self, treeview=None):
         (model, it) = self.get_selection().get_selected()
@@ -659,15 +669,29 @@ class LlistaHoraris(gtk.TreeView):
             text = ",  ".join(["%s %s" % (a, g) for a, g in horari])
         renderer.set_property('text', text)
 
-    def _cmp_horaris_cb(self, model, it1, it2):
-        return cmp(model.get_value(it1, 0), model.get_value(it2, 0))
+    def _cmp_horaris_cb(self, model, it1, it2, id):
+        # la fila de grups seleccionats ha d'anar a la posició 0, per tant,
+        # ens assegurem que vagi sempre abans de l'altra fila comparada
+
+        # en funció de la direcció d'ordenació, hem de posar la fila de grups
+        # seleccionats 'al principi' (SORT_ASCENDING) o 'al final' (SORT_DESCENDING)
+        sorting = model.get_sort_column_id()[1]
+
+        if self.es_fila_grups_seleccionats(it1):
+            result = -1 if sorting == gtk.SORT_ASCENDING else +1
+        elif self.es_fila_grups_seleccionats(it2):
+            result = +1 if sorting == gtk.SORT_ASCENDING else -1
+        else:
+            result = cmp(model.get_value(it1, id), model.get_value(it2, id))
+        return result
 
     def _mostra_preferit_cb(self, column, renderer, model, it):
-        path = model.get_path(it)
+        # la fila de grups seleccionats no es pot marcar com a preferida
+        fixed = self.es_fila_grups_seleccionats(it)
         horari = model.get_value(it, 0)
-        renderer.set_property('active', domini.es_horari_preferit(horari))
-        renderer.set_property('activatable', len(horari) > 0)
-        renderer.set_property('sensitive', len(horari) > 0)
+        renderer.set_property('active', not fixed and domini.es_horari_preferit(horari))
+        renderer.set_property('activatable', not fixed)
+        renderer.set_property('sensitive', not fixed)
 
     def _commuta_preferit_cb(self, cell, path, col):
         model = self.get_model()
