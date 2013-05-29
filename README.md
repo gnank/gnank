@@ -1,10 +1,10 @@
 Gnank - cercador d'horaris de la FIB
 ====================================
 
-Creador: Albert Gasset Romo (albert.gasset@gmail.com)  
+Creador: Albert Gasset Romo (albert.gasset@gmail.com)
 Copyright © 2006, 2007
 
-Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:  
+Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:
 Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
 
 Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](blob/master/GPL.txt)
@@ -20,31 +20,31 @@ als alumnes de la FIB.
 
 Característiques:
 
- * Interfície que permet seleccionar els grups i visualitzar els horaris de  
+ * Interfície que permet seleccionar els grups i visualitzar els horaris de
    forma senzilla i ràpida.
 
  * Actualització de les dades dels horaris del servidor de la FIB.
 
- * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de  
+ * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
    solapaments, a partir d'uns grups seleccionats.
 
- * Possibilitat d'indicar horaris preferits que es volen recordar, i opció  
+ * Possibilitat d'indicar horaris preferits que es volen recordar, i opció
    per a imprimir-los.
 
- * Obre i desa els horaris automàticament al directori personal de l'usuari,  
+ * Obre i desa els horaris automàticament al directori personal de l'usuari,
    però també és possible obrir i desar els horaris en un fitxer específic.
 
 
 Requisits de programari
 -----------------------
 
-Per a poder instal·lar i executar el programa necessiteu tenir instal·lat el 
+Per a poder instal·lar i executar el programa necessiteu tenir instal·lat el
 següent programari:
 
  * Python2 >= 2.4 (www.python.org)
  * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
 
-En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.), 
+En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
 els noms dels paquets que s'han de tenir instal·lats són:
 
  * python
@@ -69,19 +69,19 @@ fitxer [gnank.sh](blob/master/gnank.sh), que es troba al directori arrel de la d
 
 ### Windows:
 
-Es pot executar mitjançant l'executable inclòs al zip, "gnank.exe". Es tracta
+Es pot executar mitjançant l'executable inclòs al zip, `gnank.exe`. Es tracta
 d'un auto-extraïble generat amb WinRAR (no en sé més :P)
 
 
 ### Mac OS X:
 
-No s'ha pogut provar per falta de maquinari compatible. S'agrairà qualsevol 
-feedback, però en principi hauria de funcionar correctament seguint les 
+No s'ha pogut provar per falta de maquinari compatible. S'agrairà qualsevol
+feedback, però en principi hauria de funcionar correctament seguint les
 instruccions per Linux (amb els requisits de Python instal·lats).
 
 
-Instal·lació
-------------
+Instal·lació (Linux)
+--------------------
 
 El programa utilitza les eines _Python Distutils_ per a instal·lar-se. Simplement
 cal executar la següent ordre des de la carpeta arrel de la distribució de Gnank
@@ -89,18 +89,18 @@ amb privilegis d'administrador:
 
 `./setup.py install`
 
-Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori o amb 
+Un cop instal·lat, podeu executar-lo des del menú del vostre escriptori o amb
 l'ordre `gnank`.
 
 Si voleu més informació de com instal·lar programes amb Distutils mireu a
 http://www.python.org/doc/current/inst/.
 
 
-Desinstal·lació
----------------
+Desinstal·lació (Linux)
+-----------------------
 
-Actualment "Distutils" no permet desinstal·lar programes, si voleu desinstal·lar 
-el Gnank heu de fer-ho manualment. Només cal que elimineu els següents fitxers 
+Actualment "Distutils" no permet desinstal·lar programes, si voleu desinstal·lar
+el Gnank heu de fer-ho manualment. Només cal que elimineu els següents fitxers
 i directoris:
 
 ```
@@ -115,49 +115,47 @@ i directoris:
 Referència de codis de pla d'estudis
 ------------------------------------
 
-Aquests codis s'utilitzen per consultar a la API del Racó les assignatures d'un 
+Aquests codis s'utilitzen per consultar a la API del Racó les assignatures d'un
 pla d'estudis. Exemple: https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi=GRAU
 
 De la documentació de la API del Racó:
 
-    Retorna les sigles de les assignatures d'una titulació que tenen horari. Els 
-    possibles codis son: MTI GRAU EI03 ETG03 ETS03 MC MIA CANS EMDC
+> Retorna les sigles de les assignatures d'una titulació que tenen horari. Els
+> possibles codis son: MTI GRAU EI03 ETG03 ETS03 MC MIA CANS EMDC
 
 Aquests són els codis que utilitza el Gnank, i per tant els plans d'estudis suportats:
 
-- **_GRAU_**  
+- **_GRAU_**
   Grau en Enginyeria Informàtica
 
 **Pla 2003**
 
-- **_EI03_**  
+- **_EI03_**
   Eng. Informàtica Superior
-- **_ETS03_**  
+- **_ETS03_**
   Eng. Tècnica de Sistemes
-- **_ETG03_**  
+- **_ETG03_**
   Eng. Tècnica de Gestió
 
 ### Màsters
 
-- **_MEI_**    
+- **_MEI_**
   Màster en Enginyeria Informàtica
-- **_EMDC_**  
+- **_EMDC_**
   Erasmus Mundus in Distributed Computing
 
 **Pla 2006**
 
-- **_MTI_**    
+- **_MTI_**
   Màster en Tecnologies de la Informació
-- **_CANS_**  
+- **_CANS_**
   Computer Architecture, Networks and Systems
-- **_MC_**  
+- **_MC_**
   Màster en Computació
-- **_MIA_**  
+- **_MIA_**
   Màster en Intel·ligència Artifical
 
-Suposadament hi ha més codis disponibles, com ara _MEI_ que correspon al **Màster
-en Enginyeria Informàtica**. Si es dóna el cas i no està incorporat al Gnank, 
-feu-m'ho saber afegint un ticket (apart Issues); també podeu fer el canvi vosaltres
+Suposadament hi ha més codis disponibles, com ara **MEI** que correspon al _Màster
+en Enginyeria Informàtica_. Si es dóna el cas i no està incorporat al Gnank,
+feu-m'ho saber afegint un ticket (apart [Issues](issues)); també podeu fer el canvi vosaltres
 mateixos i fer un _pull request_.
-
-Més endavant editaré una guia per a contribuir al projecte.
