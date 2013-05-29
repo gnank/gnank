@@ -25,8 +25,10 @@ URL_CLASSES = "https://raco.fib.upc.edu/api/horaris/horari-assignatures.txt"
 _ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
 _ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
 
+
 class ErrorOpcions(Exception):
-	pass
+    pass
+
 
 class ErrorDades(Exception):
     pass
@@ -53,7 +55,7 @@ def obre(fitxer):
                 if not _ER_HORARI.match(linia):
                     raise ErrorDades
                 linia = linia.split()
-                horaris.append(zip(linia[::2],linia[1::2]))
+                horaris.append(zip(linia[::2], linia[1::2]))
             else:
                 if not _ER_CLASSE.match(linia):
                     raise ErrorDades
@@ -66,7 +68,7 @@ def obre(fitxer):
     return carrera, classes, horaris
 
 
-def desa(fitxer, carrera, classes, horaris = None):
+def desa(fitxer, carrera, classes, horaris=None):
     try:
         f = file(fitxer, "wb")
         f.write(carrera)
@@ -77,7 +79,7 @@ def desa(fitxer, carrera, classes, horaris = None):
         if horaris is not None:
             f.write(";\n")
             for horari in horaris:
-                f.write(" ".join([a+" "+g for a,g in horari]))
+                f.write(" ".join([a + " " + g for a, g in horari]))
                 f.write("\n")
     except IOError:
         raise ErrorDades
@@ -86,13 +88,14 @@ def desa(fitxer, carrera, classes, horaris = None):
 def obre_http(carrera):
     classes = []
     try:
-        if carrera == "": raise ErrorOpcions
+        if carrera == "":
+            raise ErrorOpcions
 
         # obtenim les assignatures
         assigs = [a.strip() for a in urlopen(URL_ASSIGS + carrera)]
 
         # borrem l'assignatura GRAU-EXAMENS en cas que hi sigui
-        assigs = filter (lambda a: a != "GRAU-EXAMENS", assigs)
+        assigs = filter(lambda a: a != "GRAU-EXAMENS", assigs)
 
         if assigs:
             params = "?assignatures=" + "&assignatures=".join(assigs)
