@@ -18,6 +18,7 @@
 
 
 import dades
+from dades import ErrorDades, ErrorOpcions
 from itertools import chain
 
 _carrera = ""
