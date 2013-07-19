@@ -38,6 +38,8 @@ Característiques:
 Requisits de programari
 -----------------------
 
+**Per a utilitzar sense instal·lació al Windows no hi ha cap requisit! Veure [Ús sense instal·lació](#windows)**
+
 Per a poder instal·lar i executar el programa necessiteu tenir instal·lat el
 següent programari:
 
@@ -56,7 +58,7 @@ d'execució de codi Python, el Gnank l'utilitzarà.
  * python-psyco
 
 
-Utilització sense instal·lació
+Ús sense instal·lació
 ------------------------------
 
 ### Linux:
@@ -70,7 +72,8 @@ fitxer [gnank.sh](blob/master/gnank.sh), que es troba al directori arrel de la d
 ### Windows:
 
 Es pot executar mitjançant l'executable inclòs al zip, `gnank.exe`. Es tracta
-d'un auto-extraïble generat amb WinRAR (no en sé més :P)
+d'un auto-extraïble generat amb WinRAR (no en sé més :P).
+Descarrega directament [l'última versió](blob/master/gnank.exe?raw=true).
 
 
 ### Mac OS X:
