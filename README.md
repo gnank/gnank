@@ -7,7 +7,7 @@ Copyright © 2006, 2007
 Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:
 Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
 
-Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](blob/master/GPL.txt)
+Distribuït sota la llicència General Public License, veure el fitxer [GPL.txt](GPL.txt)
 
 Pàgina web del projecte: http://lafarga.cpl.upc.edu/projectes/gnank-reloaded
 
@@ -64,7 +64,7 @@ d'execució de codi Python, el Gnank l'utilitzarà.
 ### Linux:
 
 Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar el
-fitxer [gnank.sh](blob/master/gnank.sh), que es troba al directori arrel de la distribució:
+fitxer [gnank.sh](gnank.sh), que es troba al directori arrel de la distribució:
 
 `./gnank.sh` (o des de nautilus o qualsevol altre explorador: doble clic > executar)
 
@@ -73,7 +73,7 @@ fitxer [gnank.sh](blob/master/gnank.sh), que es troba al directori arrel de la d
 
 Es pot executar mitjançant l'executable inclòs al zip, `gnank.exe`. Es tracta
 d'un auto-extraïble generat amb WinRAR (no en sé més :P).
-Descarrega directament [l'última versió](blob/master/gnank.exe?raw=true).
+Descarrega directament [l'última versió](gnank.exe?raw=true).
 
 
 ### Mac OS X:
