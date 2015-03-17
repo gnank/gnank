@@ -1,40 +1,7 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+DEB_PYTHON_SYSTEM := pysupport
 
-build:
-
-clean:
-	dh_testdir
-	dh_testroot
-	dh_clean 
-
-install:
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
-	dh_installdirs
-
-binary-arch: 
-
-binary-indep: install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_install
-	dh_installmenu
-	dh_installman
-	dh_link usr/share/pixmaps/gnank.png usr/share/gnank/gnank.png
-	dh_compress
-	dh_fixperms
-	dh_pysupport
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep
-
-.PHONY: build clean install binary-arch binary-indep binary
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk

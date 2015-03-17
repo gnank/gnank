@@ -1,25 +1,28 @@
 Source: gnank
 Section: x11
 Priority: optional
-Maintainer: Jordà Polo <jorda@ettin.org>
-Build-Depends: debhelper (>= 5.0.37.2)
-Build-Depends-Indep: python, python-support (>= 0.5.3)
+Maintainer: Albert Gasset Romo <albert.gasset@gmail.com>
+Build-Depends: debhelper (>= 5), cdbs (>= 0.4.49)
+Build-Depends-Indep: python-support (>= 0.5.3)
 Standards-Version: 3.7.2
 
 Package: gnank
 Architecture: all
-Depends: ${python:Depends}, python-gtk2 (>= 2.8.6)
+Depends: ${python:Depends}, python-gtk2 (>= 2.10)
 Suggests: python-psyco
 XB-Python-Version: ${python:Versions}
 Description: Cercador d'horaris de la FIB
- Gnank es un programa creat amb l'objectiu de facilitar la tria
- de l'horari dels alumnes de la FIB.
+ El Gnank és un programa creat amb l'objectiu de facilitar la tria
+ de l'horari als alumnes de la FIB.
  .
- Caracteristiques principals:
+ Característiques:
  .
-  * Obtencio de dades dels horaris del servidor de la FIB.
-  * Obre i desa dades d'horaris en un fitxer.
-  * Cerca d'horaris amb un nombre minim d'assignatures i un
-    nombre maxim de solapaments.
-  * Interficie que permet seleccionar els grups i visualitzar
-    els horaris de forma senzilla i rapida.
+  * Interfície que permet seleccionar els grups i visualitzar els horaris de
+    forma senzilla i ràpida.
+  * Actualització de les dades dels horaris del servidor de la FIB.
+  * Cerca d'horaris amb un nombre mínim d'assignatures i un nombre màxim de
+    solapaments, a partir d'uns grups seleccionats.
+  * Possibilitat d'indicar horaris preferits que es volen recordar, i opció
+    per a imprimir-los.
+  * Desa i obre els horaris automàticament al directori personal de l'usuari,
+    però també és possible obrir i desar els horaris en un fitxer específic.

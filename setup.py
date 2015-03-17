@@ -18,41 +18,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-from os.path import join, dirname
-sys.path.insert(0, join(dirname(__file__), "src"))
+from os.path import join
+sys.path[0] = join(sys.path[0], "src")
 import config
 
 from distutils.core import setup
 
 if sys.platform == "win32":
-	import py2exe
-	data_files = ["src/gnank.png", "src/ajuda.txt"]
+    import py2exe
+    data_files = ["src/gnank.png", "src/ajuda.txt"]
 else:
-	data_files = [
-		("share/gnank", ["src/config.py", "src/gui.py", "src/domini.py",
-			"src/dades.py", "src/gnank.png", "src/ajuda.txt"]),
-		("share/pixmaps", ["src/gnank.png"]),
-		("share/applications", ["src/gnank.desktop"]),
-		("share/doc/gnank", ["README.md", "CHANGELOG.md", "GPL.txt"]),
-	]
+    data_files = [
+        ("share/gnank", ["src/config.py", "src/gnank.py", "src/gui.py", "src/domini.py",
+            "src/dades.py", "src/gnank.png", "src/web.png", "src/ajuda.txt"]),
+        ("share/pixmaps", ["src/gnank.png"]),
+        ("share/applications", ["src/gnank.desktop"]),
+        ("share/doc/gnank", ["README.md", "CHANGELOG.md", "GPL.txt"]),
+else:
+    data_files = [
+    ]
 
 setup(
-	name = "gnank",
-	version = config.VERSIO,
-	author = config.AUTOR,
-	author_email = config.EMAIL_AUTOR,
-	license = config.LLICENCIA,
-	description = config.DESCRIPCIO,
-	url = config.URL_WEB,
-	scripts = ['src/gnank.py'],
-	data_files = data_files,
-	windows = [{
-		"script": "src/gnank.py",
-		'icon_resources': [(1, "src/gnank.ico")],
-	}],
-	options = {"py2exe": {
-		"packages": "encodings",
-		"includes": "cairo, pango, pangocairo, atk, gobject, gio",
-		"excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
-	}},
+    name = "gnank",
+    version = config.VERSIO,
+    author = config.AUTOR,
+    author_email = config.EMAIL_AUTOR,
+    license = config.LLICENCIA,
+    description = config.DESCRIPCIO,
+    url = config.URL_WEB,
+    scripts = ['src/gnank'],
+    data_files = data_files,
+    windows = [{
+        "script": "src/gnank",
+        'icon_resources': [(1, "paquets/win32/gnank.ico")],
+    }],
+    options = {"py2exe": {
+        "packages": "encodings",
+        "includes": "cairo, pango, pangocairo, atk, gobject",
+    }},
 )
