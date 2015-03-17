@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
@@ -89,7 +89,7 @@ def crea_dir_usuari():
 
 
 def cami(fitxer):
-    cami_fitxer = join(abspath(dirname(sys.argv[0])), fitxer)
+    cami_fitxer = join(gnank_dir, fitxer)
     if os.access(cami_fitxer, os.F_OK):
         return cami_fitxer
     logging.warning("No es pot accedir al fitxer: %s", fitxer)

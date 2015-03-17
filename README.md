@@ -64,9 +64,9 @@ d'execució de codi Python, el Gnank l'utilitzarà.
 ### Linux:
 
 Es pot executar el programa sense haver d'instal·lar-lo. Només cal executar el
-fitxer [gnank.sh](gnank.sh), que es troba al directori arrel de la distribució:
+fitxer [src/gnank](src/gnank), que es troba al directori arrel de la distribució:
 
-`./gnank.sh` (o des de nautilus o qualsevol altre explorador: doble clic > executar)
+`src/gnank` (o des de nautilus o qualsevol altre explorador: doble clic > executar)
 
 
 ### Windows:

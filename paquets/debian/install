@@ -1,9 +1,1 @@
-src/ajuda.txt usr/share/gnank
-src/gnank usr/bin
-src/config.py usr/share/gnank
-src/dades.py usr/share/gnank
-src/domini.py usr/share/gnank
-src/gui.py usr/share/gnank
-src/gnank.desktop usr/share/applications
-src/gnank.png usr/share/pixmaps
 debian/gnank.xpm usr/share/pixmaps

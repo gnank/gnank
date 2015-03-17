@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
@@ -108,4 +108,3 @@ def obre_http(carrera):
     except IOError:
         raise ErrorDades
     return classes
-

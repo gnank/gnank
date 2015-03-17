@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006, 2007  Albert Gasset Romo
@@ -48,29 +47,17 @@ def configura_registre_fitxer(fitxer):
         logging.getLogger("").addHandler(handler)
 
 
-def registra_excepcio(tipus, value, tb):
-    text = "".join(format_exception(tipus, value, tb))
+def registra_excepcio(type, value, tb):
+    text = "".join(format_exception(type, value, tb))
     logging.error("S'ha produït una excepció.\n%s", text)
 
 
-def configura_directori():
-    gnank_dir = os.environ.get("GNANK_DIR")
-    if gnank_dir is None:
-        if sys.platform == "win32":
-            gnank_dir = dirname(sys.argv[0])
-        else:
-            prefix = dirname(dirname(__file__))
-            gnank_dir = join(prefix, "share", "gnank")
-        os.environ["GNANK_DIR"] = gnank_dir
-    sys.path.insert(0, gnank_dir)
-
-
-def main():
+def main(gnank_dir):
     configura_registre()
     sys.excepthook = registra_excepcio
 
-    configura_directori()
     import config
+    config.gnank_dir = gnank_dir
     config.crea_dir_usuari()
     configura_registre_fitxer(config.REGISTRE_USUARI)
 
@@ -79,9 +66,7 @@ def main():
         psyco.full()
         logging.info("S'ha activat el mòdul Psyco.")
     except ImportError:
-        # hack per evitar el missatge d'error en tancar gnank a Windows
-        if sys.platform != "win32":
-            logging.warning("No s'ha trobat el mòdul Psyco.")
+        logging.info("No s'ha activat el mòdul Psyco.")
 
     logging.info("S'iniciarà l'aplicació.")
     import gui
@@ -89,8 +74,3 @@ def main():
     logging.info("Es tancarà l'aplicació.")
 
     logging.shutdown()
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        main()
