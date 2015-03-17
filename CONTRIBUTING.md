@@ -19,7 +19,9 @@ Compilació per a Windows amb py2exe
 
     o
 
-    - [PyGTK](http://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.24/), [PyCairo](http://ftp.gnome.org/pub/GNOME/binaries/win32/pycairo/1.8/), [PyGObject](http://ftp.gnome.org/pub/GNOME/binaries/win32/pygobject/2.28/)
+    - [PyGTK](http://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.24/),
+    - [PyCairo](http://ftp.gnome.org/pub/GNOME/binaries/win32/pycairo/1.8/),
+    - [PyGObject](http://ftp.gnome.org/pub/GNOME/binaries/win32/pygobject/2.28/)
 
  * Instal·lar [GTK+ all-in-one bundle](http://www.gtk.org/download/win32.php)
 
