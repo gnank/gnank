@@ -73,7 +73,7 @@ fitxer [src/gnank](src/gnank), que es troba al directori arrel de la distribuci�
 
 Es pot executar mitjançant l'executable inclòs al zip, `gnank.exe`. Es tracta
 d'un auto-extraïble generat amb WinRAR (no en sé més :P).
-Descarrega directament [l'última versió](gnank.exe?raw=true).
+Descarrega directament [l'última versió](https://github.com/mcornella/gnank/releases).
 
 
 ### Mac OS X:
