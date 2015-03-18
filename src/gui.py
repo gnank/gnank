@@ -159,8 +159,8 @@ class Finestra(gtk.Window):
 class Accions(gtk.ActionGroup):
     """Gestiona de les accions que pot fer l'usuari."""
 
-    BASE_URL = "http://www.fib.upc.edu/fib/infoAca/horaris/assignatura.html" \
-            + "?accio=graella&"
+    BASE_URL = "http://www.fib.upc.edu/fib/estudiar-enginyeria-informatica" \
+            + "/horaris.html?accio=graella&"
 
     __gsignals__ = {
         'cerca-horaris': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
