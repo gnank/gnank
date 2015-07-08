@@ -20,22 +20,31 @@
 import sys
 from os.path import join
 sys.path[0] = join(sys.path[0], "src")
-import config
 
+import config
 from distutils.core import setup
 
 if sys.platform == "win32":
     import py2exe
-    data_files = ["src/gnank.png", "src/ajuda.txt"]
+    data_files = [
+        "src/gnank.png",
+        "src/web.png",
+        "src/ajuda.txt"
+    ]
 else:
     data_files = [
-        ("share/gnank", ["src/config.py", "src/gnank.py", "src/gui.py", "src/domini.py",
-            "src/dades.py", "src/gnank.png", "src/web.png", "src/ajuda.txt"]),
+        ("share/gnank", [
+            "src/config.py",
+            "src/gui.py",
+            "src/domini.py",
+            "src/dades.py",
+            "src/gnank.png",
+            "src/web.png",
+            "src/ajuda.txt"
+        ]),
         ("share/pixmaps", ["src/gnank.png"]),
         ("share/applications", ["src/gnank.desktop"]),
-        ("share/doc/gnank", ["README.md", "CHANGELOG.md", "GPL.txt"]),
-else:
-    data_files = [
+        ("share/doc/gnank", ["README.md", "CHANGELOG.md", "LICENSE"]),
     ]
 
 setup(
@@ -54,6 +63,14 @@ setup(
     }],
     options = {"py2exe": {
         "packages": "encodings",
-        "includes": "cairo, pango, pangocairo, atk, gobject",
+        "includes": "cairo, pango, pangocairo, atk, gobject, gio",
+        "excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
+        "dll_excludes": [
+            "api-ms-win-core-errorhandling-l1-1-1.dll",
+            "api-ms-win-core-libraryloader-l1-2-0.dll",
+            "api-ms-win-core-processthreads-l1-1-2.dll",
+            "api-ms-win-core-profile-l1-1-0.dll",
+            "api-ms-win-core-sysinfo-l1-2-1.dll",
+        ]
     }},
 )

@@ -1,14 +1,15 @@
 Name            'Gnank'
 SetCompressor   'lzma'
 Icon            'gnank.ico'
-OutFile         '..\Gnank.exe'
+OutFile         '..\..\gnank.exe'
 
 SilentInstall silent
+RequestExecutionLevel user
 
 Section
     InitPluginsDir
     SetOutPath '$PLUGINSDIR'
-    File /r '..\dist\*.*'
+    File /r '..\..\dist\*.*'
     SetOutPath '$EXEDIR'
-    nsExec::Exec $PLUGINSDIR\gnank.exe
+    ExecWait '$PLUGINSDIR\gnank.exe'
 SectionEnd
