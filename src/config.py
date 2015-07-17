@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
-# Copyright (C) 2006, 2007  Albert Gasset Romo
+# Copyright (C) 2006 - 2007  Albert Gasset Romo
+#               2011 - 2015  Marc Cornellà
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,14 +26,17 @@ import sys
 NOM = "Gnank"
 VERSIO = "3.2"
 DESCRIPCIO = "Cercador d'horaris de la FIB"
-URL_WEB = "http://lafarga.cpl.upc.edu/projectes/gnank-reloaded"
-COPYRIGHT = "Copyright © 2006, 2007  Albert Gasset Romo"
+URL_WEB = "https://github.com/mcornella/gnank"
+COPYRIGHT = """\
+Copyright © 2006 - 2007 Albert Gasset Romo
+Copyright © 2011 - 2015 Marc Cornellà
+"""
 AUTOR = "Marc Cornellà"
-EMAIL_AUTOR = "marc.cornella@est.fib.upc.edu"
+EMAIL_AUTOR = "marc.cornella@live.com"
 LLICENCIA = "GPL"
 AUTORS = [
     "Desenvolupador actual:",
-    "Marc Cornellà <marc.cornella@est.fib.upc.edu>",
+    "Marc Cornellà <marc.cornella@live.com>",
     "",
     "Desenvolupador principal:",
     "Albert Gasset Romo <albert.gasset@gmail.com>",

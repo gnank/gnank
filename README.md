@@ -1,13 +1,13 @@
 Gnank - cercador d'horaris de la FIB
 ====================================
 
-Creador: Albert Gasset Romo (albert.gasset@gmail.com)
-Copyright © 2006, 2007
+Creador: Albert Gasset Romo
+Copyright © 2006 - 2007
 
-Adaptació al Grau i plans d'estudis recents amb l'autorització del creador:
-Marc Cornellà (marc.cornella@est.fib.upc.edu) 2011-2013
+Mantenidor actual: Marc Cornellà
+Copyright © 2011 - 2015
 
-Distribuït sota la llicència General Public License v3 (veure arxiu [LICENSE](LICENSE)).
+Distribuït sota la llicència General Public License v3 (veure arxiu [LICENSE](LICENSE.txt)).
 
 
 Presentació
