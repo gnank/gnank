@@ -25,6 +25,7 @@ import pango
 import webbrowser
 import logging
 import config
+import dades
 import domini
 from domini import Classe, Horari, Cerca, ErrorDades, ErrorOpcions
 from thread import start_new_thread
@@ -335,18 +336,7 @@ class TriaCarrera(gtk.HBox):
 
     DESC, CODI = range(0, 2)
 
-    _codiscarrera = [ \
-        (u"Grau", "GRAU"), \
-        (u"Eng. Inf. Superior", "EI03"), \
-        (u"Eng. Tèc. Sistemes", "ETS03"), \
-        (u"Eng. Tèc. Gestió", "ETG03"), \
-        (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes", "CANS"), \
-        (u"M. d'Inteligència Artificial", "MIA"), \
-        (u"M. de Computació", "MC"), \
-        (u"M. de Tecnologies de la Informació", "MTI"), \
-        (u"M. en Enginyeria Informàtica", "MEI"), \
-        (u"M. Erasmus de Computació Distribuïda", "EMDC")
-        ]
+    _codiscarrera = dades.CARRERES
 
     def __init__(self):
         gtk.HBox.__init__(self)

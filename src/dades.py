@@ -20,6 +20,19 @@
 import re
 from urllib import urlopen
 
+CARRERES = [ \
+    (u"Grau", "GRAU"), \
+    (u"Eng. Inf. Superior", "EI03"), \
+    (u"Eng. Tèc. Sistemes", "ETS03"), \
+    (u"Eng. Tèc. Gestió", "ETG03"), \
+    (u"M. d'Arquitectura de Computadors, Xarxes i Sistemes", "CANS"), \
+    (u"M. d'Inteligència Artificial", "MIA"), \
+    (u"M. de Computació", "MC"), \
+    (u"M. de Tecnologies de la Informació", "MTI"), \
+    (u"M. en Enginyeria Informàtica", "MEI"), \
+    (u"M. Erasmus de Computació Distribuïda", "EMDC")
+]
+
 URL_ASSIGS = "https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi="
 URL_CLASSES = "https://raco.fib.upc.edu/api/horaris/horari-assignatures.txt"
 
