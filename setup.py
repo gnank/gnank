@@ -32,21 +32,6 @@ if sys.platform == "win32":
         "src/web.png",
         "src/ajuda.txt"
     ]
-else:
-    data_files = [
-        ("share/gnank", [
-            "src/config.py",
-            "src/gui.py",
-            "src/domini.py",
-            "src/dades.py",
-            "src/gnank.png",
-            "src/web.png",
-            "src/ajuda.txt"
-        ]),
-        ("share/pixmaps", ["src/gnank.png"]),
-        ("share/applications", ["src/gnank.desktop"]),
-        ("share/doc/gnank", ["README.md", "CHANGELOG.md", "LICENSE"]),
-    ]
 
 setup(
     name = "gnank",
