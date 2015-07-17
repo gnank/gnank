@@ -1,4 +1,0 @@
-include MANIFEST.in GPL.txt CHANGELOG.md CONTRIBUTING.md README.md setup.py gnank.sh
-recursive-include src gnank *.py *.svg *.png gnank.desktop ajuda.txt
-recursive-include debian changelog compat control copyright gnank.1 gnank.xpm install manpages menu pyversions rules
-recursive-include win32 gnank.nsi gnank.ico
