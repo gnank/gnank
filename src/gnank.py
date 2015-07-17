@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
-# Copyright (C) 2006, 2007  Albert Gasset Romo
+# Copyright (C) 2006 - 2007  Albert Gasset Romo
+#               2011 - 2015  Marc Cornellà
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
