@@ -1,3 +1,15 @@
+Gnank 3.3 (2015-07-17)
+------------------------
+
+ * Utilitza la nova API del Racó
+ * Incorporats els màsters:
+   - Master in Artificial Intelligence (MAI)
+   - Master in Innovation and Research in Informatics (MIRI)
+   - Master in Information Technology for Business Intelligence (IT4BI)
+ * La fila 'grups seleccionats' ja no es mou en ordenar els horaris
+ * Simplificació de l'estructura del projecte
+ * Simplificació de la compilació per a Windows
+
 Gnank 3.2.2 (2012-09-01)
 ------------------------
 
