@@ -1,24 +1,27 @@
 #!/bin/sh
 
-# Aquest script permet crear fitxers executables autocontinguts a prtir
-# del codi font del Gnank. S'ha de passar com a primer paràmetre el fitxer
-# .tar.gz amb el codi font.
-
-if [ -z $1 ]; then
-	echo "Utilització: $0 GNANK_VERSIO.tar.gz"
-	exit 0
-fi
+# Aquest script permet crear fitxers executables autocontinguts
+# a partir del codi font del Gnank. S'ha d'executar des de la
+# carpeta arrel del projecte.
 
 set -e
 
-FILE=$1
-DIR=`echo $FILE | sed 's/.tar.gz//' | sed 's/.*\///'`
+TMPFILE=gnank.tar.gz
+OUTPUT=gnank.sh
 
-echo "#!/bin/sh"
-echo "TMPDIR=\`mktemp -d /tmp/gnank.XXXXXX\`"
-echo "tail -n +7 \$0 | tar xz -C \$TMPDIR"
-echo "\$TMPDIR/$DIR/gnank.sh"
-echo "rm -rf \$TMPDIR"
-echo "exit 0"
+tar czf $TMPFILE src/gnank src/*.py src/*.png src/*.txt
 
-cat $FILE
+{
+	echo "#!/bin/sh"
+	echo "TMPDIR=\$(mktemp -d /tmp/gnank.XXXXXX)"
+	echo "tail -n +7 \$0 | tar xz -C \$TMPDIR"
+	echo "\$TMPDIR/src/gnank"
+	echo "rm -rf \$TMPDIR"
+	echo "exit 0"
+
+	cat $TMPFILE
+} > $OUTPUT
+
+chmod +x $OUTPUT
+
+rm $TMPFILE
