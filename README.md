@@ -26,16 +26,29 @@ Instruccions d'ús
 
 ### Windows:
 
-Descarrega [l'última versió](https://github.com/mcornella/gnank/releases) i
-executa sense haver d'instal·lar cap requisit.
+Descarrega i executa [l'última versió](https://github.com/mcornella/gnank/releases/latest)
+sense necessitat d'instal·lar cap requisit.
 
 ### Linux:
 
-Un cop [instal·lats els requisits](#requisits-de-software), executar el fitxer [src/gnank](src/gnank):
+Un cop [instal·lats els requisits](#requisits-de-programari), es pot utilitzar de dues formes:
 
- - Des del terminal: `src/gnank`
+- Mitjançant l'executable:
 
- - Des de l'explorador de fitxers: _doble clic_ > _executar_
+  1. Descarrega [`gnank.sh`](https://github.com/mcornella/gnank/releases/latest).
+
+  2. Activa el permís d'execució del fitxer: `chmod +x gnank.sh`
+
+  3. Executa mitjançant la comanda `./gnank.sh`.
+
+  4. (Opcional) Recomano moure l'arxiu en una carpeta del `$PATH` per poder executar
+     el Gnank amb `ALT`+`F2` > `gnank.sh` directament.
+
+- Mitjançant la distribució sencera:
+
+  1. Descarrega i descomprimeix el `tar.gz` de [l'última versió](https://github.com/mcornella/gnank/releases/latest).
+
+  2. Des del terminal, navega a l'arrel del projecte i executa `src/gnank`.
 
 ### Mac OSX:
 
@@ -43,10 +56,10 @@ No s'ha pogut provar per falta de maquinari compatible. En principi hauria de
 funcionar correctament seguint les instruccions per Linux.
 
 
-Requisits de software
+Requisits de programari
 ---------------------
 
-Gnank requereix el següent software:
+El Gnank requereix el següent programari:
 
  * Python 2 >= 2.4 (www.python.org)
  * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
@@ -61,10 +74,10 @@ els noms dels paquets que s'han de tenir instal·lats són:
 Crèdits
 -------
 
-Creador: Albert Gasset Romo
-Copyright © 2006 - 2007
+- **Creador:** Albert Gasset Romo  
+  Copyright © 2006 - 2007
 
-Mantenidor actual: Marc Cornellà
-Copyright © 2011 - 2015
+- **Programador actual:** Marc Cornellà  
+  Copyright © 2011 - 2015
 
 Distribuït sota la llicència General Public License v3 (veure arxiu [LICENSE](LICENSE.txt)).
