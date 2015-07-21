@@ -62,13 +62,6 @@ def main(gnank_dir):
     config.crea_dir_usuari()
     configura_registre_fitxer(config.REGISTRE_USUARI)
 
-    try:
-        import psyco
-        psyco.full()
-        logging.info("S'ha activat el mòdul Psyco.")
-    except ImportError:
-        logging.info("No s'ha activat el mòdul Psyco.")
-
     logging.info("S'iniciarà l'aplicació.")
     import gui
     gui.inicia()
