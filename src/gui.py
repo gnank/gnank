@@ -104,8 +104,12 @@ class Finestra(gtk.Window):
 
         area_finestra.pack_start(barra, False)
 
+        area_carrera_align = gtk.Alignment()
+        area_carrera_align.set_padding(6, 0, 0, 0)
+        area_finestra.pack_start(area_carrera_align, expand=False)
+
         area_carrera = gtk.HBox()
-        area_finestra.pack_start(area_carrera, expand=False, fill=True)
+        area_carrera_align.add(area_carrera)
 
         carrera = TriaCarrera()
         area_carrera.pack_start(carrera, expand=True, fill=True)
