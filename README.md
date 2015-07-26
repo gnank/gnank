@@ -80,6 +80,9 @@ Crèdits
 - **Creador:** Albert Gasset Romo  
   Copyright © 2006 - 2007
 
+- **Paquet Debian i pedaços:** Jordà Polo  
+  Copyright © 2006 - 2007
+
 - **Programador actual:** Marc Cornellà  
   Copyright © 2011 - 2015
 
