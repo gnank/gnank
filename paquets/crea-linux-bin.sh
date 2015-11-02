@@ -1,10 +1,9 @@
 #!/bin/sh
+set -e
 
 # Aquest script permet crear fitxers executables autocontinguts
 # a partir del codi font del Gnank. S'ha d'executar des de la
 # carpeta arrel del projecte.
-
-set -e
 
 TMPFILE=gnank.tar.gz
 OUTPUT=gnank.sh
