@@ -6,7 +6,7 @@ dist
 build
 
 # Releases
-*.exe
-*.sh
+gnank.exe
+gnank.sh
 *.zip
 *.tar.gz
