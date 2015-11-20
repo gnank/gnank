@@ -911,7 +911,7 @@ class FinestraActualitza(gtk.Dialog):
         except ErrorDades:
             gtk.gdk.threads_enter()
             self.destroy()
-            message = "No s'han pogut actiualitzar les dades dels horaris!"
+            message = "No s'han pogut actualitzar les dades dels horaris!"
             d = gtk.MessageDialog(self._accions.finestra, gtk.DIALOG_MODAL,
                     gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, message)
             d.run()
