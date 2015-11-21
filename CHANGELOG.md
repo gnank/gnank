@@ -2,32 +2,32 @@ Gnank 3.3.1 (2015-11-21)
 ------------------------
 
  * Incorporats màsters nous i en procés d'extinció:
-   - Master in Data Mining and Knowledge Management (DKDM)
-   - Màster en Computació (2006 i 2009)
-   - Màster en Intel·ligència Artificial (2006 i 2009)
-   - Màster en Tecnologies de la Informació (2006 i 2009)
- * Afegeix un marge a la barra de tasques per mantenir la simetria
- * Deixa d'utilitzar el mòdul `psyco`. No tenia un guany perceptible
- * Corregit el fitxer de compilació per a Windows 7
- * Automatització total de la creació de l'executable per Linux
- * Simplificació de la documentació
+   - Master in Data Mining and Knowledge Management (DKDM).
+   - Màster en Computació (2006 i 2009).
+   - Màster en Intel·ligència Artificial (2006 i 2009).
+   - Màster en Tecnologies de la Informació (2006 i 2009).
+ * Afegeix un marge a la barra de tasques per mantenir la simetria.
+ * Deixa d'utilitzar el mòdul `psyco`. No tenia un guany perceptible.
+ * Corregit el fitxer de compilació per a Windows 7.
+ * Automatització total de la creació de l'executable per Linux.
+ * Simplificació de la documentació.
 
 Gnank 3.3 (2015-07-17)
 ------------------------
 
- * Utilitza la nova API del Racó
+ * Utilitza la nova API del Racó.
  * Incorporats els màsters:
-   - Master in Artificial Intelligence (MAI)
-   - Master in Innovation and Research in Informatics (MIRI)
-   - Master in Information Technology for Business Intelligence (IT4BI)
- * La fila 'grups seleccionats' ja no es mou en ordenar els horaris
- * Simplificació de l'estructura del projecte
- * Simplificació de la compilació per a Windows
+   - Master in Artificial Intelligence (MAI).
+   - Master in Innovation and Research in Informatics (MIRI).
+   - Master in Information Technology for Business Intelligence (IT4BI).
+ * La fila 'grups seleccionats' ja no es mou en ordenar els horaris.
+ * Simplificació de l'estructura del projecte.
+ * Simplificació de la compilació per a Windows.
 
 Gnank 3.2.2 (2012-09-01)
 ------------------------
 
- * Incorporat el Màster en Enginyeria Informàtica (MEI)
+ * Incorporat el Màster en Enginyeria Informàtica (MEI).
 
 Gnank 3.2.1 (2012-07-10)
 ------------------------
@@ -46,7 +46,7 @@ Gnank 3.2 (2012-02-22)
 Gnank 3.1 (2011-07-08)
 ------------------------
 
- * Adaptació al nou sistema de consulta amb codis per Carrera 
+ * Adaptació al nou sistema de consulta amb codis per Carrera
    (veure CodiAssigs.txt).
  * En properes versions s'inclourà la opció a la GUI.
  * Corregit error en obrir el fitxer de log.
@@ -95,4 +95,3 @@ Característiques:
    solapaments, a partir d'uns grups seleccionats.
  * Interfície que permet seleccionar els grups i visualitzar els horaris de
    forma senzilla i ràpida.
-
