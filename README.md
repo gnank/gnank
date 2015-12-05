@@ -1,8 +1,8 @@
 Gnank
 =====
 
-[![Gnank for Windows](https://cloud.githubusercontent.com/assets/1441704/8768262/bb986e54-2e79-11e5-8916-652703ef7c04.png)](https://cloud.githubusercontent.com/assets/1441704/8757859/5c21fc16-2cde-11e5-8718-d0b9daaeecce.png)
-[![Gnank for Linux](https://cloud.githubusercontent.com/assets/1441704/8768261/bb970988-2e79-11e5-8742-b2fe1372178c.png)](https://cloud.githubusercontent.com/assets/1441704/8761748/afa1389c-2d61-11e5-9f73-ad480367c77b.png)
+<a href="https://cloud.githubusercontent.com/assets/1441704/8757859/5c21fc16-2cde-11e5-8718-d0b9daaeecce.png"><img src="https://cloud.githubusercontent.com/assets/1441704/8757859/5c21fc16-2cde-11e5-8718-d0b9daaeecce.png" width="430" height="300"></a>
+<a href="https://cloud.githubusercontent.com/assets/1441704/8761748/afa1389c-2d61-11e5-9f73-ad480367c77b.png"><img src="https://cloud.githubusercontent.com/assets/1441704/8761748/afa1389c-2d61-11e5-9f73-ad480367c77b.png" width="430" height="300"></a>
 
 El Gnank és un programa creat amb l'objectiu de facilitar la tria de l'horari
 als alumnes de la FIB.
