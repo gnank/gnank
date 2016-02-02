@@ -1,4 +1,4 @@
-Gnank 3.3.1 (2015-11-21)
+Gnank 3.3.1 (2016-02-03)
 ------------------------
 
  * Incorporats màsters nous i en procés d'extinció:
