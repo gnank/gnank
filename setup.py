@@ -25,8 +25,13 @@ sys.path[0] = join(sys.path[0], "src")
 import config
 from distutils.core import setup
 
+
+data_files = []
+excluded_dlls = []
+
 if sys.platform == "win32":
     import py2exe
+
     data_files = [
         "src/gnank.png",
         "src/web.png",
@@ -37,7 +42,7 @@ if sys.platform == "win32":
     # This wasn't tested on Windows 8/8.1
     from platform import release
     if int(release()) > 7:
-        dll_excludes = [
+        excluded_dlls = [
             "api-ms-win-core-errorhandling-l1-1-1.dll",
             "api-ms-win-core-libraryloader-l1-2-0.dll",
             "api-ms-win-core-processthreads-l1-1-2.dll",
@@ -63,6 +68,6 @@ setup(
         "packages": "encodings",
         "includes": "cairo, pango, pangocairo, atk, gobject, gio",
         "excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
-        "dll_excludes": dll_excludes
+        "dll_excludes": excluded_dlls
     }},
 )
