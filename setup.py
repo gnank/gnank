@@ -33,6 +33,18 @@ if sys.platform == "win32":
         "src/ajuda.txt"
     ]
 
+    # Exclude these DLLs unless we're on Windows 7
+    # This wasn't tested on Windows 8/8.1
+    from platform import release
+    if int(release()) > 7:
+        dll_excludes = [
+            "api-ms-win-core-errorhandling-l1-1-1.dll",
+            "api-ms-win-core-libraryloader-l1-2-0.dll",
+            "api-ms-win-core-processthreads-l1-1-2.dll",
+            "api-ms-win-core-profile-l1-1-0.dll",
+            "api-ms-win-core-sysinfo-l1-2-1.dll"
+        ]
+
 setup(
     name = "gnank",
     version = config.VERSIO,
@@ -51,12 +63,6 @@ setup(
         "packages": "encodings",
         "includes": "cairo, pango, pangocairo, atk, gobject, gio",
         "excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
-        "dll_excludes": [
-            "api-ms-win-core-errorhandling-l1-1-1.dll",
-            "api-ms-win-core-libraryloader-l1-2-0.dll",
-            "api-ms-win-core-processthreads-l1-1-2.dll",
-            "api-ms-win-core-profile-l1-1-0.dll",
-            "api-ms-win-core-sysinfo-l1-2-1.dll",
-        ]
+        "dll_excludes": dll_excludes
     }},
 )
