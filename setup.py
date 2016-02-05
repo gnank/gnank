@@ -33,9 +33,7 @@ if sys.platform == "win32":
     import py2exe
 
     data_files = [
-        "src/gnank.png",
-        "src/web.png",
-        "src/ajuda.txt"
+        (".", ["src/gnank.png", "src/web.png", "src/ajuda.txt"])
     ]
 
     # Exclude these DLLs unless we're on Windows 7
