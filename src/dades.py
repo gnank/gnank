@@ -118,14 +118,19 @@ def obre_http(carrera):
         assigs = filter(lambda a: a != "GRAU-EXAMENS", assigs)
 
         if assigs:
-            params = "?assignatures=" + "&assignatures=".join(assigs)
-            for linia in urlopen(URL_CLASSES + params):
-                if not _ER_CLASSE.match(linia):
-                    raise ErrorDades
-                linia = linia.strip().split("\t")
-                linia[3] = linia[3].split(":")[0]
-                linia[5] = "_".join(linia[5].split(" "))
-                classes.append(linia)
+            while len(assigs) > 0:
+                # obté els horaris de màxim 91 assignatures
+                # més assignatures fan que el servidor retorni un error 404
+                params = "?assignatures=" + "&assignatures=".join(assigs[:91])
+                assigs = assigs[91:]
+
+                for linia in urlopen(URL_CLASSES + params):
+                    if not _ER_CLASSE.match(linia):
+                        raise ErrorDades
+                    linia = linia.strip().split("\t")
+                    linia[3] = linia[3].split(":")[0]
+                    linia[5] = "_".join(linia[5].split(" "))
+                    classes.append(linia)
     except IOError:
         raise ErrorDades
     return classes
