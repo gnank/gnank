@@ -41,10 +41,13 @@ if sys.platform == "win32":
     from platform import release
     if int(release()) > 7:
         excluded_dlls = [
+            "api-ms-win-core-errorhandling-l1-1-0.dll",
             "api-ms-win-core-errorhandling-l1-1-1.dll",
             "api-ms-win-core-libraryloader-l1-2-0.dll",
+            "api-ms-win-core-processthreads-l1-1-0.dll",
             "api-ms-win-core-processthreads-l1-1-2.dll",
             "api-ms-win-core-profile-l1-1-0.dll",
+            "api-ms-win-core-sysinfo-l1-1-0.dll",
             "api-ms-win-core-sysinfo-l1-2-1.dll"
         ]
 
