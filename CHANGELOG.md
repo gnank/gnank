@@ -1,3 +1,9 @@
+Gnank 3.3.2 (2018-02-12)
+------------------------
+
+* Afegit hack a la crida a l'API d'horaris per evitar errors 404.
+* Exclusió d'algunes DLLs de Windows 10 per arreglar la compilació.
+
 Gnank 3.3.1 (2016-02-03)
 ------------------------
 
