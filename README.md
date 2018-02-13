@@ -84,6 +84,6 @@ Crèdits
   Copyright © 2006 - 2007
 
 - **Programador actual:** Marc Cornellà  
-  Copyright © 2011 - 2016
+  Copyright © 2011 - 2018
 
 Distribuït sota la llicència General Public License v3 (veure arxiu [LICENSE](LICENSE.txt)).
