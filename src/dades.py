@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import json
 from urllib import urlopen
 
 CARRERES = [ \
@@ -39,8 +40,11 @@ CARRERES = [ \
     (u"Màster en Tecnologies de la Informació (2009)", "MTI09")
 ]
 
-URL_ASSIGS = "https://raco.fib.upc.edu/api/horaris/assignatures-titulacio.txt?codi="
-URL_CLASSES = "https://raco.fib.upc.edu/api/horaris/horari-assignatures.txt"
+CLIENT_ID = 'DGdJQPNkDnvzssbFsfWkaAAWHuOC2QheX10G7M9U'
+
+API_URL = 'https://api.fib.upc.edu/v2'
+URL_ASSIGS = API_URL + '/assignatures/?format=json&client_id={0}&pla='.format(CLIENT_ID)
+URL_QUATRI = API_URL + '/quadrimestres/actual-horaris/?format=json&client_id={0}'.format(CLIENT_ID)
 
 _ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
 _ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
@@ -112,25 +116,24 @@ def obre_http(carrera):
             raise ErrorOpcions
 
         # obtenim les assignatures
-        assigs = [a.strip() for a in urlopen(URL_ASSIGS + carrera)]
+        assigs = [a['id'] for a in json.load(urlopen(URL_ASSIGS + carrera))['results']]
 
-        # borrem l'assignatura GRAU-EXAMENS en cas que hi sigui
-        assigs = filter(lambda a: a != "GRAU-EXAMENS", assigs)
+        # obtenim la URL dels horaris i els horaris
+        URL_CLASSES = json.load(urlopen(URL_QUATRI))['classes']
+        params = '&client_id={0}&codi_assig={1}'.format(CLIENT_ID, ','.join(assigs))
 
-        if assigs:
-            while len(assigs) > 0:
-                # obté els horaris de màxim 91 assignatures
-                # més assignatures fan que el servidor retorni un error 404
-                params = "?assignatures=" + "&assignatures=".join(assigs[:91])
-                assigs = assigs[91:]
+        for classe in json.load(urlopen(URL_CLASSES + params))['results']:
+            nom = classe['codi_assig']
+            grup = classe['grup']
+            dia = classe['dia_setmana']
+            tipus = classe['tipus']
+            aules = ''.join(classe['aules'].split(' '))
 
-                for linia in urlopen(URL_CLASSES + params):
-                    if not _ER_CLASSE.match(linia):
-                        raise ErrorDades
-                    linia = linia.strip().split("\t")
-                    linia[3] = linia[3].split(":")[0]
-                    linia[5] = "_".join(linia[5].split(" "))
-                    classes.append(linia)
+            hora = int(classe['inici'].split(':')[0])
+            durada = classe['durada']
+
+            for i in range(durada):
+                classes.append([nom, grup, dia, hora + i, tipus, aules])
     except IOError:
         raise ErrorDades
     return classes
