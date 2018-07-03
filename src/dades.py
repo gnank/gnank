@@ -22,22 +22,17 @@ import json
 from urllib import urlopen
 
 CARRERES = [ \
-    (u"Grau", "GRAU"), \
-    (u"Master en Enginyeria Informàtica", "MEI"), \
-    (u"Master in Artificial Intelligence", "MAI"), \
-    (u"Master in Innovation and Research in Informatics", "MIRI"), \
-    (u"Master in Data Mining and Knowledge Management", "DKDM"), \
-    (u"Master in Information Technology for Business Intelligence", "IT4BI"), \
-    # To be extinguished
-    (u"Enginyeria Informàtica Superior", "EI03"), \
-    (u"Enginyeria Tècnica de Sistemes", "ETS03"), \
-    (u"Enginyeria Tècnica de Gestió", "ETG03"), \
-    (u"Màster en Computació (2006)", "MC06"), \
-    (u"Màster en Computació (2009)", "MC09"), \
-    (u"Màster en Intel·ligència Artifical (2006)", "MIA06"), \
-    (u"Màster en Intel·ligència Artifical (2009)", "MIA09"), \
-    (u"Màster en Tecnologies de la Informació (2006)", "MTI06"), \
-    (u"Màster en Tecnologies de la Informació (2009)", "MTI09")
+    (u"Grau en Enginyeria Informàtica", 'GRAU'), \
+    (u"Grau en Bioinformàtica", 'GBIO'), \
+    (u"Grau en Ciència i Enginyeria de Dades", 'GCED'), \
+    (u"Màster en Enginyeria Informàtica", 'MEI'), \
+    (u"Màster en Lògica Pura i Aplicada", 'MPAL'), \
+    (u"Master in Artificial Intelligence", 'MAI'), \
+    (u"Master in Innovation and Research in Informatics", 'MIRI'), \
+    (u"Erasmus Mundus in Big Data Management and Analytics", 'BDMA'), \
+    (u"Erasmus Mundus en Tecnologies de la Informació per a la Intel·ligència Empresarial", 'IT4BI'), \
+    (u"Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-FP)", 'MFPS-FP'), \
+    (u"Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-TEC)", 'MFPS-TEC')
 ]
 
 CLIENT_ID = 'DGdJQPNkDnvzssbFsfWkaAAWHuOC2QheX10G7M9U'
