@@ -24,9 +24,9 @@ import re
 import sys
 
 NOM = "Gnank"
-VERSIO = "3.3.1"
+VERSIO = "3.3.2"
 DESCRIPCIO = "Cercador d'horaris de la FIB"
-URL_WEB = "https://github.com/mcornella/gnank"
+URL_WEB = "https://github.com/gnank/gnank"
 COPYRIGHT = """\
 Copyright © 2006 - 2007 Albert Gasset Romo
 Copyright © 2011 - 2016 Marc Cornellà
