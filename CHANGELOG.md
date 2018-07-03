@@ -1,3 +1,9 @@
+Gnank 3.3.3 (2018-07-04)
+------------------------
+
+* Actualitzat codi per usar la API v2 de la FIB.
+* Actualitzats plans d'estudis disponibles.
+
 Gnank 3.3.2 (2018-02-12)
 ------------------------
 
