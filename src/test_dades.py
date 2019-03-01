@@ -21,8 +21,8 @@
 import unittest
 import dades
 import os
-import thread
-import BaseHTTPServer
+import _thread
+import http.server
 
 FITXER_TMP = "test_dades.tmp"
 
@@ -47,7 +47,7 @@ class TestObre(unittest.TestCase):
         tuples_horari = lambda h: [tuple(g) for g in h]
         tuples = [tuple(tuples_horari(h)) for h in tuples]
         tuples_text = []
-        tuples_horari = lambda h: zip(h.split()[::2], h.split()[1::2])
+        tuples_horari = lambda h: list(zip(h.split()[::2], h.split()[1::2]))
         for l in text.split("\n"):
             if l.strip() != "":
                 tuples_text.append(tuple(tuples_horari(l)))
@@ -182,12 +182,12 @@ class TestObreHttp(unittest.TestCase):
         URL_CLASSES = "http://localhost:10080/classes"
 
         def __init__(self, classes, n_req):
-            self.httpd = BaseHTTPServer.HTTPServer(("", 10080), self.RequestHandler)
+            self.httpd = http.server.HTTPServer(("", 10080), self.RequestHandler)
             self.httpd.classes = classes
             self.httpd.assigs = set([c[0] for c in classes])
-            self.lock_aturada = thread.allocate_lock()
+            self.lock_aturada = _thread.allocate_lock()
             self.lock_aturada.acquire()
-            thread.start_new_thread(self.serveix, (n_req,))
+            _thread.start_new_thread(self.serveix, (n_req,))
 
         def serveix(self, n_req):
             while n_req > 0:
@@ -198,7 +198,7 @@ class TestObreHttp(unittest.TestCase):
         def espera_aturada(self):
             self.lock_aturada.acquire()
 
-        class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+        class RequestHandler(http.server.BaseHTTPRequestHandler):
             def do_GET(self):
                 error = False
                 assigs = self.server.assigs

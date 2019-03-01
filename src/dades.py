@@ -19,20 +19,20 @@
 
 import re
 import json
-from urllib import urlopen
+from urllib.request import urlopen
 
 CARRERES = [ \
-    (u"Grau en Enginyeria Informàtica", 'GRAU'), \
-    (u"Grau en Bioinformàtica", 'GBIO'), \
-    (u"Grau en Ciència i Enginyeria de Dades", 'GCED'), \
-    (u"Màster en Enginyeria Informàtica", 'MEI'), \
-    (u"Màster en Lògica Pura i Aplicada", 'MPAL'), \
-    (u"Master in Artificial Intelligence", 'MAI'), \
-    (u"Master in Innovation and Research in Informatics", 'MIRI'), \
-    (u"Erasmus Mundus in Big Data Management and Analytics", 'BDMA'), \
-    (u"Erasmus Mundus en Tecnologies de la Informació per a la Intel·ligència Empresarial", 'IT4BI'), \
-    (u"Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-FP)", 'MFPS-FP'), \
-    (u"Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-TEC)", 'MFPS-TEC')
+    ("Grau en Enginyeria Informàtica", 'GRAU'), \
+    ("Grau en Bioinformàtica", 'GBIO'), \
+    ("Grau en Ciència i Enginyeria de Dades", 'GCED'), \
+    ("Màster en Enginyeria Informàtica", 'MEI'), \
+    ("Màster en Lògica Pura i Aplicada", 'MPAL'), \
+    ("Master in Artificial Intelligence", 'MAI'), \
+    ("Master in Innovation and Research in Informatics", 'MIRI'), \
+    ("Erasmus Mundus in Big Data Management and Analytics", 'BDMA'), \
+    ("Erasmus Mundus en Tecnologies de la Informació per a la Intel·ligència Empresarial", 'IT4BI'), \
+    ("Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-FP)", 'MFPS-FP'), \
+    ("Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-TEC)", 'MFPS-TEC')
 ]
 
 CLIENT_ID = 'DGdJQPNkDnvzssbFsfWkaAAWHuOC2QheX10G7M9U'
@@ -74,7 +74,7 @@ def obre(fitxer):
                 if not _ER_HORARI.match(linia):
                     raise ErrorDades
                 linia = linia.split()
-                horaris.append(zip(linia[::2], linia[1::2]))
+                horaris.append(list(zip(linia[::2], linia[1::2])))
             else:
                 if not _ER_CLASSE.match(linia):
                     raise ErrorDades
