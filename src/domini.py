@@ -20,6 +20,7 @@
 
 import dades
 from dades import ErrorDades, ErrorOpcions
+from functools import total_ordering
 from itertools import chain
 
 _carrera = ""
@@ -122,6 +123,7 @@ def obte_carrera():
     return _carrera
 
 
+@total_ordering
 class Classe(object):
 
     valors_dia = list(range(1, 6))
@@ -144,28 +146,22 @@ class Classe(object):
         return (self.assig, self.grup, str(self.dia), str(self.hora),
             self.tipus, self.aula)
 
-    def _cmp_tipus(self, other):
-        index_self = Classe.valors_tipus.index(self.tipus)
-        index_other = Classe.valors_tipus.index(other.tipus)
-        return cmp(index_self, index_other)
+    def _tipus(self):
+        return Classe.valors_tipus.index(self.tipus)
 
-    def __cmp__(self, other):
-        c = cmp(self.assig, other.assig)
-        if c != 0: return c
-        c = Grup.cmp_noms(self.grup, other.grup)
-        if c != 0: return c
-        c = cmp(self.dia, other.dia)
-        if c != 0: return c
-        c = cmp(self.hora, other.hora)
-        if c != 0: return c
-        c = self._cmp_tipus(other)
-        if c != 0: return c
-        return cmp(self.aula, other.aula)
+    def __eq__(self, other):
+        return (self.assig, self.grup, self.dia, self.hora, self._tipus(), self.aula) \
+            == (other.assig, other.grup, other.dia, other.hora, other._tipus(), other.aula)
+
+    def __lt__(self, other):
+        return (self.assig, self.grup, self.dia, self.hora, self._tipus(), self.aula) \
+            < (other.assig, other.grup, other.dia, other.hora, other._tipus(), other.aula)
 
     def __hash__(self):
         return hash(self.assig + self.grup + self.tipus + self.aula)
 
 
+@total_ordering
 class Grup(object):
 
     def __init__(self, nom, supergrup=None):
@@ -188,8 +184,11 @@ class Grup(object):
     def nomes_tarda(self):
         return self._tarda and (not self._supergrup or self._supergrup._tarda)
 
-    def __cmp__(self, other):
-        return Grup.cmp_noms(self.nom, other.nom)
+    def __eq__(self, other):
+        return self.nom == other.nom
+
+    def __lt__(self, other):
+        return self.nom < other.nom
 
     def __hash__(self):
         return hash(self.nom)
@@ -210,14 +209,8 @@ class Grup(object):
             self._supergrup.classes(dia, hora) or []
         return chain(classes_grup, classes_supergrup)
 
-    @classmethod
-    def cmp_noms(cls, nom1, nom2):
-        if nom1.isdigit() and nom2.isdigit():
-            return cmp(int(nom1), int(nom2))
-        else:
-            return cmp(nom1, nom2)
 
-
+@total_ordering
 class Assig(object):
 
     def __init__(self, nom):
@@ -263,13 +256,17 @@ class Assig(object):
     def grup(self, nom):
         return self._grups[nom]
 
-    def __cmp__(self, other):
-        return cmp(self.nom, other.nom)
+    def __eq__(self, other):
+        return self.nom == other.nom
+
+    def __lt__(self, other):
+        return self.nom < other.nom
 
     def te_grup(self, nom_grup):
         return nom_grup in self._grups
 
 
+@total_ordering
 class Horari(object):
 
     def __init__(self, grups=[]):
@@ -293,13 +290,17 @@ class Horari(object):
     def assignatures(self):
         return sorted(self._grups.keys())
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         for (assig1, grup1), (assig2, grup2) in zip(self._tupla, other._tupla):
-            c = cmp(assig1, assig2)
-            if c != 0: return c
-            c = Grup.cmp_noms(grup1, grup2)
-            if c != 0: return c
-        return cmp(len(self._tupla), len(self._tupla))
+            c = (assig1, grup1) == (assig2, grup2)
+            if not c: return False
+        return len(self._tupla) == len(self._tupla)
+
+    def __lt__(self, other):
+        for (assig1, grup1), (assig2, grup2) in zip(self._tupla, other._tupla):
+            c = (assig1, grup1) < (assig2, grup2)
+            if not c: return False
+        return len(self._tupla) < len(self._tupla)
 
     def __hash__(self):
         return hash(self._tupla)

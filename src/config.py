@@ -74,7 +74,7 @@ if sys.platform == "win32":
             return re.compile(r'%([^|<>=^%]+)%').sub(substenv, ret[0])
         return ret[0]
     DIR_USUARI = join(regval(winreg.HKEY_CURRENT_USER,
-            "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
+            "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
             "AppData"), "Gnank")
 else:
     DIR_USUARI = join(os.environ['HOME'], ".gnank")

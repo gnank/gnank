@@ -61,7 +61,7 @@ def obre(fitxer):
     plaestudis_trobat = False
 
     try:
-        for linia in file(fitxer, "rb"):
+        for linia in open(fitxer, "r"):
             linia = linia.strip()
             if linia == "":
                 continue
@@ -89,7 +89,7 @@ def obre(fitxer):
 
 def desa(fitxer, carrera, classes, horaris=None):
     try:
-        f = file(fitxer, "wb")
+        f = open(fitxer, "w")
         f.write(carrera)
         f.write("\n")
         for classe in classes:
