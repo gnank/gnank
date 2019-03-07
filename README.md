@@ -60,18 +60,19 @@ funcionar correctament seguint les instruccions per Linux.
 
 
 Requisits de programari
----------------------
+-----------------------
 
 El Gnank requereix el següent programari:
 
- * Python 2 >= 2.4 (www.python.org)
- * PyGTK >= 2.8 (www.pygtk.org), >= 2.10 per a imprimir horaris
+ * Python 3 (https://www.python.org/)
+ * PyGObject (https://pygobject.readthedocs.io/en/latest/getting_started.html)
 
 En una instal·lació típica basada en Debian (com ara Ubuntu, Knoppix, etc.),
 els noms dels paquets que s'han de tenir instal·lats són:
 
- * python2
- * python-gtk2
+ * gtk3
+ * python3
+ * python3-gi (o python3-gobject)
 
 
 Crèdits
@@ -84,6 +85,6 @@ Crèdits
   Copyright © 2006 - 2007
 
 - **Programador actual:** Marc Cornellà  
-  Copyright © 2011 - 2018
+  Copyright © 2011 - 2019
 
 Distribuït sota la llicència General Public License v3 (veure arxiu [LICENSE](LICENSE.txt)).
