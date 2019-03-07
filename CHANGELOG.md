@@ -1,3 +1,12 @@
+Gnank 4.0.0 (2019-03-11)
+------------------------
+
+* Actualitzat a Python 3.
+* Actualitzat a GTK+ 3.
+* Arreglada la vista d'horaris al navegador.
+* BUG: a Windows, redimensionar o moure la finestra provoca que
+  el Gnank es pengi. Maximitzar la finestra funciona bé.
+
 Gnank 3.3.3 (2018-07-04)
 ------------------------
 
@@ -25,7 +34,7 @@ Gnank 3.3.1 (2016-02-03)
  * Simplificació de la documentació.
 
 Gnank 3.3 (2015-07-17)
-------------------------
+----------------------
 
  * Utilitza la nova API del Racó.
  * Incorporats els màsters:
@@ -47,7 +56,7 @@ Gnank 3.2.1 (2012-07-10)
  * Solucionat error en la tria de grups de tarda.
 
 Gnank 3.2 (2012-02-22)
-------------------------
+----------------------
 
  * Inclosa la opció per seleccionar la Carrera.
  * La carrera seleccionada també es guarda a la configuració del Gnank.
@@ -56,7 +65,7 @@ Gnank 3.2 (2012-02-22)
  * Fitxer de relació Pla d'estudis - Codi canviat a codis.txt.
 
 Gnank 3.1 (2011-07-08)
-------------------------
+----------------------
 
  * Adaptació al nou sistema de consulta amb codis per Carrera
    (veure CodiAssigs.txt).
