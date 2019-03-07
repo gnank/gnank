@@ -160,8 +160,7 @@ class Finestra(Gtk.Window):
 class Accions(Gtk.ActionGroup):
     """Gestiona de les accions que pot fer l'usuari."""
 
-    BASE_URL = "http://www.fib.upc.edu/fib/estudiar-enginyeria-informatica" \
-            + "/horaris.html?accio=graella&"
+    BASE_URL = "https://www.fib.upc.edu/ca/horaris?"
 
     __gsignals__ = {
         'cerca-horaris': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ()),
@@ -320,7 +319,7 @@ class Accions(Gtk.ActionGroup):
             d.destroy()
             return
         for horari in horaris:
-            params = "&".join("a=%s%%23%s" % (a, g) for a, g in horari)
+            params = "&".join("a=%s_%s" % (a, g) for a, g in horari)
             obre_enllac_web(None, self.BASE_URL + params)
 
 
