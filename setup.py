@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
 # Gnank - cercador d'horaris de la FIB
 # Copyright (C) 2006 - 2007  Albert Gasset Romo
-#               2011 - 2016  Marc Cornellà
+#               2011 - 2019  Marc Cornellà
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,38 +18,55 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-from os.path import join
-sys.path[0] = join(sys.path[0], "src")
+import os, site, sys
+from cx_Freeze import setup, Executable
 
+sys.path[0] = os.path.join(sys.path[0], "src")
 import config
-from distutils.core import setup
+
+include_files = ['src/ajuda.txt', 'src/gnank.png', 'src/web.png']
+
+# On MSYS2's MINGW64/32 enrironments, the DLLs we want are in PATH.
+# Typically this means /mingw64/bin/libwhatever.dll.
+
+required_dll_search_paths = os.getenv("PATH", os.defpath).split(os.pathsep)
+required_dlls = [
+    'libgtk-3-0.dll',
+    'libgdk-3-0.dll',
+    'libgdk_pixbuf-2.0-0.dll',
+    'libpango-1.0-0.dll',
+    'libpangocairo-1.0-0.dll',
+    'libpangoft2-1.0-0.dll',
+    'libpangowin32-1.0-0.dll',
+    'libatk-1.0-0.dll',
+    'libepoxy-0.dll',
+    'libssl-1_1-x64.dll'
+]
+
+for dll in required_dlls:
+    dll_path = None
+    for p in required_dll_search_paths:
+        p = os.path.join(p, dll)
+        if os.path.isfile(p):
+            dll_path = p
+            break
+    assert dll_path is not None, \
+        "Unable to locate {} in {}".format(dll, p)
+    include_files.append((dll_path, dll))
 
 
-data_files = []
-excluded_dlls = []
+# Gtk libs are under the root of the MINGW64 directory, and
+# they should go in lib/ or share/ directories.
 
-if sys.platform == "win32":
-    import py2exe
+gtkLibs = [
+    'lib\\gdk-pixbuf-2.0',
+    'lib\\girepository-1.0',
+    'lib\\gtk-3.0',
+    'share\\glib-2.0'
+]
 
-    data_files = [
-        (".", ["src/gnank.png", "src/web.png", "src/ajuda.txt"])
-    ]
-
-    # Exclude these DLLs unless we're on Windows 7
-    # This wasn't tested on Windows 8/8.1
-    from platform import release
-    if int(release()) > 7:
-        excluded_dlls = [
-            "api-ms-win-core-errorhandling-l1-1-0.dll",
-            "api-ms-win-core-errorhandling-l1-1-1.dll",
-            "api-ms-win-core-libraryloader-l1-2-0.dll",
-            "api-ms-win-core-processthreads-l1-1-0.dll",
-            "api-ms-win-core-processthreads-l1-1-2.dll",
-            "api-ms-win-core-profile-l1-1-0.dll",
-            "api-ms-win-core-sysinfo-l1-1-0.dll",
-            "api-ms-win-core-sysinfo-l1-2-1.dll"
-        ]
+for lib in gtkLibs:
+    include_files.append((os.path.join('C:\\msys64\\mingw64', lib), lib))
 
 setup(
     name = "gnank",
@@ -58,17 +75,16 @@ setup(
     author_email = config.EMAIL_AUTOR,
     license = config.LLICENCIA,
     description = config.DESCRIPCIO,
-    url = config.URL_WEB,
-    scripts = ['src/gnank'],
-    data_files = data_files,
-    windows = [{
-        "script": "src/gnank",
-        'icon_resources': [(1, "paquets/win32/gnank.ico")],
-    }],
-    options = {"py2exe": {
-        "packages": "encodings",
-        "includes": "cairo, pango, pangocairo, atk, gobject, gio",
-        "excludes": "gdk, ltihooks, email.Generator, email.Iterators, email.Utils",
-        "dll_excludes": excluded_dlls
-    }},
+    options = {
+        "build_exe": {
+            "packages": ['gi'],
+            "include_files": include_files
+        },
+    },
+    executables = [Executable(
+        script="src/gnank",
+        targetName="gnank.exe",
+        base="Win32GUI",
+        icon="paquets/win32/gnank.ico"
+    )]
 )
