@@ -1,3 +1,8 @@
+Gnank 4.0.1 (2019-03-13)
+------------------------
+
+* Arreglat bug introduït a la versió anterior.
+
 Gnank 4.0.0 (2019-03-11)
 ------------------------
 
