@@ -32,7 +32,6 @@ include_files = ['src/ajuda.txt', 'src/gnank.png', 'src/web.png']
 required_dll_search_paths = os.getenv("PATH", os.defpath).split(os.pathsep)
 required_dlls = [
     'libgtk-3-0.dll',
-    'libgdk-3-0.dll',
     'libgdk_pixbuf-2.0-0.dll',
     'libpango-1.0-0.dll',
     'libpangocairo-1.0-0.dll',
@@ -40,7 +39,6 @@ required_dlls = [
     'libpangowin32-1.0-0.dll',
     'libatk-1.0-0.dll',
     'libepoxy-0.dll',
-    'libssl-1_1-x64.dll'
 ]
 
 for dll in required_dlls:

@@ -20,8 +20,8 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
-from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
+gi.require_version('GdkPixbuf', '2.0')
+from gi.repository import GdkPixbuf, GLib, GObject, Gtk, Pango
 import webbrowser
 import logging
 import config
@@ -32,15 +32,12 @@ from _thread import start_new_thread
 
 
 def inicia():
-    Gdk.threads_init()
-    Gdk.threads_enter()
     f = Finestra()
     f.show()
     try:
         Gtk.main()
     except KeyboardInterrupt:
         pass
-    Gdk.threads_leave()
 
 
 def obre_enllac_web(dialog, link):
@@ -893,35 +890,40 @@ class FinestraActualitza(Gtk.Dialog):
         start_new_thread(self._fil_actualitza_dades, ())
 
     def _fil_actualitza_dades(self):
-        Gdk.threads_enter()
-        GObject.timeout_add(100, self._mou_barra)
-        Gdk.threads_leave()
+
+        def add_mainloop_task(callback, *args):
+            def cb(args):
+                args[0](*args[1:])
+                return False
+            args= [callback]+list(args)
+            GLib.idle_add(cb, args)
+
+        def run_dialog(d):
+            d.run()
+            d.destroy()
+
+        def close():
+            self._tanca = True
+            self._accions.desa_cau_horaris()
+            self._accions.emit("dades-actualitzades")
+
+        GLib.timeout_add(100, self._mou_barra)
         try:
             domini.actualitza()
         except ErrorDades:
-            Gdk.threads_enter()
             self.destroy()
             message = "No s'han pogut actualitzar les dades dels horaris!"
             d = Gtk.MessageDialog(self._accions.finestra, Gtk.DialogFlags.MODAL,
                     Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
-            d.run()
-            d.destroy()
-            Gdk.threads_leave()
+            add_mainloop_task(run_dialog, d)
         except ErrorOpcions:
-            Gdk.threads_enter()
             self.destroy()
             message = "Has de seleccionar un pla d'estudis primer!"
-            d = Gtk.MessageDialog(self._accions.finestra,  Gtk.DialogFlags.MODAL,
+            d = Gtk.MessageDialog(self._accions.finestra, Gtk.DialogFlags.MODAL,
                     Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, message)
-            d.run()
-            d.destroy()
-            Gdk.threads_leave()
+            add_mainloop_task(run_dialog, d)
         else:
-            Gdk.threads_enter()
-            self._tanca = True
-            self._accions.desa_cau_horaris()
-            self._accions.emit("dades-actualitzades")
-            Gdk.threads_leave()
+            add_mainloop_task(close)
 
     def _mou_barra(self):
         if not self._tanca:
