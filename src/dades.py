@@ -19,7 +19,13 @@
 
 import re
 import json
+import logging
 from urllib.request import urlopen
+
+import sys
+if getattr(sys, 'frozen', False):
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 CARRERES = [ \
     ("Grau en Enginyeria Informàtica", 'GRAU'), \
@@ -129,6 +135,7 @@ def obre_http(carrera):
 
             for i in range(durada):
                 classes.append([nom, grup, dia, hora + i, tipus, aules])
-    except IOError:
+    except IOError as e:
+        logging.error(e)
         raise ErrorDades
     return classes
