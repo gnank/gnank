@@ -80,7 +80,7 @@ setup(
         },
     },
     executables = [Executable(
-        script="src/gnank",
+        script="src/init",
         targetName="gnank.exe",
         base="Win32GUI",
         icon="paquets/win32/gnank.ico"
