@@ -125,6 +125,8 @@ def obre_http(carrera):
 
         # obtenim les assignatures
         assigs = [a['id'] for a in json.load(urlopen(URL_ASSIGS + carrera))['results']]
+        if not assigs:
+            return []
 
         # obtenim la URL dels horaris i els horaris
         URL_CLASSES = json.load(urlopen(URL_QUATRI))['classes']
@@ -132,6 +134,10 @@ def obre_http(carrera):
 
         for classe in json.load(urlopen(URL_CLASSES + params))['results']:
             nom = classe['codi_assig']
+            # ignora noms d'assignatura especials
+            if nom in ["EXAMENS", "TANCAT", "RESERVAT"]:
+                continue
+
             grup = classe['grup']
             dia = classe['dia_setmana']
             tipus = classe['tipus']

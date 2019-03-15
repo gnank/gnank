@@ -98,6 +98,8 @@ def _afegeix_classes(classes):
 
 
 def _hores_classes(assig, grup):
+    if assig not in _assigs:
+        return set()
     return _assigs[assig].grup(grup).hores_classes()
 
 
