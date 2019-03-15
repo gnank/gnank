@@ -47,8 +47,8 @@ API_URL = 'https://api.fib.upc.edu/v2'
 URL_ASSIGS = API_URL + '/assignatures/?format=json&client_id={0}&pla='.format(CLIENT_ID)
 URL_QUATRI = API_URL + '/quadrimestres/actual-horaris/?format=json&client_id={0}'.format(CLIENT_ID)
 
-_ER_CLASSE = re.compile("[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+")
-_ER_HORARI = re.compile("[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*")
+_ER_CLASSE = re.compile(r'[^\s]+\s+[^\s]+\s+[0-9]+\s+[0-9]+(:00)?\s+[^\s]+\s+[^\s]+')
+_ER_HORARI = re.compile(r'[^\s]+\s+[^\s]+(\s+[^\s]+\s+[^\s]+)*')
 
 
 class ErrorOpcions(Exception):
@@ -67,7 +67,12 @@ def obre(fitxer):
     plaestudis_trobat = False
 
     try:
-        for linia in open(fitxer, "r"):
+        f = open(fitxer, "r")
+    except IOError:
+        raise ErrorDades
+
+    try:
+        for linia in f:
             linia = linia.strip()
             if linia == "":
                 continue
@@ -87,8 +92,8 @@ def obre(fitxer):
                 linia = linia.split()
                 linia[3] = linia[3].split(":")[0]
                 classes.append(linia)
-    except IOError:
-        raise ErrorDades
+    finally:
+        f.close()
 
     return carrera, classes, horaris
 
@@ -108,6 +113,8 @@ def desa(fitxer, carrera, classes, horaris=None):
                 f.write("\n")
     except IOError:
         raise ErrorDades
+    else:
+        f.close()
 
 
 def obre_http(carrera):
