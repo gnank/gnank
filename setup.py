@@ -75,7 +75,7 @@ setup(
     description = config.DESCRIPCIO,
     options = {
         "build_exe": {
-            "packages": ['gi'],
+            "packages": ['gi', 'cairo'],
             "include_files": include_files
         },
     },

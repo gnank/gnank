@@ -21,9 +21,10 @@
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('GdkPixbuf', '2.0')
-from gi.repository import GdkPixbuf, GLib, GObject, Gtk, Pango
+gi.require_version('PangoCairo', '1.0')
+gi.require_foreign("cairo")
+from gi.repository import GdkPixbuf, GLib, GObject, Gtk, Pango, PangoCairo
 import webbrowser
-import logging
 import config
 import dades
 import domini
@@ -78,7 +79,7 @@ class Finestra(Gtk.Window):
         icona = config.cami('web.png')
         if icona:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(icona)
-            icon_set = Gtk.IconSet(pixbuf)
+            icon_set = Gtk.IconSet.new_from_pixbuf(pixbuf)
             icon_factory = Gtk.IconFactory()
             icon_factory.add('gnank-web', icon_set)
             icon_factory.add_default()
@@ -160,15 +161,15 @@ class Accions(Gtk.ActionGroup):
     BASE_URL = "https://www.fib.upc.edu/ca/horaris?"
 
     __gsignals__ = {
-        'cerca-horaris': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ()),
-        'dades-actualitzades': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ()),
-        'neteja': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ()),
+        'cerca-horaris': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'dades-actualitzades': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'neteja': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, finestra):
         """Inicialitza les accions."""
 
-        Gtk.ActionGroup.__init__(self, "gnank")
+        Gtk.ActionGroup.__init__(self, name="gnank")
 
         self.finestra = finestra
         impressio = Impressio(finestra)
@@ -176,12 +177,12 @@ class Accions(Gtk.ActionGroup):
         self._avisar_cau_no_funciona = True
 
         self.add_actions([
-            ('actualitza', Gtk.STOCK_REFRESH, "_Actualitza", \
+            ('actualitza', Gtk.STOCK_REFRESH, "_Actualitza",
                 None, "Actualitza els horaris des del servidor de la FIB",
                 self._actualitza_dades),
-            ('obre', Gtk.STOCK_OPEN, "_Obre", None, \
+            ('obre', Gtk.STOCK_OPEN, "_Obre", None,
                 "Obre els horaris des d'un fitxer", self._obre_dades),
-            ('desa', Gtk.STOCK_SAVE, "_Desa", None, \
+            ('desa', Gtk.STOCK_SAVE, "_Desa", None,
                 "Desa els horaris en un fitxer", self._desa_dades),
             ('cerca', Gtk.STOCK_FIND, "_Cerca", None,
                 "Cerca combinacions d'horaris", self._cerca_horaris),
@@ -220,10 +221,10 @@ class Accions(Gtk.ActionGroup):
         except ErrorDades:
             if self._avisar_cau_no_funciona:
                 self._avisar_cau_no_funciona = False
-                d = Gtk.MessageDialog(self.finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "No s'han pogut " \
+                d = Gtk.MessageDialog(transient_for=self.finestra, modal=True,
+                    message_type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.OK, text="No s'han pogut "
                     "desar els horaris al vostre directori personal.")
-                d.format_secondary_text("Si voleu conservar els horaris, " \
+                d.format_secondary_text("Si voleu conservar els horaris, "
                     "haureu de desar-los manualment.")
                 d.run()
                 d.destroy()
@@ -239,7 +240,8 @@ class Accions(Gtk.ActionGroup):
         action = Gtk.FileChooserAction.OPEN
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN,
             Gtk.ResponseType.OK)
-        dialog = Gtk.FileChooserDialog(title, self.finestra, action, buttons)
+        dialog = Gtk.FileChooserDialog(title=title, transient_for=self.finestra, action=action)
+        dialog.add_buttons(*buttons)
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
@@ -248,8 +250,8 @@ class Accions(Gtk.ActionGroup):
             except ErrorDades:
                 dialog.destroy()
                 message = "No s'han pogut obtenir les dades dels horaris!"
-                d = Gtk.MessageDialog(self.finestra,  Gtk.DialogFlags.MODAL,
-                        Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
+                d = Gtk.MessageDialog(transient_for=self.finestra, modal=True,
+                    message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK, text=message)
                 d.run()
                 d.destroy()
             else:
@@ -263,7 +265,8 @@ class Accions(Gtk.ActionGroup):
         action = Gtk.FileChooserAction.SAVE
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE,
             Gtk.ResponseType.OK)
-        dialog = Gtk.FileChooserDialog(title, self.finestra, action, buttons)
+        dialog = Gtk.FileChooserDialog(title=title, transient_for=self.finestra, action=action)
+        dialog.add_buttons(*buttons)
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
@@ -271,8 +274,8 @@ class Accions(Gtk.ActionGroup):
             except ErrorDades:
                 dialog.destroy()
                 message = "No s'han pogut desar les dades dels horaris!"
-                d = Gtk.MessageDialog(self.finestra, Gtk.DialogFlags.MODAL,
-                        Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
+                d = Gtk.MessageDialog(transient_for=self.finestra, modal=True,
+                    message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK, text=message)
                 d.run()
                 d.destroy()
             else:
@@ -309,9 +312,9 @@ class Accions(Gtk.ActionGroup):
     def _mostra_web(self, widget=None):
         horaris = domini.horaris_preferits()
         if len(horaris) == 0:
-            d = Gtk.MessageDialog(self.finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK,
-                    "No hi ha horaris preferits per mostrar!")
+            d = Gtk.MessageDialog(transient_for=self.finestra, modal=True,
+                    message_type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.OK,
+                    text="No hi ha horaris preferits per mostrar!")
             d.run()
             d.destroy()
             return
@@ -323,7 +326,7 @@ class Accions(Gtk.ActionGroup):
 class TriaCarrera(Gtk.HBox):
 
     __gsignals__ = {
-      'canvi-carrera': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, ())
+      'canvi-carrera': (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
     DESC, CODI = list(range(0, 2))
@@ -332,7 +335,7 @@ class TriaCarrera(Gtk.HBox):
 
     def __init__(self):
         Gtk.HBox.__init__(self)
-        self._label = Gtk.Label("Pla d'estudis:")
+        self._label = Gtk.Label(label="Pla d'estudis:")
         self.pack_start(self._label, expand=False, fill=True, padding=6)
 
         self._select = Gtk.ComboBoxText()
@@ -363,7 +366,7 @@ class TriaCarrera(Gtk.HBox):
 class ArbreGrups(Gtk.VBox):
 
     __gsignals__ = {
-        'grups-seleccionats': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE,
+        'grups-seleccionats': (GObject.SignalFlags.RUN_LAST, None,
             [GObject.TYPE_PYOBJECT]),
     }
 
@@ -387,7 +390,7 @@ class ArbreGrups(Gtk.VBox):
 
     def _inicialitza_treeview(self):
         model = Gtk.TreeStore(str, int)
-        self._treeview = Gtk.TreeView(model)
+        self._treeview = Gtk.TreeView(model=model)
         self._treeview.set_headers_visible(False)
         self._treeview.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self._treeview.set_enable_search(True)
@@ -531,7 +534,7 @@ class TaulaHorari(Gtk.TreeView):
     def __init__(self):
         model = Gtk.ListStore(str, str, str, str, str, str)
 
-        Gtk.TreeView.__init__(self, model)
+        Gtk.TreeView.__init__(self, model=model)
         self.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.set_rules_hint(True)
 
@@ -562,7 +565,7 @@ class LlistaHoraris(Gtk.TreeView):
         "Solapaments", "Fragments"]
 
     __gsignals__ = {
-        'horari-seleccionat': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE,
+        'horari-seleccionat': (GObject.SignalFlags.RUN_LAST, None,
             [GObject.TYPE_PYOBJECT]),
     }
 
@@ -750,11 +753,11 @@ class FinestraCerca(Gtk.Dialog):
         self._grups = ()
         self._assigs = ()
         self._llista = llista
-        flags = Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT
         buttons = (Gtk.STOCK_FIND, self.RESPONSE_CERCA,
             Gtk.STOCK_STOP, self.RESPONSE_ATURA,
             Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
-        Gtk.Dialog.__init__(self, "Cerca", finestra, flags, buttons)
+        Gtk.Dialog.__init__(self, title="Cerca", transient_for=finestra, modal=True, destroy_with_parent=True)
+        self.add_buttons(*buttons)
         self.set_icon_name(Gtk.STOCK_FIND)
         self.set_response_sensitive(self.RESPONSE_ATURA, False)
         self.connect('response', self._accio)
@@ -774,21 +777,21 @@ class FinestraCerca(Gtk.Dialog):
 
     def mostra(self, widget=None):
         if len(self._assigs) < 2:
-            d = Gtk.MessageDialog(self._finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK,
-                    "Heu de seleccionar grups de dues o més assignatures!")
+            d = Gtk.MessageDialog(transient_for=self._finestra, modal=True,
+                    message_type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.OK,
+                    text="Heu de seleccionar grups de dues o més assignatures!")
             d.run()
             d.destroy()
             return
         self.show()
 
     def _prepara_parametres(self):
-        l = Gtk.Label("<big>Paràmetres de cerca</big>")
+        l = Gtk.Label(label="<big>Paràmetres de cerca</big>")
         l.set_use_markup(True)
         l.set_alignment(0, 0)
         self.vbox.pack_start(l, expand=False, fill=True, padding=0)
 
-        table = Gtk.Table(2, 2)
+        table = Gtk.Table(n_rows=2, n_columns=2)
         table.set_row_spacings(12)
         table.set_col_spacings(12)
 
@@ -796,7 +799,7 @@ class FinestraCerca(Gtk.Dialog):
         self._min_assig.set_increments(1, 1)
         self._min_assig.set_alignment(1.0)
         table.attach(self._min_assig, 1, 2, 0, 1, 0, 0)
-        label = Gtk.Label("Mínim nombre d'_assignatures:")
+        label = Gtk.Label(label="Mínim nombre d'_assignatures:")
         label.set_use_underline(True)
         label.set_alignment(0, 0.5)
         label.set_mnemonic_widget(self._min_assig)
@@ -808,7 +811,7 @@ class FinestraCerca(Gtk.Dialog):
         self._max_solap.set_value(0)
         self._max_solap.set_alignment(1.0)
         table.attach(self._max_solap, 1, 2, 1, 2, 0, 0)
-        label = Gtk.Label("Màxim nombre de _solapaments:")
+        label = Gtk.Label(label="Màxim nombre de _solapaments:")
         label.set_use_underline(True)
         label.set_alignment(0, 0.5)
         label.set_mnemonic_widget(self._max_solap)
@@ -841,7 +844,7 @@ class FinestraCerca(Gtk.Dialog):
             self._combinacio = 0
             self._n_combinacions = self._cerca.n_combinacions()
             self._atura = False
-            GObject.timeout_add(100, self._actualitza_barra_cb)
+            GLib.timeout_add(100, self._actualitza_barra_cb)
             self._llista.actualitza(horaris=self._cerca_horaris())
             self.set_response_sensitive(self.RESPONSE_ATURA, False)
             self.set_response_sensitive(self.RESPONSE_CERCA, True)
@@ -874,12 +877,11 @@ class FinestraActualitza(Gtk.Dialog):
 
     def __init__(self, accions):
         self._accions = accions
-        flags = Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT
-        Gtk.Dialog.__init__(self, "Actualització", accions.finestra, flags, ())
+        Gtk.Dialog.__init__(self, title="Actualització", transient_for=accions.finestra, modal=True, destroy_with_parent=True)
         self.set_icon_name(Gtk.STOCK_REFRESH)
         self.set_border_width(6)
         self.vbox.set_spacing(12)
-        l = Gtk.Label("<big>S'estan actualitzant les dades...</big>")
+        l = Gtk.Label(label="<big>S'estan actualitzant les dades...</big>")
         l.set_use_markup(True)
         l.set_alignment(0, 0)
         self.vbox.pack_start(l, expand=False, fill=True, padding=0)
@@ -912,15 +914,15 @@ class FinestraActualitza(Gtk.Dialog):
             domini.actualitza()
         except ErrorDades:
             self.destroy()
-            message = "No s'han pogut actualitzar les dades dels horaris!"
-            d = Gtk.MessageDialog(self._accions.finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
+            d = Gtk.MessageDialog(transient_for=self._accions.finestra, modal=True,
+                    message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK,
+                    text="No s'han pogut actualitzar les dades dels horaris!")
             add_mainloop_task(run_dialog, d)
         except ErrorOpcions:
             self.destroy()
-            message = "Has de seleccionar un pla d'estudis primer!"
-            d = Gtk.MessageDialog(self._accions.finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, message)
+            d = Gtk.MessageDialog(transient_for=self._accions.finestra, modal=True,
+                    message_type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.OK,
+                    text="Has de seleccionar un pla d'estudis primer!")
             add_mainloop_task(run_dialog, d)
         else:
             add_mainloop_task(close)
@@ -993,7 +995,7 @@ class HorariImpressio(object):
         layout.set_markup(text)
         layout.set_width(int(amplada * Pango.SCALE))
         layout.set_font_description(self._params.font)
-        layout.set_alignment(Pango.ALIGN_CENTER)
+        layout.set_alignment(Pango.Alignment.CENTER)
         return layout
 
     def divideix(self, alcada):
@@ -1065,7 +1067,7 @@ class HorariImpressio(object):
             y += (alcada - float(layout.get_size()[1]) / Pango.SCALE) / 2
         cr = self._context.get_cairo_context()
         cr.move_to(x, y)
-        cr.show_layout(layout)
+        PangoCairo.show_layout(cr, layout)
 
     def _dibuixa_linia(self, x, y, amplada, alcada):
         cr = self._context.get_cairo_context()
@@ -1086,9 +1088,9 @@ class Impressio(object):
 
     def imprimeix(self, widget=None):
         if len(domini.horaris_preferits()) == 0:
-            d = Gtk.MessageDialog(self._finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK,
-                    "No hi ha horaris preferits per imprimir!")
+            d = Gtk.MessageDialog(transient_for=self._finestra, modal=True,
+                    message_type=Gtk.MessageType.WARNING, buttons=Gtk.ButtonsType.OK,
+                    text="No hi ha horaris preferits per imprimir!")
             d.run()
             d.destroy()
             return
@@ -1107,9 +1109,9 @@ class Impressio(object):
         res = po.run(Gtk.PrintOperationAction.PRINT_DIALOG, self._finestra)
 
         if res == Gtk.PrintOperationResult.ERROR:
-            d = Gtk.MessageDialog(self._finestra, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.ERROR, Gtk.ButtonsType.OK,
-                    "S'ha produït un error en imprimir.")
+            d = Gtk.MessageDialog(transient_for=self._finestra, modal=True,
+                    message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK,
+                    text="S'ha produït un error en imprimir.")
             d.run()
             d.destroy()
         elif res == Gtk.PrintOperationResult.APPLY:
@@ -1164,8 +1166,8 @@ class Impressio(object):
 class FinestraAjuda(Gtk.Dialog):
 
     def __init__(self, finestra):
-        buttons = (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
-        Gtk.Dialog.__init__(self, "Ajuda del Gnank", finestra, buttons=buttons)
+        Gtk.Dialog.__init__(self, title="Ajuda del Gnank", transient_for=finestra)
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.set_default_size(600, 400)
         self.set_icon_name(Gtk.STOCK_HELP)
         tb = self._prepara_text_buffer()

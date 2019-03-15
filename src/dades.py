@@ -27,17 +27,17 @@ if getattr(sys, 'frozen', False):
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
 
-CARRERES = [ \
-    ("Grau en Enginyeria Informàtica", 'GRAU'), \
-    ("Grau en Bioinformàtica", 'GBIO'), \
-    ("Grau en Ciència i Enginyeria de Dades", 'GCED'), \
-    ("Màster en Enginyeria Informàtica", 'MEI'), \
-    ("Màster en Lògica Pura i Aplicada", 'MPAL'), \
-    ("Master in Artificial Intelligence", 'MAI'), \
-    ("Master in Innovation and Research in Informatics", 'MIRI'), \
-    ("Erasmus Mundus in Big Data Management and Analytics", 'BDMA'), \
-    ("Erasmus Mundus en Tecnologies de la Informació per a la Intel·ligència Empresarial", 'IT4BI'), \
-    ("Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-FP)", 'MFPS-FP'), \
+CARRERES = [
+    ("Grau en Enginyeria Informàtica", 'GRAU'),
+    ("Grau en Bioinformàtica", 'GBIO'),
+    ("Grau en Ciència i Enginyeria de Dades", 'GCED'),
+    ("Màster en Enginyeria Informàtica", 'MEI'),
+    ("Màster en Lògica Pura i Aplicada", 'MPAL'),
+    ("Master in Artificial Intelligence", 'MAI'),
+    ("Master in Innovation and Research in Informatics", 'MIRI'),
+    ("Erasmus Mundus in Big Data Management and Analytics", 'BDMA'),
+    ("Erasmus Mundus en Tecnologies de la Informació per a la Intel·ligència Empresarial", 'IT4BI'),
+    ("Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-FP)", 'MFPS-FP'),
     ("Màster en Formació del Professorat d'ESO i Batxillerat, FP i Ensenyament d'Idiomes (MPFS-TEC)", 'MFPS-TEC')
 ]
 
