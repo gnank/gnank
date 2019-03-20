@@ -1,7 +1,10 @@
 Name            'Gnank'
-SetCompressor   'lzma'
 Icon            'gnank.ico'
 OutFile         '..\..\gnank.exe'
+
+SetCompressor  /SOLID  'lzma'
+SetCompressorDictSize  64
+SetDatablockOptimize   ON
 
 SilentInstall silent
 RequestExecutionLevel user
