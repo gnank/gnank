@@ -24,7 +24,7 @@ import re
 import sys
 
 NOM = "Gnank"
-VERSIO = "4.0.1"
+VERSIO = "4.0.2"
 DESCRIPCIO = "Cercador d'horaris de la FIB"
 URL_WEB = "https://github.com/gnank/gnank"
 COPYRIGHT = """\

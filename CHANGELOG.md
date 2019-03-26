@@ -1,3 +1,13 @@
+Gnank 4.0.2 (2019-03-26)
+------------------------
+
+* El Gnank ja no mostra assignatures si el pla d'estudis
+  seleccionat no té assignatures.
+* Els arxius que obre el Gnank es tanquen correctament.
+* Arreglats molts warnings relacionats amb GTK+3.
+* L'executable de Windows es pot compilar amb PyInstaller a més
+  d'amb cx_Freeze.
+
 Gnank 4.0.1 (2019-03-13)
 ------------------------
 
