@@ -51,7 +51,7 @@ Un cop [instal·lats els requisits](#requisits-de-programari), es pot utilitzar 
 
   1. Descarrega i descomprimeix el `tar.gz` de [l'última versió](https://github.com/mcornella/gnank/releases/latest).
 
-  2. Des del terminal, navega a l'arrel del projecte i executa `src/main`.
+  2. Des del terminal, navega a l'arrel del projecte i executa `src/main.py`.
 
 ### Mac OSX:
 

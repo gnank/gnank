@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['src/main'],
+a = Analysis(['src/main.py'],
              pathex=[],
              binaries=[],
              datas=[('src/ajuda.txt', '.'), ('src/gnank.png', '.'), ('src/web.png', '.')],

@@ -80,7 +80,7 @@ setup(
         },
     },
     executables = [Executable(
-        script="src/init",
+        script="src/main.py",
         targetName="gnank.exe",
         base="Win32GUI",
         icon="paquets/win32/gnank.ico"

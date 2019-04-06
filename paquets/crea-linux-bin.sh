@@ -8,13 +8,13 @@ set -e
 TMPFILE=gnank.tar.gz
 OUTPUT=gnank.sh
 
-tar czf $TMPFILE src/main src/*.py src/*.png src/*.txt
+tar czf $TMPFILE src/main.py src/*.py src/*.png src/*.txt
 
 {
 	echo "#!/bin/sh"
 	echo "TMPDIR=\$(mktemp -d /tmp/gnank.XXXXXX)"
 	echo "tail -n +7 \$0 | tar xz -C \$TMPDIR"
-	echo "\$TMPDIR/src/main"
+	echo "\$TMPDIR/src/main.py"
 	echo "rm -rf \$TMPDIR"
 	echo "exit 0"
 
