@@ -24,58 +24,58 @@ from domini import Classe
 
 class TestClasse(unittest.TestCase):
 
-    def test_crea_correcte(self):
-        for dia in range(1, 6):
-            for hora in range(8, 21):
-                for tipus in ('T', 'P', 'L'):
-                    Classe("assig", "grup", dia, hora, tipus, "aula")
+	def test_crea_correcte(self):
+		for dia in range(1, 6):
+			for hora in range(8, 21):
+				for tipus in ('T', 'P', 'L'):
+					Classe("assig", "grup", dia, hora, tipus, "aula")
 
-    def test_crea_incorrecte(self):
-        self.assertRaises(ValueError, Classe, "A", "G", 0, 8, "L", "aula")
-        self.assertRaises(ValueError, Classe, "A", "G", 6, 8, "L", "aula")
-        self.assertRaises(ValueError, Classe, "A", "G", 1, 7, "L", "aula")
-        self.assertRaises(ValueError, Classe, "A", "G", 1, 21, "L", "aula")
-        self.assertRaises(ValueError, Classe, "A", "G", 1, 8, "H", "aula")
+	def test_crea_incorrecte(self):
+		self.assertRaises(ValueError, Classe, "A", "G", 0, 8, "L", "aula")
+		self.assertRaises(ValueError, Classe, "A", "G", 6, 8, "L", "aula")
+		self.assertRaises(ValueError, Classe, "A", "G", 1, 7, "L", "aula")
+		self.assertRaises(ValueError, Classe, "A", "G", 1, 21, "L", "aula")
+		self.assertRaises(ValueError, Classe, "A", "G", 1, 8, "H", "aula")
 
-    def test_comparacio(self):
-        classes = [
-            Classe("A", "10", 1, 8, "T", "A5001"),
-            Classe("A", "10", 1, 8, "T", "A5002"),
-            Classe("A", "10", 1, 8, "P", "A5001"),
-            Classe("A", "10", 1, 8, "L", "A5001"),
-            Classe("A", "10", 1, 9, "T", "A5001"),
-            Classe("A", "10", 2, 8, "T", "A5001"),
-            Classe("A", "11", 1, 8, "T", "A5001"),
-            Classe("A", "100", 1, 8, "T", "A5001"),
-            Classe("A", "M", 1, 8, "T", "A5001"),
-            Classe("B", "10", 1, 8, "T", "A5001"),
-        ]
-        for index1, classe1 in enumerate(classes):
-            for index2, classe2 in enumerate(classes):
-                c = cmp(classe1, classe2)
-                self.assertEqual(cmp(index1, index2), c,
-                    "cmp(index %d, index %d) != %d" % (index1, index2, c))
+	def test_comparacio(self):
+		classes = [
+			Classe("A", "10", 1, 8, "T", "A5001"),
+			Classe("A", "10", 1, 8, "T", "A5002"),
+			Classe("A", "10", 1, 8, "P", "A5001"),
+			Classe("A", "10", 1, 8, "L", "A5001"),
+			Classe("A", "10", 1, 9, "T", "A5001"),
+			Classe("A", "10", 2, 8, "T", "A5001"),
+			Classe("A", "11", 1, 8, "T", "A5001"),
+			Classe("A", "100", 1, 8, "T", "A5001"),
+			Classe("A", "M", 1, 8, "T", "A5001"),
+			Classe("B", "10", 1, 8, "T", "A5001"),
+		]
+		for index1, classe1 in enumerate(classes):
+			for index2, classe2 in enumerate(classes):
+				c = cmp(classe1, classe2)
+				self.assertEqual(cmp(index1, index2), c,
+					"cmp(index %d, index %d) != %d" % (index1, index2, c))
 
 
 class TestGrup(unittest.TestCase):
-    pass
+	pass
 
 
 class TestAssig(unittest.TestCase):
-    pass
+	pass
 
 
 class TestHorari(unittest.TestCase):
-    pass
+	pass
 
 
 class TestCerca(unittest.TestCase):
-    pass
+	pass
 
 
 class TestDomini(unittest.TestCase):
-    pass
+	pass
 
 
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main()

@@ -29,42 +29,42 @@ FORMAT_REGISTRE = '%(asctime)s %(levelname)-8s %(message)s'
 
 
 def configura_registre():
-    logger = logging.getLogger("")
-    logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.WARNING)
-    handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
-    logger.addHandler(handler)
+	logger = logging.getLogger("")
+	logger.setLevel(logging.DEBUG)
+	handler = logging.StreamHandler()
+	handler.setLevel(logging.WARNING)
+	handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
+	logger.addHandler(handler)
 
 
 def configura_registre_fitxer(fitxer):
-    try:
-        handler = logging.FileHandler(fitxer)
-    except IOError as e:
-        logging.warning("Error en obrir el registre: %s", e)
-    else:
-        handler.setLevel(logging.DEBUG)
-        handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
-        logging.getLogger("").addHandler(handler)
+	try:
+		handler = logging.FileHandler(fitxer)
+	except IOError as e:
+		logging.warning("Error en obrir el registre: %s", e)
+	else:
+		handler.setLevel(logging.DEBUG)
+		handler.setFormatter(logging.Formatter(FORMAT_REGISTRE))
+		logging.getLogger("").addHandler(handler)
 
 
 def registra_excepcio(type, value, tb):
-    text = "".join(format_exception(type, value, tb))
-    logging.error("S'ha produït una excepció.\n%s", text)
+	text = "".join(format_exception(type, value, tb))
+	logging.error("S'ha produït una excepció.\n%s", text)
 
 
 def main(gnank_dir):
-    configura_registre()
-    sys.excepthook = registra_excepcio
+	configura_registre()
+	sys.excepthook = registra_excepcio
 
-    import config
-    config.gnank_dir = gnank_dir
-    config.crea_dir_usuari()
-    configura_registre_fitxer(config.REGISTRE_USUARI)
+	import config
+	config.gnank_dir = gnank_dir
+	config.crea_dir_usuari()
+	configura_registre_fitxer(config.REGISTRE_USUARI)
 
-    logging.info("S'iniciarà l'aplicació.")
-    import gui
-    gui.inicia()
-    logging.info("Es tancarà l'aplicació.")
+	logging.info("S'iniciarà l'aplicació.")
+	import gui
+	gui.inicia()
+	logging.info("Es tancarà l'aplicació.")
 
-    logging.shutdown()
+	logging.shutdown()

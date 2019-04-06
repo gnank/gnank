@@ -35,14 +35,14 @@ AUTOR = "Marc Cornellà"
 EMAIL_AUTOR = "marc.cornella@live.com"
 LLICENCIA = "GPL"
 AUTORS = [
-    "Desenvolupador actual:",
-    "Marc Cornellà <marc.cornella@live.com>",
-    "",
-    "Desenvolupador principal:",
-    "Albert Gasset Romo <albert.gasset@gmail.com>",
-    "",
-    "Paquet Debian i pedaços:",
-    "Jordà Polo <jorda@ettin.org>"
+	"Desenvolupador actual:",
+	"Marc Cornellà <marc.cornella@live.com>",
+	"",
+	"Desenvolupador principal:",
+	"Albert Gasset Romo <albert.gasset@gmail.com>",
+	"",
+	"Paquet Debian i pedaços:",
+	"Jordà Polo <jorda@ettin.org>"
 ]
 INFO_LLICENCIA = """\
 This program is free software: you can redistribute it and/or modify
@@ -60,24 +60,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 if sys.platform == "win32":
-    import winreg
+	import winreg
 
-    def regval(key, subkey, name):
-        key = winreg.OpenKey(key, subkey)
-        try:
-            ret = winreg.QueryValueEx(key, name)
-        except WindowsError:
-            return None
-        key.Close()
-        if ret[1] == winreg.REG_EXPAND_SZ:
-            substenv = lambda m: os.environ.get(m.group(1), m.group(0))
-            return re.compile(r'%([^|<>=^%]+)%').sub(substenv, ret[0])
-        return ret[0]
-    DIR_USUARI = join(regval(winreg.HKEY_CURRENT_USER,
-            "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
-            "AppData"), "Gnank")
+	def regval(key, subkey, name):
+		key = winreg.OpenKey(key, subkey)
+		try:
+			ret = winreg.QueryValueEx(key, name)
+		except WindowsError:
+			return None
+		key.Close()
+		if ret[1] == winreg.REG_EXPAND_SZ:
+			substenv = lambda m: os.environ.get(m.group(1), m.group(0))
+			return re.compile(r'%([^|<>=^%]+)%').sub(substenv, ret[0])
+		return ret[0]
+	DIR_USUARI = join(regval(winreg.HKEY_CURRENT_USER,
+			"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+			"AppData"), "Gnank")
 else:
-    DIR_USUARI = join(os.environ['HOME'], ".gnank")
+	DIR_USUARI = join(os.environ['HOME'], ".gnank")
 
 
 HORARIS_USUARI = join(DIR_USUARI, "horaris")
@@ -85,16 +85,16 @@ REGISTRE_USUARI = join(DIR_USUARI, "registre")
 
 
 def crea_dir_usuari():
-    try:
-        if not os.path.exists(DIR_USUARI):
-            os.makedirs(DIR_USUARI)
-    except OSError:
-        pass
+	try:
+		if not os.path.exists(DIR_USUARI):
+			os.makedirs(DIR_USUARI)
+	except OSError:
+		pass
 
 
 def cami(fitxer):
-    cami_fitxer = join(gnank_dir, fitxer)
-    if os.access(cami_fitxer, os.F_OK):
-        return cami_fitxer
-    logging.warning("No es pot accedir al fitxer: %s", fitxer)
-    return None
+	cami_fitxer = join(gnank_dir, fitxer)
+	if os.access(cami_fitxer, os.F_OK):
+		return cami_fitxer
+	logging.warning("No es pot accedir al fitxer: %s", fitxer)
+	return None

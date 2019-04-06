@@ -31,58 +31,58 @@ include_files = ['src/ajuda.txt', 'src/gnank.png', 'src/web.png']
 
 required_dll_search_paths = os.getenv("PATH", os.defpath).split(os.pathsep)
 required_dlls = [
-    'libgtk-3-0.dll',
-    'libgdk_pixbuf-2.0-0.dll',
-    'libpango-1.0-0.dll',
-    'libpangocairo-1.0-0.dll',
-    'libpangoft2-1.0-0.dll',
-    'libpangowin32-1.0-0.dll',
-    'libatk-1.0-0.dll',
-    'libepoxy-0.dll',
+	'libgtk-3-0.dll',
+	'libgdk_pixbuf-2.0-0.dll',
+	'libpango-1.0-0.dll',
+	'libpangocairo-1.0-0.dll',
+	'libpangoft2-1.0-0.dll',
+	'libpangowin32-1.0-0.dll',
+	'libatk-1.0-0.dll',
+	'libepoxy-0.dll',
 ]
 
 for dll in required_dlls:
-    dll_path = None
-    for p in required_dll_search_paths:
-        p = os.path.join(p, dll)
-        if os.path.isfile(p):
-            dll_path = p
-            break
-    assert dll_path is not None, \
-        "Unable to locate {} in {}".format(dll, p)
-    include_files.append((dll_path, dll))
+	dll_path = None
+	for p in required_dll_search_paths:
+		p = os.path.join(p, dll)
+		if os.path.isfile(p):
+			dll_path = p
+			break
+	assert dll_path is not None, \
+		"Unable to locate {} in {}".format(dll, p)
+	include_files.append((dll_path, dll))
 
 
 # Gtk libs are under the root of the MINGW64 directory, and
 # they should go in lib/ or share/ directories.
 
 gtkLibs = [
-    'lib\\gdk-pixbuf-2.0',
-    'lib\\girepository-1.0',
-    'lib\\gtk-3.0',
-    'share\\glib-2.0'
+	'lib\\gdk-pixbuf-2.0',
+	'lib\\girepository-1.0',
+	'lib\\gtk-3.0',
+	'share\\glib-2.0'
 ]
 
 for lib in gtkLibs:
-    include_files.append((os.path.join('C:\\msys64\\mingw64', lib), lib))
+	include_files.append((os.path.join('C:\\msys64\\mingw64', lib), lib))
 
 setup(
-    name = "gnank",
-    version = config.VERSIO,
-    author = config.AUTOR,
-    author_email = config.EMAIL_AUTOR,
-    license = config.LLICENCIA,
-    description = config.DESCRIPCIO,
-    options = {
-        "build_exe": {
-            "packages": ['gi', 'cairo'],
-            "include_files": include_files
-        },
-    },
-    executables = [Executable(
-        script="src/main.py",
-        targetName="gnank.exe",
-        base="Win32GUI",
-        icon="paquets/win32/gnank.ico"
-    )]
+	name = "gnank",
+	version = config.VERSIO,
+	author = config.AUTOR,
+	author_email = config.EMAIL_AUTOR,
+	license = config.LLICENCIA,
+	description = config.DESCRIPCIO,
+	options = {
+		"build_exe": {
+			"packages": ['gi', 'cairo'],
+			"include_files": include_files
+		},
+	},
+	executables = [Executable(
+		script="src/main.py",
+		targetName="gnank.exe",
+		base="Win32GUI",
+		icon="paquets/win32/gnank.ico"
+	)]
 )
